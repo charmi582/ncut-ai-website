@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /data/backups/
+
+Sitemap: https://ai.ncut.edu.tw/sitemap.xml

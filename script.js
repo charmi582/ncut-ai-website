@@ -1,0 +1,1455 @@
+﻿let siteData;
+let activeCategory = "全部";
+let activeNewsPage = 1;
+let heroIndex = 0;
+let heroTimer;
+let awardIndex = 0;
+let awardTimer;
+
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+const esc = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+const linkTarget = (href = "") => String(href).startsWith("http") ? "_blank" : "_self";
+const isExternalHref = (href = "") => /^https?:\/\//i.test(String(href));
+const isOriginalDeptLink = (href = "") => /^https?:\/\/(n063|ai)\.ncut\.edu\.tw/i.test(String(href));
+const archiveKey = (href = "") => String(href).replace(/^https?:\/\/(n063|ai)\.ncut\.edu\.tw/i, "").replace(/#.*$/, "");
+const isLegacyImportEntry = (item = {}) => /原系網|匯入資料/.test(`${item.label || ""} ${item.title || ""} ${item.type || ""}`) || String(item.href || "").includes("official-detail.html");
+const pageLoader = createPageLoader();
+
+function createPageLoader() {
+  const forceFullIntroAnimation = true;
+  const startedAt = Date.now();
+  const loader = document.createElement("div");
+  loader.className = `site-loader${forceFullIntroAnimation ? " is-full-motion" : ""}`;
+  loader.setAttribute("aria-hidden", "true");
+  loader.innerHTML = `
+    <div class="loader-stage">
+      <div class="loader-word">Artificial Intelligence</div>
+      <div class="loader-mark">
+        <span></span>
+        <img src="./assets/ai-official-icon.png" alt="">
+      </div>
+    </div>
+    <small>Department of Artificial Intelligence and Computer Engineering</small>
+  `;
+  document.body.classList.add("is-loading");
+  document.body.prepend(loader);
+  return {
+    hide(immediate = false) {
+      const minimumDuration = 2300;
+      const wait = immediate ? 0 : Math.max(0, minimumDuration - (Date.now() - startedAt));
+      window.setTimeout(() => {
+        loader.classList.add("is-done");
+        document.body.classList.remove("is-loading");
+        window.setTimeout(() => {
+          loader.remove();
+        }, 1300);
+      }, wait);
+    }
+  };
+}
+
+function archiveLink(link, archive) {
+  const href = link?.href || "";
+  if (!href) return null;
+  const cleanLabel = (value = "") => String(value)
+    .replace(/\(原頁面開啟\)|\(另開新視窗\)|Click to go\s*/gi, "")
+    .trim();
+  const rawLabel = cleanLabel(link.label || link.title || "");
+  if (/^(跳到主要內容區|首頁|回首頁|English|:::|LINK)$/i.test(rawLabel)) return null;
+  if (!isOriginalDeptLink(href)) return { href, label: rawLabel || href, external: href.startsWith("http") };
+  const index = archive.pages.findIndex((page) => archiveKey(page.url) === archiveKey(href));
+  if (index < 0) return null;
+  return { href: `./official-detail.html?id=${index}`, label: rawLabel || archive.pages[index].title, external: false };
+}
+
+async function loadSite() {
+  const response = await fetch("./data/site.json", { cache: "no-store" });
+  if (!response.ok) throw new Error(`site.json ${response.status}`);
+  siteData = await response.json();
+  normalizeSiteData();
+  renderShared();
+  renderMegaMenu();
+  if ($("[data-hero]")) renderHome();
+  if ($("[data-page]")) renderPage();
+  if ($("[data-faculty-list]")) renderFacultyPage();
+  if ($("[data-faculty-detail]")) renderFacultyDetail();
+  if (location.pathname.endsWith("news.html")) renderNewsPage();
+  if ($("[data-official-list]")) renderOfficialArchive();
+  if ($("[data-official-detail]")) renderOfficialDetail();
+  if ($("[data-student-detail]")) renderStudentResourceDetail();
+  if ($("[data-resource-list]")) renderResources();
+  if ($("[data-campus-links]")) renderCampusLinks();
+  if ($("[data-original-home]")) renderOriginalHome();
+  if ($("[data-awards-page]")) renderAwardsPage();
+  setupInteractions();
+  pageLoader.hide();
+}
+
+function normalizeSiteData() {
+  const teacherNameCorrections = new Map([
+    ["黃馨琳", "黃詰琳"]
+  ]);
+  (siteData.faculty || []).forEach((person) => {
+    if (teacherNameCorrections.has(person.name)) {
+      person.name = teacherNameCorrections.get(person.name);
+    }
+  });
+}
+
+function renderSiteError(error) {
+  pageLoader.hide(true);
+  document.body.classList.add("has-site-error");
+  document.querySelector(".site-error")?.remove();
+  const safeMessage = esc(error?.message || "未知錯誤");
+  document.body.insertAdjacentHTML("afterbegin", `
+    <section class="site-error" role="alert" aria-live="assertive">
+      <div>
+        <p class="section-kicker">System Notice</p>
+        <h1>網站資料暫時無法載入</h1>
+        <p>目前無法取得系網資料，請重新整理頁面；若仍無法顯示，請確認伺服器是否正在執行，或檢查 <code>data/site.json</code> 是否存在。</p>
+        <p class="site-error-code">錯誤資訊：${safeMessage}</p>
+        <div class="hero-actions">
+          <button class="primary-action" type="button" data-reload-page>重新整理</button>
+          <a class="secondary-action" href="./">返回首頁</a>
+        </div>
+      </div>
+    </section>
+  `);
+  document.querySelector("[data-reload-page]")?.addEventListener("click", () => location.reload());
+}
+
+function renderEmptyState(title, text, actions = []) {
+  return `
+    <article class="empty-state" role="status">
+      <span class="empty-state-mark" aria-hidden="true">AI</span>
+      <div>
+        <p class="section-kicker">No Results</p>
+        <h2>${esc(title)}</h2>
+        <p>${esc(text)}</p>
+        ${actions.length ? `<div class="empty-state-actions">${actions.map((action) => `<a class="${esc(action.className || "text-link")}" href="${esc(action.href)}">${esc(action.label)}</a>`).join("")}</div>` : ""}
+      </div>
+    </article>
+  `;
+}
+
+function renderShared() {
+  updateDocumentMeta();
+  const navMarkup = `
+    <a href="./page.html?slug=history">系所介紹</a>
+    <a href="./faculty.html">師資陣容</a>
+    <a href="./awards.html">獲獎資訊</a>
+    <a href="./page.html?slug=curriculum-careers">課程就業</a>
+    <a href="./page.html?slug=labs">專業實驗室</a>
+    <a href="./campus-links.html">校內連結</a>
+    <a href="./official.html">官方資訊庫</a>
+    <a href="./news.html">最新消息</a>
+    <a href="#contact">聯絡我們</a>`;
+  $$("nav.site-nav").forEach((nav) => { nav.innerHTML = navMarkup; });
+  markActiveNav();
+  $$("[data-logo]").forEach((img) => { img.src = siteData.identity.logo; });
+  $$("[data-footer-logo]").forEach((img) => { img.src = siteData.identity.footerLogo; });
+  $$("[data-site-title]").forEach((el) => { el.textContent = siteData.identity.title; });
+  $$("[data-site-subtitle]").forEach((el) => { el.textContent = siteData.identity.subtitle; });
+  $$("[data-footer-title]").forEach((el) => { el.textContent = siteData.identity.title; });
+  $$("[data-footer-subtitle]").forEach((el) => { el.textContent = siteData.identity.subtitle; });
+  $$(".site-footer").forEach((footer) => {
+    if (!footer.querySelector(".footer-bottom")) {
+      footer.insertAdjacentHTML("beforeend", `<div class="footer-bottom">${esc(siteData.identity.copyright || "國立勤益科技大學人工智慧應用工程系 版權所有")}</div>`);
+    }
+  });
+  $$("[data-contact]").forEach((el) => {
+    el.innerHTML = `
+      <p><strong>電話</strong> ${esc(siteData.contact.phone)}</p>
+      <p><strong>信箱</strong> <a href="mailto:${esc(siteData.contact.email)}">${esc(siteData.contact.email)}</a></p>
+      <p><strong>地址</strong> ${esc(siteData.contact.address)}</p>
+      <p><strong>位置</strong> ${esc(siteData.contact.location)}</p>`;
+  });
+}
+
+function markActiveNav() {
+  const path = location.pathname.split("/").pop() || "index.html";
+  const params = new URLSearchParams(location.search);
+  const slug = params.get("slug") || "";
+  const currentKey = path === "index.html" ? "home" :
+    path === "faculty.html" || path === "faculty-detail.html" ? "faculty" :
+    path === "awards.html" ? "awards" :
+    path === "campus-links.html" ? "campus" :
+    path === "official.html" || path === "official-detail.html" || path === "resources.html" || path === "original.html" ? "official" :
+    path === "news.html" ? "news" :
+    path === "page.html" && ["curriculum-careers"].includes(slug) ? "curriculum" :
+    path === "page.html" && ["labs"].includes(slug) ? "labs" :
+    path === "page.html" ? "about" : "";
+  $$(".site-nav a").forEach((link) => {
+    const href = link.getAttribute("href") || "";
+    const key = href.includes("faculty") ? "faculty" :
+      href.includes("awards") ? "awards" :
+      href.includes("campus-links") ? "campus" :
+      href.includes("official") ? "official" :
+      href.includes("news") ? "news" :
+      href.includes("curriculum-careers") ? "curriculum" :
+      href.includes("labs") ? "labs" :
+      href.includes("history") ? "about" : "";
+    const active = Boolean(key && key === currentKey);
+    link.classList.toggle("is-active", active);
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+}
+
+function updateDocumentMeta(title = document.title, description = "") {
+  const siteTitle = siteData?.identity?.title || "人工智慧應用工程系";
+  const subtitle = siteData?.identity?.subtitle || "Department of Artificial Intelligence and Computer Engineering";
+  const desc = description || document.querySelector('meta[name="description"]')?.content ||
+    "國立勤益科技大學人工智慧應用工程系網站，整合系所介紹、師資陣容、招生資訊、學生資源、校內連結與獲獎成果。";
+  const siteRoot = new URL("./", location.href).href;
+  const canonicalUrl = new URL(location.href);
+  ["v", "audit", "_", "cache"].forEach((key) => canonicalUrl.searchParams.delete(key));
+  canonicalUrl.hash = "";
+  const url = canonicalUrl.href;
+  const image = new URL(siteData?.identity?.defaultImage || siteData?.identity?.logo || "./assets/ai-official-icon.png", location.href).href;
+  const logo = new URL(siteData?.identity?.logo || "./assets/ai-official-icon.png", location.href).href;
+  const setMeta = (selector, attrs) => {
+    let node = document.head.querySelector(selector);
+    if (!node) {
+      node = document.createElement("meta");
+      document.head.append(node);
+    }
+    Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+  };
+  document.title = title;
+  setMeta('meta[name="application-name"]', { name: "application-name", content: siteTitle });
+  setMeta('meta[name="apple-mobile-web-app-title"]', { name: "apple-mobile-web-app-title", content: siteTitle });
+  setMeta('meta[name="description"]', { name: "description", content: desc });
+  setMeta('meta[property="og:site_name"]', { property: "og:site_name", content: `國立勤益科技大學${siteTitle}` });
+  setMeta('meta[property="og:title"]', { property: "og:title", content: title });
+  setMeta('meta[property="og:description"]', { property: "og:description", content: desc });
+  setMeta('meta[property="og:type"]', { property: "og:type", content: "website" });
+  setMeta('meta[property="og:url"]', { property: "og:url", content: url });
+  setMeta('meta[property="og:image"]', { property: "og:image", content: image });
+  setMeta('meta[property="og:image:secure_url"]', { property: "og:image:secure_url", content: image });
+  setMeta('meta[property="og:image:width"]', { property: "og:image:width", content: "1200" });
+  setMeta('meta[property="og:image:height"]', { property: "og:image:height", content: "630" });
+  setMeta('meta[property="og:image:alt"]', { property: "og:image:alt", content: `${siteTitle} 系所形象圖` });
+  setMeta('meta[name="twitter:card"]', { name: "twitter:card", content: "summary_large_image" });
+  setMeta('meta[name="twitter:title"]', { name: "twitter:title", content: title });
+  setMeta('meta[name="twitter:description"]', { name: "twitter:description", content: desc });
+  setMeta('meta[name="twitter:image"]', { name: "twitter:image", content: image });
+  setMeta('meta[name="twitter:image:alt"]', { name: "twitter:image:alt", content: `${siteTitle} 系所形象圖` });
+  setMeta('meta[name="robots"]', { name: "robots", content: "index,follow,max-image-preview:large" });
+  ensureResourceHints();
+  let canonical = document.head.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement("link");
+    canonical.rel = "canonical";
+    document.head.append(canonical);
+  }
+  canonical.href = url;
+  let schema = document.head.querySelector("#site-schema");
+  if (!schema) {
+    schema = document.createElement("script");
+    schema.type = "application/ld+json";
+    schema.id = "site-schema";
+    document.head.append(schema);
+  }
+  schema.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollegeOrUniversity",
+        "@id": `${siteRoot}#organization`,
+        name: `國立勤益科技大學${siteTitle}`,
+        alternateName: subtitle,
+        url: siteRoot,
+        logo,
+        email: siteData?.contact?.email,
+        telephone: siteData?.contact?.phone,
+        parentOrganization: {
+          "@type": "CollegeOrUniversity",
+          name: "國立勤益科技大學",
+          url: "https://www.ncut.edu.tw/"
+        },
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: siteData?.contact?.address,
+          addressLocality: "臺中市",
+          addressRegion: "太平區",
+          addressCountry: "TW"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteRoot}#website`,
+        name: `${siteTitle}｜國立勤益科技大學`,
+        alternateName: "NCUT AI",
+        url: siteRoot,
+        inLanguage: "zh-Hant-TW",
+        publisher: { "@id": `${siteRoot}#organization` },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${siteRoot}official.html?q={search_term_string}`,
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: title,
+        description: desc,
+        isPartOf: { "@id": `${siteRoot}#website` },
+        about: { "@id": `${siteRoot}#organization` },
+        inLanguage: "zh-Hant-TW",
+        primaryImageOfPage: image
+      }
+    ]
+  });
+  document.head.querySelector("#person-schema")?.remove();
+}
+
+function ensureResourceHints() {
+  const addLink = (rel, href, attrs = {}) => {
+    if (document.head.querySelector(`link[rel="${rel}"][href="${href}"]`)) return;
+    const link = document.createElement("link");
+    link.rel = rel;
+    link.href = href;
+    Object.entries(attrs).forEach(([key, value]) => link.setAttribute(key, value));
+    document.head.append(link);
+  };
+  addLink("preconnect", "https://www.youtube.com");
+  addLink("preconnect", "https://i.ytimg.com");
+  addLink("preconnect", "https://n063.ncut.edu.tw");
+  addLink("preconnect", "https://ai.ncut.edu.tw");
+  const firstHeroImage = siteData?.hero?.find((slide) => slide.image)?.image;
+  if (firstHeroImage) {
+    addLink("preload", new URL(firstHeroImage, location.href).href, { as: "image" });
+  }
+}
+
+function initialSearchQuery() {
+  return (new URLSearchParams(location.search).get("q") || "").trim();
+}
+
+function syncSearchQuery(value) {
+  const url = new URL(location.href);
+  const query = String(value || "").trim();
+  if (query) url.searchParams.set("q", query);
+  else url.searchParams.delete("q");
+  history.replaceState(null, "", url);
+}
+
+function updateBreadcrumbSchema() {
+  const breadcrumb = $(".breadcrumb");
+  let schema = document.head.querySelector("#breadcrumb-schema");
+  if (!breadcrumb) {
+    schema?.remove();
+    return;
+  }
+  const items = [...breadcrumb.querySelectorAll("a, span")].map((node, index) => {
+    const href = node.tagName === "A" ? node.getAttribute("href") : location.href;
+    const url = new URL(href || location.href, location.href);
+    ["v", "audit", "_", "cache"].forEach((key) => url.searchParams.delete(key));
+    return {
+      "@type": "ListItem",
+      position: index + 1,
+      name: node.textContent.trim(),
+      item: url.href
+    };
+  }).filter((item) => item.name);
+  if (items.length < 2) {
+    schema?.remove();
+    return;
+  }
+  if (!schema) {
+    schema = document.createElement("script");
+    schema.type = "application/ld+json";
+    schema.id = "breadcrumb-schema";
+    document.head.append(schema);
+  }
+  schema.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items
+  });
+}
+
+function updatePersonSchema(person) {
+  if (!person) return;
+  let schema = document.head.querySelector("#person-schema");
+  if (!schema) {
+    schema = document.createElement("script");
+    schema.type = "application/ld+json";
+    schema.id = "person-schema";
+    document.head.append(schema);
+  }
+  const personUrl = new URL(location.href);
+  ["v", "audit", "_", "cache"].forEach((key) => personUrl.searchParams.delete(key));
+  schema.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: person.name,
+    alternateName: person.enName,
+    jobTitle: person.role,
+    email: person.email ? `mailto:${person.email}` : undefined,
+    telephone: person.phone,
+    image: person.photo ? new URL(person.photo, location.href).href : undefined,
+    url: personUrl.href,
+    affiliation: { "@id": `${location.origin}/#organization` },
+    worksFor: { "@id": `${location.origin}/#organization` },
+    knowsAbout: person.expertise ? person.expertise.split(/[、，,\/]/).map((item) => item.trim()).filter(Boolean) : undefined,
+    workLocation: person.office || person.lab
+  });
+}
+
+function renderMegaMenu() {
+  const host = $("[data-mega-menu]");
+  if (!host || !siteData) return;
+  const grouped = siteData.pages.reduce((acc, page) => {
+    const group = page.group || "其他";
+    acc[group] = acc[group] || [];
+    acc[group].push(page);
+    return acc;
+  }, {});
+  const groups = Object.entries(grouped).map(([group, pages]) => `
+    <section>
+      <h2>${esc(group)}</h2>
+      ${pages.map((page) => `<a href="./page.html?slug=${esc(page.slug)}">${esc(page.title)}</a>`).join("")}
+    </section>`).join("");
+  const campusLinks = (siteData.campusLinks || []).slice(0, 8).map((link) => `<a href="${esc(link.href)}" target="_blank" rel="noreferrer">${esc(link.label)}</a>`).join("");
+  host.innerHTML = `
+    <div class="mega-inner">
+      <section class="mega-feature">
+        <p class="section-kicker">NCUT AI</p>
+        <h2>人工智慧應用工程系</h2>
+        <p>整合系所介紹、師資陣容、學生資源、專班資訊與校內連結，提供新網站一致化導覽。</p>
+      </section>
+      ${groups}
+      <section>
+        <h2>校內連結</h2>
+        ${campusLinks}
+        <a href="./campus-links.html">完整校內連結</a>
+      </section>
+      <section>
+        <h2>快速入口</h2>
+        <a href="./faculty.html">師資陣容</a>
+        <a href="./news.html">最新消息</a>
+        <a href="./official.html">官方資訊庫</a>
+        <a href="./awards.html">獲獎資訊</a>
+        <a href="./campus-links.html">校內連結</a>
+        <a href="./resources.html">文件與資源索引</a>
+      </section>
+    </div>`;
+}
+
+function renderHome() {
+  $("[data-hero]").innerHTML = siteData.hero.map((slide, index) => `
+    <article id="hero-slide-${index}" class="hero-slide ${index === 0 ? "is-active" : ""} ${slide.video ? "has-video" : ""}" role="group" aria-roledescription="slide" aria-label="${index + 1} / ${siteData.hero.length}：${esc(slide.title)}" aria-hidden="${index === 0 ? "false" : "true"}" style="--bg:url('${esc(slide.image)}');--pos:${esc(slide.position || "center center")}">
+      ${slide.video ? `<iframe class="hero-video" src="${esc(slide.video)}" title="${esc(slide.title)} 背景影片" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" loading="eager" tabindex="-1" aria-hidden="true"></iframe>` : ""}
+      <div class="hero-copy">
+        <p class="eyebrow">${esc(slide.kicker)}</p>
+        ${index === 0 ? `<h1>${esc(slide.title)}</h1>` : `<h2>${esc(slide.title)}</h2>`}
+        <p>${esc(slide.text)}</p>
+        <div class="hero-actions">
+          <a class="primary-action" href="${esc(slide.primary.href)}">${esc(slide.primary.label)}</a>
+          <a class="secondary-action" href="${esc(slide.secondary.href)}">${esc(slide.secondary.label)}</a>
+        </div>
+      </div>
+    </article>`).join("");
+  $("[data-dots]").setAttribute("aria-label", "主視覺輪播分頁");
+  $("[data-dots]").innerHTML = siteData.hero.map((slide, index) => `<button type="button" class="${index === 0 ? "is-active" : ""}" data-dot="${index}" aria-label="切換主視覺 ${index + 1}：${esc(slide.title)}" aria-controls="hero-slide-${index}" ${index === 0 ? `aria-current="true"` : ""}></button>`).join("");
+  $("[data-metrics]").innerHTML = siteData.metrics.map((item) => `<div><strong>${esc(item.value)}</strong><span>${esc(item.label)}</span></div>`).join("");
+  $("[data-quick-links]").innerHTML = siteData.quickLinks.map((link) => `<a href="${esc(link.href)}"><span>${esc(link.kicker)}</span><strong>${esc(link.label)}</strong></a>`).join("");
+  $("[data-feature-cards]").innerHTML = siteData.homeFeatures.map((item, index) => `<article><span class="card-index">${String(index + 1).padStart(2, "0")}</span><h3>${esc(item.title)}</h3><p>${esc(item.text)}</p></article>`).join("");
+  $("[data-page-modules]").innerHTML = siteData.pages.slice(0, 6).map((page, index) => `<article class="module-card"><span class="module-index">${String(index + 1).padStart(2, "0")}</span><h3>${esc(page.title)}</h3><p>${esc(page.summary)}</p><a href="./page.html?slug=${esc(page.slug)}">閱讀內容</a></article>`).join("");
+  $("[data-faculty-preview]").innerHTML = siteData.faculty.slice(0, 6).map(renderFacultyCard).join("");
+  renderAwardsCarousel();
+  renderNewsWidgets();
+  $("[data-videos]").innerHTML = siteData.videos.map((video) => `<iframe src="${esc(video.embed)}" title="${esc(video.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`).join("");
+  startHero();
+}
+
+function renderNewsWidgets() {
+  const isNewsPage = Boolean($("[data-news-pagination]"));
+  const newsItems = isNewsPage ? siteData.news : siteData.news.filter((item) => item.category !== "獲獎公告");
+  const categories = ["全部", ...new Set(newsItems.map((item) => item.category))];
+  if (!categories.includes(activeCategory)) activeCategory = "全部";
+  const tabs = $("[data-news-tabs]");
+  if (tabs) {
+    tabs.setAttribute("role", "group");
+    tabs.setAttribute("aria-label", "最新消息分類篩選");
+    tabs.innerHTML = categories.map((cat) => `<button class="tab ${cat === activeCategory ? "is-active" : ""}" data-category="${esc(cat)}" type="button" aria-pressed="${cat === activeCategory ? "true" : "false"}" aria-label="篩選${esc(cat)}消息">${esc(cat)}</button>`).join("");
+  }
+  const list = $("[data-news-list]");
+  list?.setAttribute("aria-live", "polite");
+  list?.setAttribute("aria-busy", "true");
+  const filteredItems = newsItems.filter((item) => activeCategory === "全部" || item.category === activeCategory);
+  const pagination = $("[data-news-pagination]");
+  const perPage = pagination ? 10 : 5;
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / perPage));
+  activeNewsPage = Math.min(activeNewsPage, totalPages);
+  const items = filteredItems.slice((activeNewsPage - 1) * perPage, activeNewsPage * perPage);
+  if (list && !items.length) {
+    list.innerHTML = renderEmptyState("目前沒有符合條件的消息", "請切換其他分類，或回到全部消息查看最新公告。", [
+      { label: "查看全部消息", href: "./news.html", className: "text-link" }
+    ]);
+  } else if (list) list.innerHTML = items.map((item) => {
+    const body = `
+      <time>${esc(item.date)}</time>
+      <div class="news-item-body">
+        <span class="news-category">${esc(item.category || "系所公告")}</span>
+        <strong>${esc(item.title)}</strong>
+        ${item.summary ? `<p>${esc(item.summary)}</p>` : ""}
+        <small>${item.href ? "查看公告" : "本站公告"}</small>
+      </div>`;
+    return item.href ? `<a class="news-item" href="${esc(item.href)}" target="${linkTarget(item.href)}">${body}</a>` : `<article class="news-item">${body}</article>`;
+  }).join("");
+  list?.setAttribute("aria-busy", "false");
+  if (pagination) {
+    pagination.setAttribute("role", "navigation");
+    pagination.setAttribute("aria-label", "最新消息分頁");
+    pagination.innerHTML = Array.from({ length: totalPages }, (_, index) => {
+      const page = index + 1;
+      const active = activeNewsPage === page;
+      return `<button type="button" class="${active ? "is-active" : ""}" data-news-page="${page}" aria-label="前往最新消息第 ${page} 頁" ${active ? `aria-current="page"` : ""}>${page}</button>`;
+    }).join("");
+  }
+  enhanceRenderedMediaAndLinks(list || document);
+}
+
+function renderNewsPage() {
+  renderNewsWidgets();
+}
+
+function renderPage() {
+  const slug = new URLSearchParams(location.search).get("slug") || "history";
+  const page = siteData.pages.find((item) => item.slug === slug) || siteData.pages[0];
+  const pageLinks = (page.links || []).filter((link) => !isLegacyImportEntry(link));
+  updateDocumentMeta(`${page.title} - ${siteData.identity.title}`, page.summary);
+  $("[data-side-nav]").innerHTML = siteData.pages.map((item) => {
+    const active = item.slug === page.slug;
+    return `<a class="${active ? "is-active" : ""}" ${active ? `aria-current="page"` : ""} href="./page.html?slug=${esc(item.slug)}">${esc(item.title)}</a>`;
+  }).join("");
+  $("[data-page]").innerHTML = `
+    <section class="content-hero">
+      <div>
+        <nav class="breadcrumb" aria-label="麵包屑"><a href="./">首頁</a><span>${esc(page.group || "系所資訊")}</span><span>${esc(page.title)}</span></nav>
+        <p class="section-kicker">${esc(page.group || "Page")}</p>
+        <h1>${esc(page.title)}</h1>
+        <p class="page-lead">${esc(page.summary)}</p>
+      </div>
+      <div class="content-hero-mark" aria-hidden="true">
+        <img src="${esc(siteData.identity.logo)}" alt="">
+        <small>${esc(page.group || "NCUT")}</small>
+      </div>
+    </section>
+    ${page.image ? `<figure class="page-image"><img src="${esc(page.image)}" alt="${esc(page.title)}"></figure>` : ""}
+    <div class="content-section-stack">
+      ${page.sections.map((section) => `
+        <section class="content-section">
+          <div class="section-number" aria-hidden="true">${String(page.sections.indexOf(section) + 1).padStart(2, "0")}</div>
+          <div>
+            <h2>${esc(section.heading)}</h2>
+            ${section.body.map((p) => `<p>${esc(p)}</p>`).join("")}
+            ${section.items ? `<ul>${section.items.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>` : ""}
+          </div>
+        </section>
+      `).join("")}
+    </div>
+    ${renderPageEnhancements(page)}
+    ${pageLinks.length ? `<section class="content-section related-links"><h2>相關連結</h2><div class="related-link-grid">${pageLinks.map((link) => `<a href="${esc(link.href)}" target="_blank" rel="noreferrer">${esc(link.label)}</a>`).join("")}</div></section>` : ""}
+  `;
+}
+
+function renderPageEnhancements(page) {
+  if (page.slug === "curriculum-careers") return renderCurriculumEnhancement();
+  if (page.slug === "labs") return renderLabEnhancement();
+  if (page.slug === "student-zone") return renderStudentEnhancement();
+  if (["industry-program", "overseas-youth"].includes(page.slug)) return renderSpecialProgramEnhancement(page.slug);
+  return "";
+}
+
+function renderCurriculumEnhancement() {
+  const careerGroups = siteData.careerPaths || [];
+  const modules = siteData.curriculumModules || [];
+  return `
+    <section class="page-feature-block">
+      <p class="section-kicker">Career Tracks</p>
+      <h2>就業職能地圖</h2>
+      <div class="career-track-grid">
+        ${careerGroups.map((group) => `
+          <article class="career-track">
+            <h3>${esc(group.title)}</h3>
+            <div class="tag-cloud">${(group.items || []).map((item) => `<span>${esc(item)}</span>`).join("")}</div>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+    <section class="page-feature-block">
+      <p class="section-kicker">Curriculum Modules</p>
+      <h2>課程模組與能力養成</h2>
+      <div class="curriculum-grid">
+        ${modules.map((module) => `
+          <article class="curriculum-card">
+            <h3>${esc(module.title)}</h3>
+            <p>${esc(module.summary)}</p>
+            <h4>核心主題</h4>
+            <div class="tag-cloud">${(module.focus || []).map((item) => `<span>${esc(item)}</span>`).join("")}</div>
+            <h4>代表課程</h4>
+            <ul>${(module.courses || []).map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+            ${(module.outcomes || []).map((item) => `<p class="outcome">${esc(item)}</p>`).join("")}
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderLabEnhancement() {
+  const labs = siteData.labProfiles || [];
+  return `
+    <section class="page-feature-block">
+      <p class="section-kicker">Learning Spaces</p>
+      <h2>教學與專題實作場域</h2>
+      <div class="lab-profile-grid">
+        ${labs.map((lab, index) => `
+          <article class="lab-profile-card">
+            <div class="lab-card-head">
+              <span class="lab-index">${String(index + 1).padStart(2, "0")}</span>
+              <div>
+                <p class="lab-location">${esc(lab.location)}</p>
+                <h3>${esc(lab.name)}</h3>
+              </div>
+            </div>
+            <p>${esc(lab.summary)}</p>
+            <div class="tag-cloud">${(lab.themes || []).map((item) => `<span>${esc(item)}</span>`).join("")}</div>
+            <h4>訓練重點</h4>
+            <ul>${(lab.training || []).map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderStudentEnhancement() {
+  const resources = siteData.studentResources || [];
+  const groups = resources.reduce((acc, item) => {
+    const key = item.category || "學生資源";
+    acc[key] = acc[key] || [];
+    acc[key].push(item);
+    return acc;
+  }, {});
+  return `
+    <section class="page-feature-block">
+      <p class="section-kicker">Student Services</p>
+      <h2>學生專區完整入口</h2>
+      <div class="resource-hub-grid">
+        ${Object.entries(groups).map(([category, items]) => `
+          <article class="resource-hub-group">
+            <div class="resource-group-head">
+              <span>${String(items.length).padStart(2, "0")}</span>
+              <h3>${esc(category)}</h3>
+            </div>
+            ${items.map((item, index) => `
+              <div class="resource-hub-item">
+                <small class="resource-item-index">${String(index + 1).padStart(2, "0")}</small>
+                ${item.href ? `<a class="resource-title-link" href="${esc(item.href)}" target="${linkTarget(item.href)}" rel="noreferrer">${esc(item.title)}<span>${item.href.startsWith("http") ? "外部入口" : "查看內容"}</span></a>` : `<strong>${esc(item.title)}</strong>`}
+                <p>${esc(item.summary)}</p>
+                ${item.children?.length ? `<div class="mini-link-row">${item.children.map((child) => `<a href="${esc(child.href)}" target="${linkTarget(child.href)}" rel="noreferrer">${esc(child.title)}</a>`).join("")}</div>` : ""}
+              </div>
+            `).join("")}
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function studentResourceHref(id) {
+  return `./student-resource.html?id=${encodeURIComponent(id)}`;
+}
+
+function studentResourceIndex() {
+  return (siteData.studentResources || []).flatMap((item) => [
+    item,
+    ...(item.children || []).map((child) => ({ ...child, category: item.category, parentTitle: item.title }))
+  ]);
+}
+
+const studentResourceAliases = {
+  "credit-plan": "學分計畫表",
+  "curriculum-map": "課程地圖",
+  "course-map": "課程地圖",
+  "course-outline": "課程綱要",
+  "project": "實務專題",
+  "graduation": "畢業門檻",
+  "certificate": "核心證照",
+  "internship": "校外實習",
+  "transfer-credit": "課程抵免",
+  "student-association": "系學會",
+  "alumni": "系友會"
+};
+
+function resolveStudentResourceRequest(resources) {
+  const params = new URLSearchParams(location.search);
+  const slug = params.get("slug");
+  const id = params.get("id");
+  const title = slug ? studentResourceAliases[slug] || slug : "";
+  const byTitle = title ? resources.find((item) => item.title === title) : null;
+  if (byTitle) return { id: extractStudentResourceId(byTitle.href), resource: byTitle };
+  return { id: Number(id || 64), resource: null };
+}
+
+function extractStudentResourceId(href = "") {
+  const match = String(href).match(/[?&]id=(\d+)/);
+  return match ? Number(match[1]) : null;
+}
+
+function normalizeStudentResourceLink(link, archive, currentId) {
+  const href = link?.href || "";
+  const rawLabel = link?.label || link?.title || href;
+  const label = rawLabel.replace(/\(原頁面開啟\)|\(另開新視窗\)|Click to go\s*/g, "").trim();
+  if (!href || !label) return null;
+  if (/跳到主要內容區|回首頁|首頁|English|信箱|地址|map|招生訊息|系所介紹|系所成員|教師專區|學生專區|聯絡我們/i.test(label)) return null;
+  if (isOriginalDeptLink(href)) {
+    if (/var\/file\/.+\.(pdf|docx?|xlsx?)$/i.test(href)) return { href, label, external: true };
+    if (!/原頁面開啟/.test(rawLabel)) return null;
+    const index = archive.pages.findIndex((page) => archiveKey(page.url) === archiveKey(href));
+    if (index < 0 || String(index) === String(currentId)) return null;
+    const target = archive.pages[index];
+    if (!target || officialCategory(target) !== "學生專區") return null;
+    return { href: studentResourceHref(index), label: label || target.title, external: false };
+  }
+  return { href, label, external: href.startsWith("http") || href.startsWith("mailto:") };
+}
+
+function cleanStudentPageText(page) {
+  const text = page.text || [];
+  const footerIndex = text.findIndex((line, index) => index > 10 && line === "人工智慧應用工程系");
+  const scoped = footerIndex > -1 ? text.slice(0, footerIndex) : text;
+  const titleIndexes = scoped.map((line, index) => line === page.title ? index : -1).filter((index) => index >= 0);
+  const start = titleIndexes.length ? titleIndexes[titleIndexes.length - 1] + 1 : 0;
+  const skip = /^(LINK|首頁|學生專區|大學部|招生訊息|系所介紹|系所成員|教師專區|聯絡我們|課程地圖|課程綱要|實務專題|畢業門檻|核心證照|校外實習|課程抵免|學生組織|系學會|系友會)$/;
+  const lines = scoped.slice(start).map((line) => String(line || "").trim()).filter((line) => line && !skip.test(line));
+  return lines.filter((line, index) => lines.indexOf(line) === index);
+}
+
+async function renderStudentResourceDetail() {
+  const archive = await fetch("./data/official-pages.json", { cache: "no-store" }).then((r) => r.json());
+  const resourceItems = studentResourceIndex();
+  const request = resolveStudentResourceRequest(resourceItems);
+  if (request.resource?.href && isExternalHref(request.resource.href)) {
+    location.replace(request.resource.href);
+    return;
+  }
+  const id = Number(request.id || 64);
+  const page = archive.pages.find((item) => Number(item.id) === id) || archive.pages[id] || archive.pages[0];
+  const current = request.resource || resourceItems.find((item) => String(item.href || "").includes(`id=${id}`)) || { title: page.title, category: "學生專區" };
+  const bodyLines = cleanStudentPageText(page);
+  const links = (page.links || []).map((link) => normalizeStudentResourceLink(link, archive, id)).filter(Boolean);
+  const resources = links.filter((link, index, list) => list.findIndex((item) => item.href === link.href && item.label === link.label) === index);
+  updateDocumentMeta(`${current.title || page.title} - 學生專區`, current.summary || bodyLines.slice(0, 2).join(" "));
+  $("[data-student-side-nav]").innerHTML = (siteData.studentResources || []).map((item) => {
+    const href = item.href?.includes("official-detail.html") ? item.href.replace("official-detail.html", "student-resource.html") : item.href;
+    const active = String(item.href || "").includes(`id=${id}`) || (item.children || []).some((child) => String(child.href || "").includes(`id=${id}`));
+    return `<a class="${active ? "is-active" : ""}" ${active ? `aria-current="page"` : ""} href="${esc(href)}" target="${linkTarget(href)}" rel="noreferrer">${esc(item.title)}</a>`;
+  }).join("");
+  $("[data-student-detail]").innerHTML = `
+    <section class="content-hero student-resource-hero">
+      <div>
+        <nav class="breadcrumb dark" aria-label="麵包屑"><a href="./">首頁</a><a href="./page.html?slug=student-zone">學生專區</a><span>${esc(current.title || page.title)}</span></nav>
+        <p class="section-kicker">${esc(current.category || "Student Resource")}</p>
+        <h1>${esc(current.title || page.title)}</h1>
+        <p class="page-lead">${esc(current.summary || "此頁已整理舊系網資料，改以新網站版型呈現；正式校務系統與文件下載連結會保留外部入口。")}</p>
+      </div>
+      <div class="content-hero-mark" aria-hidden="true"><img src="${esc(siteData.identity.logo)}" alt=""><small>Student</small></div>
+    </section>
+    ${page.images?.length ? `<figure class="page-image student-resource-image"><img src="${esc(page.images[0].src)}" alt="${esc(page.images[0].alt || page.title)}"></figure>` : ""}
+    <section class="content-section student-resource-body">
+      <h2>內容整理</h2>
+      ${bodyLines.length ? `<div class="student-detail-lines">${bodyLines.map((line) => `<p>${esc(line)}</p>`).join("")}</div>` : `<p>此項目主要提供文件或系統入口，請使用下方相關入口查看。</p>`}
+    </section>
+    ${resources.length ? `<section class="content-section related-links student-resource-links"><h2>相關入口與文件</h2><div class="related-link-grid">${resources.map((link) => `<a href="${esc(link.href)}" target="${link.external ? "_blank" : "_self"}" rel="noreferrer">${esc(link.label)}</a>`).join("")}</div></section>` : ""}
+    ${(page.images || []).length > 1 ? `<section class="content-section"><h2>圖片資料</h2><div class="image-resource-grid">${(page.images || []).slice(1).map((image) => `<figure><img src="${esc(image.src)}" alt="${esc(image.alt || "頁面圖片")}"><figcaption>${esc(image.alt || "頁面圖片")}</figcaption></figure>`).join("")}</div></section>` : ""}
+  `;
+  enhanceRenderedMediaAndLinks($("[data-student-detail]"));
+  enhanceRenderedMediaAndLinks($("[data-student-side-nav]"));
+}
+
+function renderSpecialProgramEnhancement(slug) {
+  const program = (siteData.specialPrograms || []).find((item) => item.slug === slug);
+  if (!program) return "";
+  const links = (program.links || []).filter((link) => !isLegacyImportEntry(link));
+  return `
+    <section class="page-feature-block special-program-block">
+      <p class="section-kicker">Program Resources</p>
+      <h2>${esc(program.title)}資源總覽</h2>
+      <p>${esc(program.summary)}</p>
+      ${links.length ? `<div class="program-link-grid">
+        ${links.map((link) => `
+          <a class="program-link-card" href="${esc(link.href)}" target="_blank" rel="noreferrer">
+            <span>${esc(link.type || "Link")}</span>
+            <strong>${esc(link.title)}</strong>
+            <small>${esc(link.href)}</small>
+          </a>
+        `).join("")}
+      </div>` : `<p class="local-note">此頁已整理為新網站內部內容；舊站外部連結已移除。</p>`}
+    </section>
+  `;
+}
+
+function renderFacultyPage() {
+  $("[data-faculty-list]").innerHTML = siteData.faculty.map(renderFacultyCard).join("");
+  $("[data-staff-list]").innerHTML = siteData.staff.map((person) => `<article class="staff-card"><h3>${esc(person.name)}</h3><p>${esc(person.role)}</p><p>${esc(person.email)}</p><p>${esc(person.phone)}</p><ul>${person.duties.map((duty) => `<li>${esc(duty)}</li>`).join("")}</ul></article>`).join("");
+}
+
+function renderFacultyCard(person) {
+  const index = siteData.faculty.indexOf(person);
+  const detailHref = person.detailHref || `./faculty-detail.html?id=${index}`;
+  return `<article class="faculty-card">
+    <img src="${esc(person.photo)}" alt="${esc(person.name)}">
+    <div>
+      <span class="faculty-number">${String(index + 1).padStart(2, "0")}</span>
+      <p class="role">${esc(person.role)}</p>
+      <h3>${esc(person.name)}</h3>
+      <p>${esc(person.enName)}</p>
+      <p><a href="mailto:${esc(person.email)}">${esc(person.email)}</a></p>
+      <p>${esc(person.phone)}</p>
+      ${person.expertise ? `<p class="faculty-detail"><strong>研究領域</strong>${esc(person.expertise)}</p>` : ""}
+      ${person.education ? `<p class="faculty-detail"><strong>學歷</strong>${esc(person.education)}</p>` : ""}
+      ${person.office ? `<p class="faculty-detail"><strong>研究室</strong>${esc(person.office)}</p>` : ""}
+      ${person.lab ? `<p class="faculty-detail"><strong>實驗室</strong>${esc(person.lab)}</p>` : ""}
+      ${person.courses?.length ? `<div class="tag-cloud">${person.courses.map((course) => `<span>${esc(course)}</span>`).join("")}</div>` : ""}
+      <p><a href="${esc(detailHref)}">完整師資介紹</a></p>
+    </div>
+  </article>`;
+}
+
+function renderFacultyDetail() {
+  const id = Number(new URLSearchParams(location.search).get("id") || 0);
+  const person = siteData.faculty[id] || siteData.faculty[0];
+  if (!person) return;
+  updateDocumentMeta(`${person.name}｜師資介紹`, `${person.role} ${person.enName || ""}，研究領域：${person.expertise || "人工智慧應用工程"}`);
+  updatePersonSchema(person);
+  const peers = siteData.faculty.map((item, index) => {
+    const active = item === person;
+    return `<a class="faculty-name-link ${active ? "is-active" : ""}" ${active ? `aria-current="page"` : ""} href="./faculty-detail.html?id=${index}"><span class="person-name">${esc(item.name)}</span></a>`;
+  }).join("");
+  const expertiseTags = (person.expertise || "").split(/[、，,\/]/).map((item) => item.trim()).filter(Boolean).slice(0, 10);
+  const infoCards = [
+    person.expertise ? { title: "研究領域", body: person.expertise, type: "expertise" } : null,
+    person.education ? { title: "學歷", body: person.education, type: "education" } : null,
+    person.office ? { title: "研究室 / 辦公室", body: person.office, type: "office" } : null,
+    person.lab ? { title: "實驗室", body: person.lab, type: "lab" } : null
+  ].filter(Boolean);
+  $("[data-faculty-side]").innerHTML = peers;
+  $("[data-faculty-detail]").innerHTML = `
+    <section class="faculty-profile-hero">
+      <div class="faculty-photo-frame">
+        <img src="${esc(person.photo)}" alt="${esc(person.name)}">
+      </div>
+      <div class="faculty-hero-copy">
+        <nav class="breadcrumb dark" aria-label="麵包屑"><a href="./">首頁</a><a href="./faculty.html">師資陣容</a><span class="person-name">${esc(person.name)}</span></nav>
+        <p class="section-kicker">Faculty Profile</p>
+        <h1 class="person-name">${esc(person.name)}</h1>
+        <p class="faculty-profile-role">${esc(person.role)}</p>
+        <p class="faculty-en-name">${esc(person.enName || "")}</p>
+        ${expertiseTags.length ? `<div class="faculty-keywords">${expertiseTags.map((tag) => `<span>${esc(tag)}</span>`).join("")}</div>` : ""}
+        <div class="faculty-contact-row">
+          ${person.email ? `<a href="mailto:${esc(person.email)}">${esc(person.email)}</a>` : ""}
+          ${person.phone ? `<span>${esc(person.phone)}</span>` : ""}
+          ${person.office ? `<span>${esc(person.office)}</span>` : ""}
+        </div>
+      </div>
+    </section>
+    <section class="faculty-profile-grid">
+      ${infoCards.map((card, index) => `<article class="faculty-info-card ${esc(card.type)}"><span class="profile-card-index">${String(index + 1).padStart(2, "0")}</span><h2>${esc(card.title)}</h2><p>${esc(card.body)}</p></article>`).join("")}
+      ${person.courses?.length ? `<article class="faculty-info-card courses"><span class="profile-card-index">${String(infoCards.length + 1).padStart(2, "0")}</span><h2>開授課程</h2><div class="tag-cloud">${person.courses.map((course) => `<span>${esc(course)}</span>`).join("")}</div></article>` : ""}
+    </section>`;
+}
+
+function renderAwardsCarousel() {
+  const host = $("[data-awards-carousel]");
+  if (!host) return;
+  const slides = siteData.awardSlides || siteData.news.filter((item) => item.category === "獲獎公告");
+  host.innerHTML = `
+    <div class="award-viewport" aria-live="polite">
+      ${slides.map((item, index) => `
+        <article id="award-slide-${index}" class="award-slide ${index === 0 ? "is-active" : ""}" role="group" aria-roledescription="slide" aria-label="${index + 1} / ${slides.length}：${esc(item.title)}" aria-hidden="${index === 0 ? "false" : "true"}">
+          <img src="${esc(item.image || siteData.identity.defaultImage)}" alt="${esc(item.title)}">
+        </article>
+      `).join("")}
+    </div>
+    <div class="award-controls">
+      <button type="button" data-award-prev aria-label="上一則獲獎資訊">‹</button>
+      <div class="award-dots" aria-label="獲獎輪播分頁">${slides.map((item, index) => `<button type="button" class="${index === 0 ? "is-active" : ""}" data-award-dot="${index}" aria-label="切換獲獎資訊 ${index + 1}：${esc(item.title)}" aria-controls="award-slide-${index}" ${index === 0 ? `aria-current="true"` : ""}></button>`).join("")}</div>
+      <button type="button" data-award-next aria-label="下一則獲獎資訊">›</button>
+    </div>`;
+  startAwards();
+}
+
+function renderAwardsPage() {
+  const list = $("[data-awards-page]");
+  const awards = siteData.awardSlides || siteData.news.filter((item) => item.category === "獲獎公告");
+  list.innerHTML = awards.map((item, index) => `
+    <article class="award-card">
+      <figure><img src="${esc(item.image || siteData.identity.defaultImage)}" alt="${esc(item.title)}"></figure>
+      <div>
+        <span class="award-index">${String(index + 1).padStart(2, "0")}</span>
+        <time>${esc(item.date)}</time>
+        <h2>${esc(item.title)}</h2>
+        <p>${esc(item.summary || item.title)}</p>
+        <div class="award-meta"><span>Achievement</span><span>NCUT AI</span></div>
+        ${item.href ? `<a href="${esc(item.href)}" target="${linkTarget(item.href)}">查看資料</a>` : ""}
+      </div>
+    </article>`).join("");
+  renderAwardsCarousel();
+}
+
+function renderCampusLinks() {
+  const host = $("[data-campus-links]");
+  if (!host) return;
+  host.innerHTML = (siteData.campusLinks || []).map((link, index) => `
+    <a class="campus-link-card" href="${esc(link.href)}" target="_blank" rel="noreferrer">
+      <span class="campus-link-index">${String(index + 1).padStart(2, "0")}</span>
+      <span>校內連結</span>
+      <strong>${esc(link.label)}</strong>
+      <small>${esc(link.href)}</small>
+    </a>`).join("");
+}
+
+function renderOriginalHome() {
+  const host = $("[data-original-home]");
+  if (!host) return;
+  const original = siteData.originalHome || {};
+  host.innerHTML = `
+    <section class="original-block">
+      <p class="section-kicker">Teaching Features</p>
+      <h2>原系網教學特色</h2>
+      <div class="story-grid">${(original.teachingFeatures || []).map((item) => `<article><h3>${esc(item)}</h3><p>已整理進首頁主視覺輪播與系所介紹內容。</p></article>`).join("")}</div>
+    </section>
+    <section class="original-block">
+      <p class="section-kicker">Campus Links</p>
+      <h2>校內連結</h2>
+      <div class="campus-link-grid">${(original.campusLinks || siteData.campusLinks || []).map((link) => `<a class="campus-link-card" href="${esc(link.href)}" target="_blank" rel="noreferrer"><span>外部資源</span><strong>${esc(link.label)}</strong><small>${esc(link.href)}</small></a>`).join("")}</div>
+    </section>
+    <section class="original-block">
+      <p class="section-kicker">Archive Pages</p>
+      <h2>系所頁面資料</h2>
+      <div class="archive-grid original-grid">${(original.archiveCards || []).map((page) => `<article class="archive-card"><p class="archive-source">本站資料頁</p><h2><a href="./official-detail.html?id=${page.id}">${esc(page.title)}</a></h2><p>${esc(page.summary)}</p></article>`).join("")}</div>
+    </section>`;
+}
+
+async function renderOfficialArchive() {
+  const archive = await fetch("./data/official-pages.json", { cache: "no-store" }).then((r) => r.json());
+  const meta = $("[data-archive-meta]");
+  const list = $("[data-official-list]");
+  const search = $("[data-archive-search]");
+  const categories = $("[data-archive-categories]");
+  let activeCategory = "全部資料";
+  if (search) search.value = initialSearchQuery();
+  const categoryCounts = archive.pages.reduce((acc, page) => {
+    const category = officialCategory(page);
+    acc[category] = (acc[category] || 0) + 1;
+    return acc;
+  }, { "全部資料": archive.pages.length });
+  const categoryOrder = ["全部資料", "系所介紹", "師資與成員", "學生專區", "專班與招生", "公告消息", "教師專區", "聯絡與其他"];
+  if (categories) {
+    categories.innerHTML = categoryOrder.filter((name) => categoryCounts[name]).map((name) => `
+      <button type="button" class="${name === activeCategory ? "is-active" : ""}" data-archive-category="${esc(name)}" aria-pressed="${name === activeCategory ? "true" : "false"}">
+        <strong>${esc(name)}</strong><span>${categoryCounts[name]}</span>
+      </button>`).join("");
+    categories.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-archive-category]");
+      if (!button) return;
+      activeCategory = button.dataset.archiveCategory;
+      categories.querySelectorAll("button").forEach((item) => {
+        const isActive = item === button;
+        item.classList.toggle("is-active", isActive);
+        item.setAttribute("aria-pressed", String(isActive));
+      });
+      render();
+    });
+  }
+  const render = () => {
+    const query = (search?.value || "").trim().toLowerCase();
+    const pages = archive.pages.filter((page) => {
+      const haystack = `${page.title} ${page.url} ${(page.text || []).join(" ")}`.toLowerCase();
+      const categoryMatched = activeCategory === "全部資料" || officialCategory(page) === activeCategory;
+      return categoryMatched && (!query || haystack.includes(query));
+    });
+    list.innerHTML = pages.length ? pages.map((page, index) => {
+      const links = (page.links || []).map((link) => archiveLink(link, archive)).filter(Boolean);
+      const category = officialCategory(page);
+      return `
+        <article class="archive-card">
+          <div class="archive-card-head">
+            <span class="archive-number">${String(index + 1).padStart(2, "0")}</span>
+            <p class="archive-source">${esc(category)}</p>
+          </div>
+          <h2><a href="./official-detail.html?id=${page.id ?? archive.pages.indexOf(page)}">${esc(page.title)}</a></h2>
+          <p>${esc((page.text || []).slice(0, 9).join(" / "))}</p>
+          <div class="archive-card-meta"><span>本站資料頁</span><span>${links.length} 個連結</span><span>${page.images?.length || 0} 張圖片</span></div>
+          ${page.images?.length ? `<img src="${esc(page.images[0].src)}" alt="${esc(page.images[0].alt || page.title)}">` : ""}
+          <details>
+            <summary>查看頁面文字${links.length ? "與可用連結" : ""}</summary>
+            <div class="archive-text">${(page.text || []).slice(0, 80).map((line) => `<p>${esc(line)}</p>`).join("")}</div>
+            ${links.length ? `<ul>${links.slice(0, 30).map((link) => `<li><a href="${esc(link.href)}" target="${link.external ? "_blank" : "_self"}" rel="noreferrer">${esc(link.label || link.href)}</a></li>`).join("")}</ul>` : ""}
+          </details>
+        </article>
+      `;
+    }).join("") : renderEmptyState("找不到符合條件的官方資料", "請嘗試縮短關鍵字、切換分類，或回到全部資料瀏覽原系網匯入內容。", [
+      { label: "返回官方資訊庫", href: "./official.html", className: "text-link" },
+      { label: "查看最新消息", href: "./news.html", className: "text-link" }
+    ]);
+    meta.innerHTML = `<strong>${pages.length}</strong> / ${archive.pageCount} 頁符合「${esc(activeCategory)}」與搜尋條件。系所內容由本站資料頁承接，其他外部資源保留。資料更新時間：${esc(archive.generatedAt)}`;
+    enhanceRenderedMediaAndLinks(list);
+  };
+  search?.addEventListener("input", () => {
+    syncSearchQuery(search.value);
+    render();
+  });
+  render();
+}
+
+function officialCategory(page) {
+  const title = page.title || "";
+  const url = page.url || "";
+  const labelText = `${title} ${url}`;
+  if (/公告|mobileloadmod|消息|新聞/.test(labelText) || /Nbr=726/.test(url)) return "公告消息";
+  if (/教師專區/.test(title) || /412-1063-2410/.test(url)) return "教師專區";
+  if (/系主任|專任教師|行政人員|系所成員|師資介紹/.test(title) || /Nbr=730|r730|\/406-1063-/.test(url)) return "師資與成員";
+  if (/學分計畫|課程地圖|課程綱要|實務專題|歷屆專題|專題影片|專題海報|畢業門檻|核心證照|校外實習|實習|課程抵免|系學會|系友會|學生專區/.test(title)) return "學生專區";
+  if (/產學攜手|海外青年|海青|產攜|招生/.test(title)) return "專班與招生";
+  if (/系所介紹|系所沿革|教學宗旨|發展方向|課程與就業|專業實驗室|本校校務發展/.test(title)) return "系所介紹";
+  if (/聯絡/.test(title)) return "聯絡與其他";
+  return "聯絡與其他";
+}
+
+async function renderResources() {
+  const archive = await fetch("./data/official-pages.json", { cache: "no-store" }).then((r) => r.json());
+  const search = $("[data-resource-search]");
+  const list = $("[data-resource-list]");
+  const meta = $("[data-resource-meta]");
+  if (search) search.value = initialSearchQuery();
+  const render = () => {
+    const query = (search?.value || "").trim().toLowerCase();
+    const resources = archive.resources.filter((item) => {
+      const haystack = `${item.label} ${item.href}`.toLowerCase();
+      return !isOriginalDeptLink(item.href) && (!query || haystack.includes(query));
+    });
+    meta.innerHTML = `<strong>${resources.length}</strong> / ${archive.resourceCount} 個外部與文件資源符合搜尋。系所內容請改由官方資訊庫本站資料頁瀏覽。資料更新時間：${esc(archive.generatedAt)}`;
+    list.innerHTML = resources.length ? resources.map((item) => `
+      <a class="resource-item" href="${esc(item.href)}" target="_blank" rel="noreferrer">
+        <span>${esc(resourceType(item.href))}</span>
+        <strong>${esc(item.label || item.href)}</strong>
+        <small>${esc(item.href)}</small>
+      </a>`).join("") : renderEmptyState("找不到符合條件的文件或資源", "請改用其他關鍵字搜尋，或返回官方資訊庫瀏覽完整資料索引。", [
+      { label: "清除搜尋", href: "./resources.html", className: "text-link" },
+      { label: "官方資訊庫", href: "./official.html", className: "text-link" }
+    ]);
+    enhanceRenderedMediaAndLinks(list);
+  };
+  search?.addEventListener("input", () => {
+    syncSearchQuery(search.value);
+    render();
+  });
+  render();
+}
+
+function resourceType(href) {
+  const lower = href.toLowerCase();
+  if (lower.includes(".pdf")) return "PDF";
+  if (lower.includes(".doc")) return "DOC";
+  if (lower.includes(".xls")) return "XLS";
+  if (lower.startsWith("mailto:")) return "Email";
+  if (lower.includes("downloadfile")) return "Download";
+  return "Link";
+}
+
+async function renderOfficialDetail() {
+  const archive = await fetch("./data/official-pages.json", { cache: "no-store" }).then((r) => r.json());
+  const id = Number(new URLSearchParams(location.search).get("id") || 0);
+  const page = archive.pages[id] || archive.pages[0];
+  const visibleLinks = (page.links || []).map((link) => archiveLink(link, archive)).filter(Boolean);
+  updateDocumentMeta(`${page.title} - 官方資訊庫`, (page.text || []).slice(0, 3).join(" "));
+  $("[data-official-detail]").innerHTML = `
+    <nav class="breadcrumb" aria-label="麵包屑"><a href="./">首頁</a><a href="./official.html">官方資訊庫</a><span>${esc(page.title)}</span></nav>
+    <p class="section-kicker">Official Archive</p>
+    <h1>${esc(page.title)}</h1>
+    <p class="local-note">本頁內容已整理為新網站資料頁；校外與校內系統連結保留外部入口。</p>
+    ${page.images?.length ? `<figure class="official-hero-image"><img src="${esc(page.images[0].src)}" alt="${esc(page.images[0].alt || page.title)}"></figure>` : ""}
+    <section class="content-section official-text-section">
+      <h2>頁面內容</h2>
+      <div class="official-text-stack">${(page.text || []).map((line) => `<p>${esc(line)}</p>`).join("")}</div>
+    </section>
+    ${visibleLinks.length ? `<section class="content-section related-links"><h2>相關入口</h2><div class="related-link-grid">${visibleLinks.map((link) => `<a href="${esc(link.href)}" target="${link.external ? "_blank" : "_self"}" rel="noreferrer">${esc(link.label || link.href)}</a>`).join("")}</div></section>` : ""}
+    ${(page.images || []).length > 1 ? `<section class="content-section"><h2>圖片資源</h2><div class="image-resource-grid">${(page.images || []).slice(1).map((image) => `<figure><img src="${esc(image.src)}" alt="${esc(image.alt || "頁面圖片")}"><figcaption>${esc(image.alt || "頁面圖片")}</figcaption></figure>`).join("")}</div></section>` : ""}
+  `;
+  enhanceRenderedMediaAndLinks($("[data-official-detail]"));
+}
+
+function startHero() {
+  const slides = $$(".hero-slide");
+  const dots = $$("[data-dot]");
+  const current = $("[data-hero-current]");
+  const total = $("[data-hero-total]");
+  const progress = $("[data-hero-progress]");
+  const pauseButton = $("[data-hero-pause]");
+  const hoverTargets = [$("[data-hero]"), $(".slider-controls"), $("[data-metrics]")].filter(Boolean);
+  let userPaused = false;
+  let interactionPaused = false;
+  if (total) total.textContent = String(slides.length).padStart(2, "0");
+  const show = (index) => {
+    heroIndex = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const active = i === heroIndex;
+      slide.classList.toggle("is-active", active);
+      slide.setAttribute("aria-hidden", String(!active));
+    });
+    dots.forEach((dot, i) => {
+      const active = i === heroIndex;
+      dot.classList.toggle("is-active", active);
+      if (active) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+    if (current) current.textContent = String(heroIndex + 1).padStart(2, "0");
+  };
+  const scheduleNext = () => {
+    clearTimeout(heroTimer);
+    if (userPaused || interactionPaused) {
+      if (progress) progress.style.animationPlayState = "paused";
+      return;
+    }
+    const activeSlide = slides[heroIndex];
+    const delay = activeSlide?.querySelector(".hero-video") ? 60000 : 6500;
+    if (progress) {
+      progress.style.animation = "none";
+      progress.offsetHeight;
+      progress.style.setProperty("--hero-duration", `${delay}ms`);
+      progress.style.animation = "heroProgress var(--hero-duration) linear forwards";
+    }
+    heroTimer = setTimeout(() => {
+      show(heroIndex + 1);
+      scheduleNext();
+    }, delay);
+  };
+  const stop = () => {
+    clearTimeout(heroTimer);
+    if (progress) progress.style.animationPlayState = "paused";
+  };
+  const resume = () => {
+    if (progress) progress.style.animationPlayState = "running";
+    scheduleNext();
+  };
+  const updatePauseButton = () => {
+    if (!pauseButton) return;
+    pauseButton.setAttribute("aria-pressed", String(userPaused));
+    pauseButton.setAttribute("aria-label", userPaused ? "播放主視覺輪播" : "暫停主視覺輪播");
+    pauseButton.textContent = userPaused ? "▶" : "Ⅱ";
+  };
+  const restart = () => { scheduleNext(); };
+  $("[data-prev]")?.addEventListener("click", () => { show(heroIndex - 1); restart(); });
+  $("[data-next]")?.addEventListener("click", () => { show(heroIndex + 1); restart(); });
+  dots.forEach((dot) => dot.addEventListener("click", () => { show(Number(dot.dataset.dot)); restart(); }));
+  pauseButton?.addEventListener("click", () => {
+    userPaused = !userPaused;
+    updatePauseButton();
+    if (userPaused) stop();
+    else resume();
+  });
+  hoverTargets.forEach((target) => {
+    target.addEventListener("mouseenter", () => { interactionPaused = true; stop(); });
+    target.addEventListener("mouseleave", () => { interactionPaused = false; if (!userPaused) resume(); });
+    target.addEventListener("focusin", () => { interactionPaused = true; stop(); });
+    target.addEventListener("focusout", (event) => {
+      if (event.relatedTarget && target.contains(event.relatedTarget)) return;
+      interactionPaused = false;
+      if (!userPaused) resume();
+    });
+  });
+  show(heroIndex);
+  updatePauseButton();
+  scheduleNext();
+}
+
+function startAwards() {
+  const slides = $$(".award-slide");
+  const dots = $$("[data-award-dot]");
+  const carousel = $("[data-awards-carousel]");
+  let awardInteractionPaused = false;
+  if (!slides.length) return;
+  const show = (index) => {
+    awardIndex = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const active = i === awardIndex;
+      slide.classList.toggle("is-active", active);
+      slide.setAttribute("aria-hidden", String(!active));
+    });
+    dots.forEach((dot, i) => {
+      const active = i === awardIndex;
+      dot.classList.toggle("is-active", active);
+      if (active) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+  };
+  const stop = () => { clearInterval(awardTimer); };
+  const restart = () => {
+    clearInterval(awardTimer);
+    if (awardInteractionPaused) return;
+    awardTimer = setInterval(() => show(awardIndex + 1), 5200);
+  };
+  $("[data-award-prev]")?.addEventListener("click", () => { show(awardIndex - 1); restart(); });
+  $("[data-award-next]")?.addEventListener("click", () => { show(awardIndex + 1); restart(); });
+  dots.forEach((dot) => dot.addEventListener("click", () => { show(Number(dot.dataset.awardDot)); restart(); }));
+  carousel?.addEventListener("mouseenter", () => { awardInteractionPaused = true; stop(); });
+  carousel?.addEventListener("mouseleave", () => { awardInteractionPaused = false; restart(); });
+  carousel?.addEventListener("focusin", () => { awardInteractionPaused = true; stop(); });
+  carousel?.addEventListener("focusout", (event) => {
+    if (event.relatedTarget && carousel.contains(event.relatedTarget)) return;
+    awardInteractionPaused = false;
+    restart();
+  });
+  show(awardIndex);
+  restart();
+}
+
+function setupInteractions() {
+  const header = $("[data-header]");
+  const menu = $(".menu-toggle");
+  const nav = $(".site-nav");
+  const topButton = $("[data-top]");
+  const progress = document.createElement("div");
+  progress.className = "scroll-progress";
+  progress.setAttribute("aria-hidden", "true");
+  document.body.prepend(progress);
+  if (!document.querySelector(".ambient-bg")) {
+    document.body.insertAdjacentHTML("afterbegin", `
+      <div class="ambient-bg" aria-hidden="true">
+        <div class="ambient-circuit ambient-circuit-a"></div>
+        <div class="ambient-circuit ambient-circuit-b"></div>
+        <div class="ambient-duel">
+          <span class="ambient-duel-letter ambient-duel-a">A</span>
+          <span class="ambient-duel-letter ambient-duel-i">I</span>
+          <span class="ambient-duel-impact"></span>
+          <img class="ambient-duel-logo" src="./assets/ai-official-icon.png" alt="">
+        </div>
+        <div class="ambient-ring"></div>
+        <div class="ambient-mark"></div>
+      </div>
+    `);
+  }
+  let duelFinalTimer;
+  const updateProgress = () => {
+    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const ratio = Math.min(1, Math.max(0, window.scrollY / max));
+    const isAtBottom = ratio > 0.985;
+    const pastHero = window.scrollY > window.innerHeight * 0.72;
+    const collision = isAtBottom ? 1 : Math.abs(Math.sin(ratio * Math.PI * 8));
+    const settle = Math.min(1, Math.max(0, (ratio - 0.82) / 0.18));
+    const spread = (1 - collision) * (1 - settle);
+    const finalPulse = ratio > 0.88 ? Math.sin(Math.min(1, (ratio - 0.88) / 0.12) * Math.PI) : 0;
+    if (isAtBottom && !document.body.classList.contains("is-duel-final")) {
+      document.body.classList.add("is-duel-final");
+      window.clearTimeout(duelFinalTimer);
+      duelFinalTimer = window.setTimeout(() => {
+        document.body.classList.remove("is-duel-final");
+      }, 1350);
+    } else if (ratio < 0.94) {
+      document.body.classList.remove("is-duel-final");
+      window.clearTimeout(duelFinalTimer);
+    }
+    progress.style.transform = `scaleX(${ratio})`;
+    document.documentElement.style.setProperty("--scroll-ratio", ratio.toFixed(4));
+    document.documentElement.style.setProperty("--scroll-px", `${window.scrollY.toFixed(0)}px`);
+    document.documentElement.style.setProperty("--duel-collision", collision.toFixed(4));
+    document.documentElement.style.setProperty("--duel-spread", spread.toFixed(4));
+    document.documentElement.style.setProperty("--duel-final", finalPulse.toFixed(4));
+    document.body.classList.toggle("is-past-hero", pastHero);
+  };
+  let revealElements = [];
+  const revealVisible = () => {
+    const threshold = window.innerHeight * 0.92;
+    revealElements.forEach((el) => {
+      if (!el.classList.contains("reveal") && el.getBoundingClientRect().top < threshold) {
+        el.classList.add("reveal");
+      }
+    });
+  };
+  window.addEventListener("scroll", () => {
+    header?.classList.toggle("is-scrolled", window.scrollY > 20);
+    $("[data-top]")?.classList.toggle("is-visible", window.scrollY > 300);
+    updateProgress();
+    revealVisible();
+  });
+  updateProgress();
+  let lastScrollY = -1;
+  window.setInterval(() => {
+    if (window.scrollY === lastScrollY) return;
+    lastScrollY = window.scrollY;
+    header?.classList.toggle("is-scrolled", window.scrollY > 20);
+    $("[data-top]")?.classList.toggle("is-visible", window.scrollY > 300);
+    updateProgress();
+    revealVisible();
+  }, 120);
+  if (menu) menu.setAttribute("aria-label", "開啟主選單");
+  if (topButton && !topButton.hasAttribute("aria-label")) topButton.setAttribute("aria-label", "返回頁面頂端");
+  const setMenuOpen = (open) => {
+    header?.classList.toggle("is-open", open);
+    menu?.setAttribute("aria-expanded", String(open));
+    menu?.setAttribute("aria-label", open ? "關閉主選單" : "開啟主選單");
+    document.body.classList.toggle("nav-open", open);
+  };
+  menu?.addEventListener("click", () => {
+    setMenuOpen(!header?.classList.contains("is-open"));
+  });
+  $$(".site-nav a").forEach((link) => {
+    link.addEventListener("click", () => {
+      setMenuOpen(false);
+    });
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    const wasOpen = header?.classList.contains("is-open");
+    setMenuOpen(false);
+    if (wasOpen) menu?.focus();
+  });
+  document.addEventListener("click", (event) => {
+    if (!header?.classList.contains("is-open")) return;
+    if (header.contains(event.target)) return;
+    setMenuOpen(false);
+  });
+  topButton?.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-category]");
+    if (!button) return;
+    activeCategory = button.dataset.category;
+    activeNewsPage = 1;
+    renderNewsWidgets();
+  });
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-news-page]");
+    if (!button) return;
+    activeNewsPage = Number(button.dataset.newsPage);
+    renderNewsWidgets();
+  });
+  const revealTargets = [
+    ".section",
+    ".feature-band",
+    ".media-band",
+    ".directory-hero",
+    ".page-main",
+    ".section-head",
+    ".story-grid article",
+    ".module-card",
+    ".faculty-card",
+    ".staff-card",
+    ".news-list",
+    ".news-list a",
+    ".news-list article",
+    ".video-grid iframe",
+    ".content-section",
+    ".page-feature-block",
+    ".archive-card",
+    ".resource-item",
+    ".campus-link-card",
+    ".award-card",
+    ".resource-hub-group",
+    ".career-track",
+    ".curriculum-card",
+    ".lab-profile-card",
+    ".program-link-card",
+    ".faculty-profile-hero",
+    ".faculty-profile-grid article"
+  ].join(",");
+  const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("reveal");
+      observer.unobserve(entry.target);
+    }
+  }), { threshold: 0.12 });
+  revealElements = $$(revealTargets);
+  revealElements.forEach((el, index) => {
+    el.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 70}ms`);
+    observer.observe(el);
+  });
+  enhanceRenderedMediaAndLinks();
+  requestAnimationFrame(revealVisible);
+}
+
+function enhanceRenderedMediaAndLinks(root = document) {
+  $$("a[href]", root).forEach((link) => {
+    const href = link.getAttribute("href") || "";
+    if (!isExternalHref(href)) return;
+    link.setAttribute("target", "_blank");
+    const rel = new Set((link.getAttribute("rel") || "").split(/\s+/).filter(Boolean));
+    rel.add("noopener");
+    rel.add("noreferrer");
+    link.setAttribute("rel", [...rel].join(" "));
+  });
+
+  $$("iframe", root).forEach((frame) => {
+    if (!frame.classList.contains("hero-video") && !frame.hasAttribute("loading")) {
+      frame.setAttribute("loading", "lazy");
+    }
+    if (!frame.hasAttribute("referrerpolicy")) {
+      frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+    }
+    if (!frame.hasAttribute("title")) {
+      frame.setAttribute("title", "嵌入式影音內容");
+    }
+    if (!frame.classList.contains("hero-video") && !frame.hasAttribute("allow")) {
+      frame.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share");
+    }
+  });
+
+  $$("img", root).forEach((image) => {
+    image.setAttribute("decoding", "async");
+    const shouldLoadImmediately = image.closest(".brand, .site-loader, .content-hero-mark, .faculty-photo-frame, .award-slide.is-active");
+    if (!image.hasAttribute("alt")) {
+      image.setAttribute("alt", "");
+    }
+    if (!image.getAttribute("alt") && image.closest(".brand, .site-footer")) {
+      image.setAttribute("alt", `${siteData?.identity?.title || "人工智慧應用工程系"} Logo`);
+    }
+    if (!image.hasAttribute("width") || !image.hasAttribute("height")) {
+      if (image.closest(".brand, .site-loader, .content-hero-mark, .site-footer")) {
+        image.setAttribute("width", "512");
+        image.setAttribute("height", "512");
+      } else if (image.closest(".faculty-card")) {
+        image.setAttribute("width", "184");
+        image.setAttribute("height", "184");
+      } else if (image.closest(".faculty-photo-frame")) {
+        image.setAttribute("width", "360");
+        image.setAttribute("height", "460");
+      } else if (image.closest(".award-slide, .award-card, .archive-card, .official-hero-image, .page-image, .student-resource-image")) {
+        image.setAttribute("width", "1200");
+        image.setAttribute("height", "630");
+      }
+    }
+    if (!shouldLoadImmediately && !image.hasAttribute("loading")) {
+      image.setAttribute("loading", "lazy");
+    }
+    if (shouldLoadImmediately) {
+      image.setAttribute("fetchpriority", "high");
+      if (image.hasAttribute("loading")) image.removeAttribute("loading");
+    } else if (!image.hasAttribute("fetchpriority")) {
+      image.setAttribute("fetchpriority", "low");
+    }
+    if (image.dataset.fallbackReady) return;
+    image.dataset.fallbackReady = "true";
+    image.addEventListener("error", () => {
+      if (image.dataset.fallbackApplied) return;
+      image.dataset.fallbackApplied = "true";
+      image.classList.add("image-fallback");
+      if (!image.getAttribute("alt")) {
+        image.setAttribute("alt", "圖片暫時無法載入");
+      }
+      image.src = siteData?.identity?.logo || "./assets/ai-official-icon.png";
+    });
+  });
+  updateBreadcrumbSchema();
+}
+
+loadSite().catch(renderSiteError);
+

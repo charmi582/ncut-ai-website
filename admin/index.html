@@ -1,0 +1,169 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>人工智慧應用工程系｜後台管理</title>
+  <link rel="stylesheet" href="./admin.css?v=20260602-ai-duel-blue2">
+</head>
+<body>
+  <main class="admin-shell">
+    <aside class="admin-side">
+      <div class="admin-brand">
+        <span>AI</span>
+        <div>
+          <h1>AI 系網後台</h1>
+          <p>內容維護與上稿工作台</p>
+        </div>
+      </div>
+      <nav class="admin-nav" aria-label="後台管理選單">
+        <button type="button" class="is-active" data-admin-target="overview">總覽</button>
+        <button type="button" data-admin-target="assistant">AI 助理</button>
+        <button type="button" data-admin-target="hero">主視覺</button>
+        <button type="button" data-admin-target="news">最新消息</button>
+        <button type="button" data-admin-target="faculty">師資人員</button>
+        <button type="button" data-admin-target="pages">內容頁面</button>
+        <button type="button" data-admin-target="students">學生專區</button>
+        <button type="button" data-admin-target="advanced">進階 JSON</button>
+      </nav>
+      <div class="admin-actions">
+        <a href="../" target="_blank" rel="noreferrer">開啟前台</a>
+        <button type="button" data-save>儲存全部變更</button>
+      </div>
+      <p class="status" data-status></p>
+    </aside>
+
+    <section class="admin-main">
+      <form class="login" data-login>
+        <p class="eyebrow">Secure Access</p>
+        <h2>登入後台</h2>
+        <p>預設密碼為 <strong>ncutai</strong>。正式上線時請在伺服器環境變數設定 <code>NCUT_ADMIN_PASSWORD</code>。</p>
+        <input type="password" name="password" placeholder="請輸入後台密碼" autocomplete="current-password">
+        <button type="submit">登入</button>
+      </form>
+
+      <div class="editor hidden" data-editor>
+        <header class="admin-topbar">
+          <div>
+            <p class="eyebrow">NCUT AI CMS</p>
+            <h2>系網內容管理中心</h2>
+          </div>
+          <label class="admin-search">快速搜尋
+            <input type="search" data-admin-search placeholder="搜尋公告、教師、頁面或欄位">
+          </label>
+        </header>
+
+        <section class="dashboard-panel" data-admin-panel="overview">
+          <div class="dashboard-head">
+            <div>
+              <p class="eyebrow">Overview</p>
+              <h2>內容狀態總覽</h2>
+            </div>
+            <p>這裡顯示目前網站主要資料量，方便系辦確認主視覺、公告、師資與學生資源是否完整。</p>
+          </div>
+          <div class="stat-grid" data-admin-overview></div>
+        </section>
+
+        <section class="panel assistant-panel" data-admin-panel="assistant">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">AI Assistant Workspace</p>
+              <h2>AI 上稿助理</h2>
+            </div>
+            <span>可交給 Codex 或未來串接 OpenAI API</span>
+          </div>
+          <div class="assistant-grid">
+            <div class="assistant-card">
+              <h3>把資料整理成可上稿格式</h3>
+              <p>貼上公告、師資資料、圖片網址或 PDF 連結，系統會產生一段清楚的代理人指令，方便後續自動整理成網站資料。</p>
+              <label>任務類型
+                <select data-assistant-type>
+                  <option value="新增公告">新增公告</option>
+                  <option value="新增師資">新增師資</option>
+                  <option value="新增主視覺">新增主視覺</option>
+                  <option value="新增學生資源">新增學生資源</option>
+                  <option value="修改頁面內容">修改頁面內容</option>
+                </select>
+              </label>
+              <label>想新增或修改的內容
+                <textarea data-assistant-input placeholder="請貼上公告文字、教師資料、圖片連結、PDF 連結或想修改的描述"></textarea>
+              </label>
+              <button class="add" type="button" data-build-prompt>產生代理人指令</button>
+            </div>
+            <div class="assistant-card">
+              <h3>代理人指令</h3>
+              <textarea data-assistant-output spellcheck="false" placeholder="產生後可複製給 Codex，或未來接 API 自動執行。"></textarea>
+              <div class="assistant-actions">
+                <button type="button" data-copy-prompt>複製指令</button>
+                <button type="button" data-clear-prompt>清空</button>
+              </div>
+            </div>
+            <div class="assistant-note">
+              <strong>正式導入建議</strong>
+              <p>若要讓系辦人員登入自己的 AI 代理人，建議使用學校 SSO 驗證後，再由伺服器端串接 OpenAI API。前台不要直接放 API Key，所有寫入仍需經過權限檢查與備份。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" data-admin-panel="hero">
+          <div class="panel-head"><div><p class="eyebrow">Hero</p><h2>主視覺輪播</h2></div><span data-count-hero></span></div>
+          <p>可新增圖片或影片主視覺。若填入影片網址，前台輪播會停留較久。</p>
+          <button type="button" data-add-hero>新增主視覺</button>
+          <div data-hero-editor></div>
+        </section>
+
+        <section class="panel" data-admin-panel="hero">
+          <div class="panel-head"><div><p class="eyebrow">Home Blocks</p><h2>首頁數據與入口</h2></div></div>
+          <button type="button" data-add-metric>新增數據</button>
+          <button type="button" data-add-quick-link>新增快速入口</button>
+          <button type="button" data-add-home-feature>新增教學特色</button>
+          <button type="button" data-add-video>新增影音</button>
+          <div data-metrics-editor></div>
+          <div data-quick-links-editor></div>
+          <div data-home-features-editor></div>
+          <div data-videos-editor></div>
+        </section>
+
+        <section class="panel" data-admin-panel="news">
+          <div class="panel-head"><div><p class="eyebrow">News</p><h2>最新消息</h2></div><span data-count-news></span></div>
+          <button type="button" data-add-news>新增公告</button>
+          <div data-news-editor></div>
+        </section>
+
+        <section class="panel" data-admin-panel="faculty">
+          <div class="panel-head"><div><p class="eyebrow">Faculty</p><h2>師資人員</h2></div><span data-count-faculty></span></div>
+          <button type="button" data-add-faculty>新增教師</button>
+          <div data-faculty-editor></div>
+        </section>
+
+        <section class="panel" data-admin-panel="faculty">
+          <div class="panel-head"><div><p class="eyebrow">Staff</p><h2>行政人員</h2></div></div>
+          <button type="button" data-add-staff>新增行政人員</button>
+          <div data-staff-editor></div>
+        </section>
+
+        <section class="panel" data-admin-panel="pages">
+          <div class="panel-head"><div><p class="eyebrow">Pages</p><h2>內容頁面</h2></div><span data-count-pages></span></div>
+          <button type="button" data-add-page>新增內容頁面</button>
+          <div data-pages-editor></div>
+        </section>
+
+        <section class="panel" data-admin-panel="students">
+          <div class="panel-head"><div><p class="eyebrow">Students</p><h2>學生專區與專班資訊</h2></div></div>
+          <button type="button" data-add-student-resource>新增學生資源</button>
+          <button type="button" data-add-special-program>新增專班資訊</button>
+          <div data-student-resources-editor></div>
+          <div data-special-programs-editor></div>
+        </section>
+
+        <section class="panel" data-admin-panel="advanced">
+          <div class="panel-head"><div><p class="eyebrow">Advanced</p><h2>進階 JSON 編輯</h2></div></div>
+          <p>適合一次大量貼上資料。儲存前會先檢查 JSON 格式。</p>
+          <textarea data-json-editor spellcheck="false"></textarea>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script src="./admin.js?v=20260602-ai-duel-blue2"></script>
+</body>
+</html>

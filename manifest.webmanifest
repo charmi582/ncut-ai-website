@@ -1,0 +1,42 @@
+{
+  "name": "\u570b\u7acb\u52e4\u76ca\u79d1\u6280\u5927\u5b78\u4eba\u5de5\u667a\u6167\u61c9\u7528\u5de5\u7a0b\u7cfb",
+  "short_name": "NCUT AI",
+  "description": "\u570b\u7acb\u52e4\u76ca\u79d1\u6280\u5927\u5b78\u4eba\u5de5\u667a\u6167\u61c9\u7528\u5de5\u7a0b\u7cfb\u7db2\u7ad9\uff0c\u6574\u5408\u7cfb\u6240\u4ecb\u7d39\u3001\u5e2b\u8cc7\u9663\u5bb9\u3001\u62db\u751f\u8cc7\u8a0a\u3001\u5b78\u751f\u8cc7\u6e90\u3001\u6821\u5167\u9023\u7d50\u8207\u7372\u734e\u6210\u679c\u3002",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#071826",
+  "theme_color": "#071826",
+  "lang": "zh-Hant-TW",
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "最新消息",
+      "short_name": "消息",
+      "url": "./news.html",
+      "description": "查看人工智慧應用工程系最新公告"
+    },
+    {
+      "name": "師資陣容",
+      "short_name": "師資",
+      "url": "./faculty.html",
+      "description": "查看系上教師與研究專長"
+    },
+    {
+      "name": "獲獎資訊",
+      "short_name": "獲獎",
+      "url": "./awards.html",
+      "description": "查看學生與教師獲獎成果"
+    }
+  ],
+  "icons": [
+    {
+      "src": "./assets/ai-official-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

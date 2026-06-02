@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-80 -80 1380 1380" role="img" aria-labelledby="title desc">
+  <title id="title">NCUT AI Engineering mark</title>
+  <desc id="desc">AI department mark with gradient A, head silhouette, gear and atom symbol.</desc>
+  <defs>
+    <linearGradient id="aiGradient" x1="92" y1="760" x2="932" y2="230" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#97d8f3"/>
+      <stop offset=".45" stop-color="#28a8de"/>
+      <stop offset="1" stop-color="#05a197"/>
+    </linearGradient>
+    <linearGradient id="softBlue" x1="42" y1="750" x2="520" y2="230" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a8def4"/>
+      <stop offset="1" stop-color="#279fe0"/>
+    </linearGradient>
+  </defs>
+  <rect x="-80" y="-80" width="1380" height="1380" fill="#fff"/>
+  <path fill="url(#softBlue)" d="M0 850 454 174v674h-54V570L231 848Z"/>
+  <path fill="url(#aiGradient)" d="M529 308c40-18 86-31 137-35l19 48c31-3 64-3 96 0l21-45c44 5 86 16 124 32l-1 60c30 13 58 29 84 48l52-30c32 28 59 61 81 97l-29 52c14 28 25 58 31 89l58 20c7 42 7 85 0 127l-58 21c-6 31-17 61-32 89l30 53c-22 36-50 69-82 97l-55-31c-26 18-54 34-84 46l-1 61c-38 16-79 27-123 32l-26-55c-31 3-63 3-94 0l-26 55c-42-5-82-16-119-31l-2-135c42-5 87-5 131-3 73 3 105-16 125-62 11-26 9-48-9-72l-29-40c-8-12-2-27 12-32l64-23c29-10 46-38 43-68-10-112-110-201-230-221-125-21-248 33-312 132V345Z"/>
+  <path fill="#fff" d="M529 490c72-98 201-142 320-111 118 31 202 126 213 243 2 28-13 54-39 64l-65 24 31 42c24 34 27 66 11 104-26 60-73 85-157 83-45-2-92-2-136 4-72 9-119 34-139 78H529Z"/>
+  <g fill="none" stroke="#19a8d6" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="702" cy="604" rx="144" ry="40"/>
+    <ellipse cx="702" cy="604" rx="40" ry="144" transform="rotate(32 702 604)"/>
+    <ellipse cx="702" cy="604" rx="40" ry="144" transform="rotate(-32 702 604)"/>
+  </g>
+  <g fill="#16a7d4">
+    <circle cx="702" cy="604" r="22"/>
+    <circle cx="827" cy="577" r="24"/>
+    <circle cx="657" cy="497" r="23"/>
+    <circle cx="652" cy="719" r="23"/>
+  </g>
+  <rect x="682" y="760" width="40" height="88" fill="#16a7d4"/>
+</svg>

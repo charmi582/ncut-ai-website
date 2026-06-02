@@ -1,0 +1,188 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071826">
+  <meta property="og:site_name" content="國立勤益科技大學人工智慧應用工程系">
+  <meta property="og:locale" content="zh_TW">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="./assets/ai-official-icon.png">
+  <link rel="apple-touch-icon" href="./assets/ai-official-icon.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="preconnect" href="https://n063.ncut.edu.tw" crossorigin>
+  <link rel="dns-prefetch" href="//n063.ncut.edu.tw">
+  <link rel="preconnect" href="https://www.youtube.com">
+  <link rel="preconnect" href="https://i.ytimg.com">
+  <link rel="dns-prefetch" href="//www.youtube.com">
+  <link rel="dns-prefetch" href="//i.ytimg.com">
+  <title>國立勤益科技大學人工智慧應用工程系</title>
+  <meta name="description" content="國立勤益科技大學人工智慧應用工程系網站，整合系所介紹、師資陣容、招生資訊、學生資源、校內連結與獲獎成果。">
+  <link rel="stylesheet" href="./styles.css?v=20260602-ai-duel-blue2">
+</head>
+<body>
+  <noscript><div class="no-script-notice">此網站需要 JavaScript 才能載入完整系網內容，請啟用 JavaScript 後重新整理。</div></noscript>
+  <header class="site-header" data-header>
+    <a class="skip-link" href="#main">跳到主要內容區</a>
+    <div class="utility-bar">
+      <a href="https://recruit.ncut.edu.tw/" target="_blank" rel="noreferrer">招生訊息</a>
+      <a href="https://freshman.ncut.edu.tw/p/412-1038-82.php?Lang=zh-tw" target="_blank" rel="noreferrer">新鮮人服務網</a>
+      <a href="https://sso.ncut.edu.tw/login.php" target="_blank" rel="noreferrer">單簽 E 化平台</a>
+    </div>
+    <div class="nav-shell">
+      <a class="brand" href="./">
+        <img data-logo alt="人工智慧應用工程系 Logo">
+        <span>
+          <strong data-site-title>人工智慧應用工程系</strong>
+          <small data-site-subtitle>Department of Artificial Intelligence and Computer Engineering</small>
+        </span>
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+        <span class="sr-only">開啟選單</span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="主選單">
+        <a href="./page.html?slug=history">系所介紹</a>
+        <a href="./faculty.html">師資陣容</a>
+        <a href="./awards.html">獲獎資訊</a>
+        <a href="./page.html?slug=curriculum-careers">課程就業</a>
+        <a href="./page.html?slug=labs">專業實驗室</a>
+        <a href="./campus-links.html">校內連結</a>
+        <a href="./official.html">官方資訊庫</a>
+        <a href="./news.html">最新消息</a>
+        <a href="#contact">聯絡我們</a>
+      </nav>
+    </div>
+    <div class="mega-menu" data-mega-menu></div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-label="主視覺">
+      <div class="hero-slider" data-hero></div>
+      <div class="slider-controls">
+        <button type="button" data-prev aria-label="上一張">‹</button>
+        <div class="slider-dots" data-dots></div>
+        <div class="slider-status" aria-live="polite">
+          <span data-hero-current>01</span>
+          <span>/</span>
+          <span data-hero-total>01</span>
+        </div>
+        <button type="button" data-hero-pause aria-pressed="false" aria-label="暫停主視覺輪播">Ⅱ</button>
+        <button type="button" data-next aria-label="下一張">›</button>
+      </div>
+      <div class="hero-progress" aria-hidden="true"><span data-hero-progress></span></div>
+      <aside class="hero-metrics" data-metrics></aside>
+    </section>
+
+    <section class="quick-links" data-quick-links aria-label="常用入口"></section>
+
+    <section class="section news-section" id="news">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">News</div>
+          <h2>最新消息</h2>
+        </div>
+        <div class="tabs" data-news-tabs></div>
+      </div>
+      <div class="news-layout">
+        <div class="news-list" data-news-list></div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="section-kicker">Department Profile</div>
+      <div class="section-head split">
+        <h2>以人工智慧應用為核心，連接資訊工程、智慧控制與產業場域。</h2>
+        <p>課程設計結合人工智慧、影像辨識、智慧控制、資料分析、飛行機器人與產學合作專題，強調跨域整合與實務應用。</p>
+      </div>
+      <div class="story-grid" data-feature-cards></div>
+    </section>
+
+    <section class="feature-band">
+      <div class="feature-copy">
+        <div class="section-kicker">Academic Structure</div>
+        <h2>完整系所資訊</h2>
+        <p>整合原系網主要資訊架構：系所沿革、教學宗旨、發展方向、課程與就業、專業實驗室、校務發展、師資、行政人員、學生專區、產攜專班、海青專班與校內外連結。</p>
+        <a class="text-link light" href="./page.html?slug=site-map">查看完整資訊索引</a>
+      </div>
+      <div class="module-grid" data-page-modules></div>
+    </section>
+
+    <section class="section" id="faculty">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">Faculty</div>
+          <h2>師資陣容</h2>
+        </div>
+        <a class="text-link" href="./faculty.html">完整師資介紹</a>
+      </div>
+      <div class="faculty-strip" data-faculty-preview></div>
+    </section>
+
+    <section class="section awards-section" id="awards">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">Awards</div>
+          <h2>獲獎資訊</h2>
+        </div>
+        <a class="text-link" href="./awards.html">完整獲獎資訊</a>
+      </div>
+      <div class="awards-carousel" data-awards-carousel></div>
+    </section>
+
+    <section class="media-band">
+      <div class="section-kicker">Media</div>
+      <h2>系所影音與招生介紹</h2>
+      <div class="video-grid" data-videos></div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div>
+      <img data-footer-logo alt="國立勤益科技大學">
+      <h2 data-footer-title>人工智慧應用工程系</h2>
+      <p data-footer-subtitle></p>
+    </div>
+    <div class="footer-info" data-contact></div>
+  </footer>
+  <button class="to-top" type="button" data-top aria-label="返回頁面頂端">Top</button>
+  <script src="./script.js?v=20260602-ai-duel-blue2"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

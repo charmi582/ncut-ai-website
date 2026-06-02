@@ -1,0 +1,1653 @@
+{
+  "identity": {
+    "title": "人工智慧應用工程系",
+    "subtitle": "Department of Artificial Intelligence and Computer Engineering",
+    "logo": "./assets/ai-official-icon.png",
+    "footerLogo": "./assets/ai-official-icon.png",
+    "defaultImage": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1436_2272241_19992.png",
+    "copyright": "國立勤益科技大學 人工智慧應用工程系 © Department of Artificial Intelligence and Computer Engineering, National Chin-Yi University of Technology. All rights reserved."
+  },
+  "contact": {
+    "phone": "04-23924505 分機 8501（教師事務）、8502（產攜、海青）、8503（學生事務）",
+    "email": "aioffice@ncut.edu.tw",
+    "address": "411030 臺中市太平區坪林里中山路二段 57 號",
+    "location": "工具機學院大樓 2 樓 VV204"
+  },
+  "hero": [
+    {
+      "kicker": "NCUT AI Engineering",
+      "title": "把人工智慧做成能落地的工程能力",
+      "text": "以 AI 影像辨識、智慧控制、飛行機器人與產學合作專題為核心，培育能整合軟硬體、資料與應用場域的新世代工程人才。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1436_2272241_19992.png",
+      "position": "center center",
+      "video": "https://www.youtube.com/embed/ZFy_9ASLVWo?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=ZFy_9ASLVWo&playsinline=1&modestbranding=1",
+      "primary": {
+        "label": "招生資訊",
+        "href": "https://recruit.ncut.edu.tw/"
+      },
+      "secondary": {
+        "label": "師資陣容",
+        "href": "./faculty.html"
+      }
+    },
+    {
+      "kicker": "Project Based Learning",
+      "title": "從課程、實驗室到競賽專題",
+      "text": "透過程式設計、智慧系統、影像處理與跨域專題訓練，讓學生在真實問題中累積作品集與就業競爭力。",
+      "image": "./assets/optimized/S__18858240_0.webp",
+      "position": "center center",
+      "primary": {
+        "label": "專業實驗室",
+        "href": "./page.html?slug=labs"
+      },
+      "secondary": {
+        "label": "課程與就業",
+        "href": "./page.html?slug=curriculum-careers"
+      }
+    },
+    {
+      "kicker": "Project Showcase",
+      "title": "讓專題成果被看見",
+      "text": "從成果發表、媒體訪談到跨域交流，學生以實作作品展現 AI 工程應用與問題解決能力。",
+      "image": "./assets/optimized/S__18858241_0.webp",
+      "position": "58% center",
+      "primary": {
+        "label": "獲獎資訊",
+        "href": "./awards.html"
+      },
+      "secondary": {
+        "label": "最新消息",
+        "href": "./news.html"
+      }
+    },
+    {
+      "kicker": "Faculty Guidance",
+      "title": "師生共同完成專題深化",
+      "text": "教師陪伴學生從概念驗證、系統整合到展示說明，累積可延伸至競賽與產業應用的專題成果。",
+      "image": "./assets/optimized/S__18858242_0.webp",
+      "position": "58% center",
+      "primary": {
+        "label": "師資陣容",
+        "href": "./faculty.html"
+      },
+      "secondary": {
+        "label": "專業實驗室",
+        "href": "./page.html?slug=labs"
+      }
+    },
+    {
+      "kicker": "Industry Dialogue",
+      "title": "在展示與問答中磨練工程表達",
+      "text": "專題展示不只呈現成果，也訓練學生面對提問、說明架構與回應應用情境的能力。",
+      "image": "./assets/optimized/S__18858243_0.webp",
+      "position": "55% center",
+      "primary": {
+        "label": "課程就業",
+        "href": "./page.html?slug=curriculum-careers"
+      },
+      "secondary": {
+        "label": "學生專區",
+        "href": "./page.html?slug=student-zone"
+      }
+    },
+    {
+      "kicker": "Open Lab",
+      "title": "以真實場域呈現 AI 應用",
+      "text": "透過校內展示與實驗室導覽，讓專題作品連結智慧製造、影像辨識與系統整合場景。",
+      "image": "./assets/optimized/S__18858244_0.webp",
+      "position": "center center",
+      "primary": {
+        "label": "系所介紹",
+        "href": "./page.html?slug=history"
+      },
+      "secondary": {
+        "label": "聯絡我們",
+        "href": "#contact"
+      }
+    },
+    {
+      "kicker": "Awards & Research",
+      "title": "以成果展現 AI 應用實力",
+      "text": "教師國科會補助、學生獲獎、AERC 亞洲機器人運動競技大賽與專題競賽成果，是系所能量的公開展示。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1809_2282472_68020.jpg",
+      "primary": {
+        "label": "最新消息",
+        "href": "./news.html"
+      },
+      "secondary": {
+        "label": "聯絡系辦",
+        "href": "#contact"
+      }
+    },
+    {
+      "kicker": "教學特色",
+      "title": "產學合作專題",
+      "text": "以產業需求與實作專題連接課程，培養學生整合 AI、軟體與應用場域的工程能力。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1436_2272241_19992.png",
+      "primary": {
+        "label": "招生資訊",
+        "href": "./page.html?slug=history"
+      },
+      "secondary": {
+        "label": "最新消息",
+        "href": "./page.html?slug=labs"
+      }
+    },
+    {
+      "kicker": "教學特色",
+      "title": "游泳者追蹤偵測",
+      "text": "建置跨平台學習環境，支援程式設計、資料處理、影像辨識與專題開發。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1437_4661788_17062.png",
+      "primary": {
+        "label": "招生資訊",
+        "href": "./page.html?slug=history"
+      },
+      "secondary": {
+        "label": "最新消息",
+        "href": "./page.html?slug=labs"
+      }
+    },
+    {
+      "kicker": "教學特色",
+      "title": "AI 影像辨識",
+      "text": "以影像辨識與電腦視覺訓練真實情境中的目標偵測、追蹤與智慧分析。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1438_1904637_19978.png",
+      "primary": {
+        "label": "招生資訊",
+        "href": "./page.html?slug=history"
+      },
+      "secondary": {
+        "label": "最新消息",
+        "href": "./page.html?slug=labs"
+      }
+    },
+    {
+      "kicker": "教學特色",
+      "title": "Windows & Mac 雙系統環境",
+      "text": "聚焦人工智慧影像應用，涵蓋機器視覺、深度學習、智慧醫療與產業檢測。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1439_7243206_18517.png",
+      "primary": {
+        "label": "招生資訊",
+        "href": "./page.html?slug=history"
+      },
+      "secondary": {
+        "label": "最新消息",
+        "href": "./page.html?slug=labs"
+      }
+    }
+  ],
+  "metrics": [
+    {
+      "value": "13",
+      "label": "專任教師，涵蓋人工智慧相關專長"
+    },
+    {
+      "value": "AI",
+      "label": "智慧影像、智慧運算、智慧數據"
+    },
+    {
+      "value": "PBL",
+      "label": "產學合作與實務專題導向"
+    }
+  ],
+  "quickLinks": [
+    {
+      "kicker": "Admissions",
+      "label": "招生訊息",
+      "href": "https://recruit.ncut.edu.tw/"
+    },
+    {
+      "kicker": "Members",
+      "label": "系所成員",
+      "href": "./faculty.html"
+    },
+    {
+      "kicker": "Students",
+      "label": "學生專區",
+      "href": "./page.html?slug=student-zone"
+    },
+    {
+      "kicker": "Archive",
+      "label": "官方資訊庫",
+      "href": "./official.html"
+    }
+  ],
+  "homeFeatures": [
+    {
+      "title": "智慧影像",
+      "text": "發展影像處理、電腦視覺、AI 影像辨識、智慧醫療影像與機器人視覺應用。"
+    },
+    {
+      "title": "智慧運算",
+      "text": "結合邊緣運算、機器學習、深度學習、工控安全與 AI 系統部署。"
+    },
+    {
+      "title": "智慧數據",
+      "text": "培養資料探勘、特徵工程、生成式資料、智慧資安與 MLOps 能力。"
+    }
+  ],
+  "pages": [
+    {
+      "slug": "history",
+      "group": "系所介紹",
+      "title": "系所沿革",
+      "summary": "本系於 111 學年度新設，回應六大核心戰略產業與人工智慧應用科技發展需求。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/img/799904433.jpg",
+      "sections": [
+        {
+          "heading": "設系背景",
+          "body": [
+            "政府政策於 5+2 產業創新的既有基礎上，打造六大核心戰略產業，讓臺灣成為未來全球經濟的關鍵力量。",
+            "本校依教育部 2021 年 05 月 24 日臺教技（一）字第 1100071516C 號函奉准，於 111 學年度新設人工智慧應用工程系招收學生。"
+          ]
+        },
+        {
+          "heading": "師資與專長",
+          "body": [
+            "本系現有專任教師 13 位，其中助理教授 8 位、副教授 3 位、教授 2 位，教師皆為高階師資並具備人工智慧相關專長。",
+            "師資專長領域涵蓋人工智慧、影像處理、機器學習、大數據、物聯網、雲端運算、元宇宙等多個熱門領域，並應用於醫學影像分析、智慧製造、電腦視覺、智慧虛實等專業範疇。"
+          ]
+        }
+      ],
+      "links": [
+        {
+          "label": "系所沿革",
+          "href": "./official-detail.html?id=17"
+        }
+      ]
+    },
+    {
+      "slug": "mission",
+      "group": "系所介紹",
+      "title": "教學宗旨",
+      "summary": "以人工智慧應用科技為核心，培育具備跨領域實務能力與產業適應力的工程人才。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/img/363248385.jpg",
+      "sections": [
+        {
+          "heading": "教學定位",
+          "body": [
+            "課程設計以 AI 應用、資訊工程、通訊與軟硬體整合為核心，強調實作、專題、產學合作與跨域學習。"
+          ]
+        }
+      ],
+      "links": [
+        {
+          "label": "教學宗旨",
+          "href": "./official-detail.html?id=18"
+        }
+      ]
+    },
+    {
+      "slug": "development",
+      "group": "系所介紹",
+      "title": "發展方向",
+      "summary": "聚焦智慧影像、智慧運算及智慧數據三大核心技術領域，延伸 AI 機器人、AIoT、元宇宙與產學合作。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/img/240551596.png",
+      "sections": [
+        {
+          "heading": "系上發展",
+          "body": [
+            "人工智慧應用科技為本系核心發展方向，以人工智慧、資訊及通訊等軟硬體整合應用為基礎，將 AI 技術融入智慧生活與產業應用，發展智慧 AI 機器人、AI 物聯網、元宇宙、大數據及智慧機械等重點領域。"
+          ]
+        },
+        {
+          "heading": "多元延伸與跨域發展",
+          "body": [
+            "本系強化 AI 機器人與智慧自動化、AI 物聯網與邊緣運算、元宇宙與智慧虛實、產學合作與跨領域實務發展，以銜接產業需求與科技趨勢。"
+          ]
+        }
+      ],
+      "links": [
+        {
+          "label": "發展方向",
+          "href": "./official-detail.html?id=19"
+        }
+      ]
+    },
+    {
+      "slug": "curriculum-careers",
+      "group": "系所介紹",
+      "title": "課程與就業",
+      "summary": "畢業生可投入影像演算法、電腦視覺、AI 影像辨識、智慧製造、生成式 AI、資料科學與 MLOps 等領域。",
+      "sections": [
+        {
+          "heading": "就業方向",
+          "body": [
+            "本系以人工智慧應用科技為核心，結合資訊、通訊與軟硬體整合技術，培養學生具備跨領域實務能力。"
+          ],
+          "items": [
+            "影像演算法工程師",
+            "電腦視覺工程師",
+            "AI 影像辨識工程師",
+            "自動光學檢測工程師",
+            "智慧製造與檢測系統開發人員",
+            "生成式 AI 應用開發工程師",
+            "資料科學家",
+            "MLOps Engineer"
+          ]
+        },
+        {
+          "heading": "課程模組",
+          "body": [
+            "智慧影像包含影像處理、影像生成、影像辨識與影像分析。智慧數據包含資料探勘、特徵工程、資料生成、智慧資訊安全與模型資料飄移管理。"
+          ]
+        }
+      ],
+      "links": [
+        {
+          "label": "課程與就業",
+          "href": "./official-detail.html?id=20"
+        }
+      ]
+    },
+    {
+      "slug": "labs",
+      "group": "系所介紹",
+      "title": "專業實驗室",
+      "summary": "包含智慧運算、AI 物聯網、AI 機器人、智慧影像、智慧虛實與鹿鳴台視聽教室等教學空間。",
+      "sections": [
+        {
+          "heading": "智慧運算實驗室",
+          "body": [
+            "所在位置：國秀樓 2 樓 K216。結合邊緣運算、資料工程、資料分析、資料科學、機器學習演算法與工控安全架構訓練。"
+          ]
+        },
+        {
+          "heading": "AI 物聯網實驗室",
+          "body": [
+            "所在位置：工具機大樓 4 樓 VA403。結合智慧物聯網 AIoT，應用於智慧製造與智慧機械手臂等人工智慧相關領域訓練。"
+          ]
+        },
+        {
+          "heading": "AI 機器人實驗室",
+          "body": [
+            "所在位置：國秀樓 3 樓 K305。以 ROS 人工智慧發展實務、智慧穿戴、智慧搜索、智慧機器人與亞馬遜 AI 賽車訓練為主軸。"
+          ]
+        },
+        {
+          "heading": "智慧影像實驗室",
+          "body": [
+            "所在位置：國秀樓 B1 樓 KB105。發展醫療影像辨識、智慧城市、安全監控、工業自動化與品質檢測。"
+          ]
+        },
+        {
+          "heading": "智慧虛實實驗室",
+          "body": [
+            "所在位置：國秀樓 5 樓 K502。發展 VR、AR、MR、虛實整合與沉浸式互動智慧應用。"
+          ]
+        }
+      ],
+      "links": [
+        {
+          "label": "專業實驗室",
+          "href": "./official-detail.html?id=21"
+        }
+      ]
+    },
+    {
+      "slug": "school-development",
+      "group": "系所介紹",
+      "title": "本校校務發展",
+      "summary": "發展願景為國際優質綠色產業科技大學，目標為產業人才搖籃、技術研發基地。",
+      "sections": [
+        {
+          "heading": "校務願景與目標",
+          "body": [
+            "發展願景：國際優質綠色產業科技大學。發展目標：產業人才搖籃，技術研發基地。教育目標：培育具有專業知能、人文素養、社會關懷、國際視野之德術兼備優質人才。"
+          ]
+        }
+      ],
+      "links": [
+        {
+          "label": "本校校務發展",
+          "href": "./official-detail.html?id=22"
+        }
+      ]
+    },
+    {
+      "slug": "student-zone",
+      "group": "學生專區",
+      "title": "學生專區",
+      "summary": "整合學分計畫表、課程地圖、課程綱要、實務專題、畢業門檻、核心證照、校外實習、課程抵免、學生組織、系學會與系友會。",
+      "sections": [
+        {
+          "heading": "大學部資訊",
+          "body": [
+            "學生專區提供學分計畫表、課程地圖、課程綱要、實務專題、畢業門檻、核心證照、校外實習與課程抵免等入口。"
+          ]
+        },
+        {
+          "heading": "校內常用系統",
+          "body": [
+            "包含校務行政系統、數位學習平台、學生請假系統、開課查詢、圖書館、校內外獎助學金、證照管理系統與學生 Webmail。"
+          ]
+        }
+      ],
+      "links": [
+        {
+          "label": "教務處：學分計畫表",
+          "href": "https://oaa.ncut.edu.tw/p/412-1009-6033.php?Lang=zh-tw"
+        },
+        {
+          "label": "數位學習平台",
+          "href": "https://elearn.ncut.edu.tw/inner.php?link"
+        },
+        {
+          "label": "開課查詢系統",
+          "href": "https://nmsd.ncut.edu.tw/wbcmss/Query/CourseView"
+        },
+        {
+          "label": "畢業門檻",
+          "href": "https://nmsd.ncut.edu.tw/wbcmss/Graduate"
+        }
+      ]
+    },
+    {
+      "slug": "industry-program",
+      "group": "專班資訊",
+      "title": "產學攜手合作專班",
+      "summary": "包含智慧科技應用製造專班、半導體封測專班與 AI 智慧科技應用專班之學分計畫表與招生訊息。",
+      "sections": [
+        {
+          "heading": "專班項目",
+          "body": [
+            "智慧科技應用製造專班（日間部/進修部）、半導體封測專班、AI 智慧科技應用專班。"
+          ]
+        }
+      ],
+      "links": [
+        {
+          "label": "產學攜手合作專班",
+          "href": "./official-detail.html?id=41"
+        }
+      ]
+    },
+    {
+      "slug": "overseas-youth",
+      "group": "專班資訊",
+      "title": "海外青年技術訓練班",
+      "summary": "包含半導體製造實務技術專班、海青班招生訊息與僑委會服務資訊。",
+      "sections": [
+        {
+          "heading": "海青專班",
+          "body": [
+            "半導體製造實務技術專班提供 112、113、114 學年度日間部四年制產學合作海外青年學分計畫表。"
+          ]
+        }
+      ],
+      "links": [
+        {
+          "label": "海外青年技術訓練班",
+          "href": "./official-detail.html?id=63"
+        }
+      ]
+    },
+    {
+      "slug": "site-map",
+      "group": "網站索引",
+      "title": "完整資訊索引",
+      "summary": "整理人工智慧應用工程系官網與校內常用連結。",
+      "sections": [
+        {
+          "heading": "主選單",
+          "body": [
+            "招生訊息、系所介紹、系所成員、教師專區、學生專區、產學攜手合作專班、海外青年技術訓練班、聯絡我們、English、首頁。"
+          ]
+        },
+        {
+          "heading": "校內連結",
+          "body": [
+            "地圖與交通資訊、勤益科大新鮮人服務網、勤益科大首頁、單簽 E 化平台、校務行政系統、數位學習平台、校園地圖、學生請假系統、開課查詢系統、圖書館、校內外獎助學金、畢業門檻、行事曆、證照管理系統、學生 Webmail、教務處表單下載、就學貸款規章與辦法、校外租屋資訊網。"
+          ]
+        }
+      ],
+      "links": [
+        {
+          "label": "地圖與交通資訊",
+          "href": "https://www.ncut.edu.tw/p/412-1000-6947.php?Lang=zh-tw"
+        },
+        {
+          "label": "勤益科大首頁",
+          "href": "https://www.ncut.edu.tw/"
+        },
+        {
+          "label": "行事曆",
+          "href": "https://www.ncut.edu.tw/p/412-1000-856.php?Lang=zh-tw"
+        }
+      ]
+    }
+  ],
+  "faculty": [
+    {
+      "name": "劉川綱",
+      "enName": "Chuan-Kang Liu",
+      "role": "副教授兼系主任",
+      "email": "ckliu@ncut.edu.tw",
+      "phone": "04-23924505 分機 8500 或 8536",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/514061381.jpg",
+      "profile": "./official-detail.html?id=53",
+      "education": "國立成功大學 電機工程 博士",
+      "expertise": "電腦網路、資訊安全、人工智慧與機器學習、物聯網智慧應用、VR創新應用",
+      "office": "青永館3樓 研究室1",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=53",
+      "detailHref": "./faculty-detail.html?id=0"
+    },
+    {
+      "name": "吳憲珠",
+      "enName": "Hsien-Chu Wu",
+      "role": "專任教師",
+      "email": "wuhc@ncut.edu.tw",
+      "phone": "04-23924505 分機 8542",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/621365151.jpg",
+      "profile": "./official-detail.html?id=49",
+      "education": "國立中正大學 資訊工程系 博士",
+      "expertise": "多媒體技術、多媒體巨量資料分析與應用、多媒體安全、醫學影像技術",
+      "office": "創新研發大樓4樓 LA404-6",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=49",
+      "detailHref": "./faculty-detail.html?id=1"
+    },
+    {
+      "name": "程榮祥",
+      "enName": "Rung-Shiang Cheng",
+      "role": "專任教師",
+      "email": "rscheng@ncut.edu.tw",
+      "phone": "04-23924505 分機 8546",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/678/dean_rscheng.jpg",
+      "profile": "./official-detail.html?id=50",
+      "education": "國立成功大學電機工程學系博士；國立成功大學資訊工程學系碩士；國立勤益工商專科學校電子工程科(計算機工程組)",
+      "expertise": "電腦網路與通訊協定設計、網路模擬與效能分析、無線與行動通訊、AIoT應用與邊緣運算",
+      "office": "工程館1樓E121；誠樸館G208",
+      "lab": "",
+      "courses": [
+        "Python 程式設計",
+        "C 程式設計",
+        "C++ 物件導向程式設計"
+      ],
+      "sourceProfile": "./official-detail.html?id=50",
+      "detailHref": "./faculty-detail.html?id=2"
+    },
+    {
+      "name": "陳彥佑",
+      "enName": "Yen-Yu Chen",
+      "role": "專任教師",
+      "email": "aicyy@ncut.edu.tw",
+      "phone": "04-23924505 分機 8539",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/586827758.jpg",
+      "profile": "./official-detail.html?id=51",
+      "education": "國立成功大學 電機工程研究所(計算機組) 博士",
+      "expertise": "深度學習、醫學影像分析、影像處理",
+      "office": "創新研發大樓2樓 LA210-2",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=51",
+      "detailHref": "./faculty-detail.html?id=3"
+    },
+    {
+      "name": "黃詰琳",
+      "enName": "Chieh-Ling Huang",
+      "role": "專任教師",
+      "email": "kaio@ncut.edu.tw",
+      "phone": "04-23924505 分機 8531",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/76F1C0ED-3512-4286-A795-FE2C5C302BA7.jpg",
+      "profile": "./official-detail.html?id=52",
+      "education": "國立成功大學 電機工程學系 博士",
+      "expertise": "視訊影像處理、數位影像處理、射頻識別技術、實境技術、無線感測網路",
+      "office": "青永館3樓 研究室7",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=52",
+      "detailHref": "./faculty-detail.html?id=4"
+    },
+    {
+      "name": "張俊隆",
+      "enName": "Chun-Lung Chang",
+      "role": "專任教師",
+      "email": "VincentChang0304@ncut.edu.tw",
+      "phone": "04-23924505 分機 8534",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/738519009.jpg",
+      "profile": "./official-detail.html?id=54",
+      "education": "國立交通大學 電機與控制工程 博士",
+      "expertise": "智慧製造/智慧機械/機電整合/品質管理/感測器，機器視覺/影像識別/影像處理、人工智慧/深度學習/大數據分析、C/Python/Matlab程式設計、互動程式/Processing設計",
+      "office": "青永館3樓 研究室6",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=54",
+      "detailHref": "./faculty-detail.html?id=5"
+    },
+    {
+      "name": "張顧耀",
+      "enName": "Ku-Yaw Chang",
+      "role": "專任教師",
+      "email": "canseco@ncut.edu.tw",
+      "phone": "04-23924505 分機 8535",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/388760334.jpg",
+      "profile": "./official-detail.html?id=55",
+      "education": "國立成功大學電機工程研究所(計算機組)博士",
+      "expertise": "人工智慧、影像處理、雲端運算、大數據、物件導向",
+      "office": "青永館3樓 研究室2",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=55",
+      "detailHref": "./faculty-detail.html?id=6"
+    },
+    {
+      "name": "王秉豐",
+      "enName": "Ping-Feng Wang",
+      "role": "專任教師",
+      "email": "pfwang@ncut.edu.tw",
+      "phone": "04-23924505 分機 8545",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/795106425.jpg",
+      "profile": "./official-detail.html?id=56",
+      "education": "國立中央大學 資訊工程 博士",
+      "expertise": "資訊安全、軟體工程、物聯網感測及分析、人工智慧、機器學習",
+      "office": "誠樸館4樓 G409",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=56",
+      "detailHref": "./faculty-detail.html?id=7"
+    },
+    {
+      "name": "劉秉睿",
+      "enName": "Ping-Juei Liu",
+      "role": "專任教師",
+      "email": "immich@ncut.edu.tw",
+      "phone": "04-23924505 分機 8541",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/644662333.jpg",
+      "profile": "./official-detail.html?id=57",
+      "education": "台灣科技大學 資訊工程 博士",
+      "expertise": "計算攝影學、機械學習、影像處理、資訊安全",
+      "office": "創新研發大樓2樓 LA210-3",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=57",
+      "detailHref": "./faculty-detail.html?id=8"
+    },
+    {
+      "name": "張偉鉉",
+      "enName": "Wei-Hsuan Chang",
+      "role": "專任教師",
+      "email": "brantchang@ncut.edu.tw",
+      "phone": "04-23924505 分機 8544",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/114924641.jpg",
+      "profile": "./official-detail.html?id=58",
+      "education": "逢甲大學 電機與通訊工程 博士",
+      "expertise": "嵌入式系統、車輛網路通訊應用、微控制器應用、自駕車應用",
+      "office": "誠樸館4樓 G403",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=58",
+      "detailHref": "./faculty-detail.html?id=9"
+    },
+    {
+      "name": "黃聖維",
+      "enName": "Sheng-Wei Huang",
+      "role": "專任教師",
+      "email": "swhuang@ncut.edu.tw",
+      "phone": "04-23924505 分機 8537",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/528561806.jpg",
+      "profile": "./official-detail.html?id=59",
+      "education": "國立成功大學 電腦與通信工程 博士",
+      "expertise": "物聯網、行動平台應用、大數據與雲端運算",
+      "office": "誠樸館2樓 G205",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=59",
+      "detailHref": "./faculty-detail.html?id=10"
+    },
+    {
+      "name": "朱邵威",
+      "enName": "Shao-Wei Chu",
+      "role": "專任教師",
+      "email": "swchu@ncut.edu.tw",
+      "phone": "04-23924505 分機 8532",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/794197652.jpg",
+      "profile": "./official-detail.html?id=60",
+      "education": "國立中興大學 資訊工程 博士",
+      "expertise": "電腦視覺、自動光學檢測、人工智慧、人工智慧維運系統設計",
+      "office": "青永館3樓 研究室5",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=60",
+      "detailHref": "./faculty-detail.html?id=11"
+    },
+    {
+      "name": "王暐鈞",
+      "enName": "Wei-Jyun Wang",
+      "role": "專任教師",
+      "email": "wjwang@ncut.edu.tw",
+      "phone": "04-23924505 分機 8543",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/228459057.jpg",
+      "profile": "./official-detail.html?id=61",
+      "education": "國立中興大學 資訊工程 博士",
+      "expertise": "電腦視覺、自然語言處理、人工智慧與機器學習、知識圖譜",
+      "office": "誠樸館2樓 G210",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=61",
+      "detailHref": "./faculty-detail.html?id=12"
+    }
+  ],
+  "staff": [
+    {
+      "name": "許芸瑄",
+      "role": "專任助理",
+      "email": "irin@ncut.edu.tw",
+      "phone": "04-23924505 分機 8501",
+      "duties": [
+        "經費核銷",
+        "教師聘任與升等",
+        "高教深耕計畫與核銷",
+        "主管行程與單位秘書窗口",
+        "系官方網站管理與維護"
+      ]
+    },
+    {
+      "name": "廖玉琦",
+      "role": "專任助理",
+      "email": "yuchi0927@ncut.edu.tw",
+      "phone": "04-23924505 分機 8502",
+      "duties": [
+        "產攜專班與海青班行政",
+        "合作廠商訪視",
+        "畢業生流向調查",
+        "招生行政與宣傳",
+        "學會管理"
+      ]
+    },
+    {
+      "name": "蔡明勲",
+      "role": "專任助理",
+      "email": "myexp12@ncut.edu.tw",
+      "phone": "04-23924505 分機 8503",
+      "duties": [
+        "課程與課業事務",
+        "成績與學生事務",
+        "實務專題與競賽",
+        "招生行政",
+        "空間、物品與設備管理"
+      ]
+    },
+    {
+      "name": "工讀生",
+      "role": "工讀生",
+      "email": "aioffice@ncut.edu.tw",
+      "phone": "04-23924505 分機 8504",
+      "duties": [
+        "辦公室環境清潔",
+        "收發公文",
+        "櫃檯諮詢",
+        "接聽電話",
+        "資料繕打"
+      ]
+    }
+  ],
+  "news": [
+    {
+      "date": "2026-05-15",
+      "category": "系所公告",
+      "title": "【重要通知】115學年度四技甄選入學招生-第二階段各指定項目試題範圍及範例公告",
+      "summary": "招生第二階段指定項目試題範圍及範例公告。",
+      "href": "./official-detail.html?id=43",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1809_2282472_68020.jpg"
+    },
+    {
+      "date": "2026-04-29",
+      "category": "最新活動",
+      "title": "本系學生參與電資學院跨校計畫，共同推動基隆河無人機智慧監測應用",
+      "summary": "跨校計畫與無人機智慧監測應用成果。",
+      "href": "./official-detail.html?id=44",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1467_6349405_87881.png"
+    },
+    {
+      "date": "2026-04-27",
+      "category": "獲獎公告",
+      "title": "【恭賀】本系學生伍義光同學，榮獲 2026 年 SCF 程速勁賽第三名",
+      "summary": "學生競賽獲獎公告。",
+      "href": "./official-detail.html?id=45",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1809_2282472_68020.jpg"
+    },
+    {
+      "date": "2026-04-22",
+      "category": "最新活動",
+      "title": "【活動公告】115年度夢想啟航校園徵才博覽會",
+      "summary": "校園徵才與職涯活動。",
+      "href": "./official-detail.html?id=46",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1438_1904637_19978.png"
+    },
+    {
+      "date": "2026-04-10",
+      "category": "學生公告",
+      "title": "【學生公告】114學年度暑期課程學生聯署調查表開放填寫",
+      "summary": "暑期課程聯署調查表填寫通知。",
+      "href": "./official-detail.html?id=47",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1439_7243206_18517.png"
+    },
+    {
+      "date": "2024-12-01",
+      "category": "獲獎公告",
+      "title": "2024 AERC 亞洲機器人運動競技大賽",
+      "summary": "2024 AERC 亞洲機器人運動競技大賽。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1524_4467697_58880.png"
+    },
+    {
+      "date": "2024-08-01",
+      "category": "獲獎公告",
+      "title": "劉川綱老師榮獲114年國科會補助",
+      "summary": "劉川綱老師榮獲114年國科會補助。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1792_962416_41711.jpg"
+    },
+    {
+      "date": "2024-08-01",
+      "category": "獲獎公告",
+      "title": "吳憲珠老師榮獲114年國科會補助",
+      "summary": "吳憲珠老師榮獲114年國科會補助。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1793_9416576_42174.jpg"
+    },
+    {
+      "date": "2024-08-01",
+      "category": "獲獎公告",
+      "title": "劉秉睿老師榮獲114年國科會補助",
+      "summary": "劉秉睿老師榮獲114年國科會補助。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1794_1491476_43988.jpg"
+    },
+    {
+      "date": "2024-08-01",
+      "category": "獲獎公告",
+      "title": "張偉鉉老師榮獲114年國科會補助",
+      "summary": "張偉鉉老師榮獲114年國科會補助。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1795_8044715_44050.jpg"
+    },
+    {
+      "date": "2024-08-01",
+      "category": "獲獎公告",
+      "title": "張顧耀老師榮獲114年國科會補助",
+      "summary": "張顧耀老師榮獲114年國科會補助。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1796_5015606_44075.jpg"
+    },
+    {
+      "date": "2024-08-01",
+      "category": "獲獎公告",
+      "title": "王秉豐老師榮獲114年國科會補助",
+      "summary": "王秉豐老師榮獲114年國科會補助。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1797_6032067_44106.jpg"
+    },
+    {
+      "date": "2024-08-01",
+      "category": "獲獎公告",
+      "title": "程榮祥老師榮獲114年國科會補助",
+      "summary": "程榮祥老師榮獲114年國科會補助。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1798_6143153_44127.jpg"
+    },
+    {
+      "date": "2023-12-01",
+      "category": "獲獎公告",
+      "title": "2023專題競賽第三名",
+      "summary": "2023專題競賽第三名。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1262_8390672_58949.png"
+    },
+    {
+      "date": "2023-12-01",
+      "category": "獲獎公告",
+      "title": "2023專題競賽第二名",
+      "summary": "2023專題競賽第二名。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1263_7941076_58942.png"
+    },
+    {
+      "date": "2023-12-01",
+      "category": "獲獎公告",
+      "title": "2023專題競賽第一名",
+      "summary": "2023專題競賽第一名。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1264_7625540_58932.png"
+    },
+    {
+      "date": "2023-12-01",
+      "category": "獲獎公告",
+      "title": "2023金象盃佳作",
+      "summary": "2023金象盃佳作。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1265_5068868_58907.png"
+    },
+    {
+      "date": "2023-12-01",
+      "category": "獲獎公告",
+      "title": "2023金象盃優勝",
+      "summary": "2023金象盃優勝。",
+      "href": "",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1268_8345816_58892.png"
+    }
+  ],
+  "videos": [
+    {
+      "title": "人工智慧應用工程系介紹影片",
+      "embed": "https://www.youtube.com/embed/3t6qeF7h_jk?si=VlUcNuVbzEJ6rVw3"
+    },
+    {
+      "title": "人工智慧應用工程系系所影片",
+      "embed": "https://www.youtube.com/embed/-C8v0Llc5WE?si=rmtm5vo6_HrEtTOT"
+    }
+  ],
+  "careerPaths": [
+    {
+      "title": "影像與視覺 AI",
+      "items": [
+        "影像演算法工程師",
+        "電腦視覺工程師",
+        "AI 影像辨識工程師",
+        "自動光學檢測工程師"
+      ]
+    },
+    {
+      "title": "智慧製造與 AIoT",
+      "items": [
+        "智慧製造系統開發",
+        "智慧檢測系統開發",
+        "AIoT 應用工程師",
+        "機器人整合應用工程師"
+      ]
+    },
+    {
+      "title": "資料科學與生成式 AI",
+      "items": [
+        "資料科學家",
+        "生成式 AI 應用開發",
+        "MLOps Engineer",
+        "資訊安全與模型監控工程師"
+      ]
+    }
+  ],
+  "curriculumModules": [
+    {
+      "title": "智慧影像課程模組",
+      "summary": "以影像處理、影像生成、影像辨識與影像分析為核心，銜接電腦視覺、AOI 與智慧製造檢測應用。",
+      "focus": [
+        "影像處理",
+        "影像生成",
+        "影像辨識",
+        "影像分析"
+      ],
+      "courses": [
+        "影像處理",
+        "電腦視覺",
+        "人工智慧影像辨識",
+        "深度學習應用",
+        "智慧製造與檢測"
+      ],
+      "outcomes": [
+        "可投入電腦視覺、AI 影像辨識、自動光學檢測、智慧城市與安全監控等職務。"
+      ]
+    },
+    {
+      "title": "智慧數據課程模組",
+      "summary": "以資料探勘、特徵工程、資料生成、智慧資訊安全與模型資料飄移管理為核心，訓練資料驅動 AI 系統能力。",
+      "focus": [
+        "資料探勘",
+        "特徵工程",
+        "資料生成",
+        "智慧資訊安全",
+        "模型資料飄移管理"
+      ],
+      "courses": [
+        "資料科學",
+        "機器學習",
+        "大數據分析",
+        "生成式 AI",
+        "MLOps 與模型部署"
+      ],
+      "outcomes": [
+        "可投入資料科學、生成式 AI 應用、模型部署維運、智慧資訊安全與 AI 系統監控等職務。"
+      ]
+    }
+  ],
+  "labProfiles": [
+    {
+      "name": "智慧運算實驗室",
+      "location": "國秀樓 2 樓 K216",
+      "summary": "結合邊緣運算、資料工程、資料分析、資料科學、機器學習演算法與工控安全架構訓練。",
+      "themes": [
+        "邊緣運算",
+        "資料工程",
+        "機器學習",
+        "工控安全"
+      ],
+      "training": [
+        "資料處理與分析實作",
+        "AI 模型訓練與部署",
+        "工業場域資料安全概念"
+      ]
+    },
+    {
+      "name": "AI 物聯網實驗室",
+      "location": "工具機大樓 4 樓 VA403",
+      "summary": "結合智慧物聯網 AIoT，應用於智慧製造、智慧機械手臂與感測資料整合。",
+      "themes": [
+        "AIoT",
+        "智慧製造",
+        "感測資料",
+        "機械手臂"
+      ],
+      "training": [
+        "物聯網資料擷取",
+        "AIoT 系統整合",
+        "智慧設備應用開發"
+      ]
+    },
+    {
+      "name": "AI 機器人實驗室",
+      "location": "國秀樓 3 樓 K305",
+      "summary": "以 ROS 人工智慧發展實務、智慧穿戴、智慧搜索、智慧機器人與 AI 賽車訓練為主軸。",
+      "themes": [
+        "ROS",
+        "智慧機器人",
+        "智慧穿戴",
+        "AI 賽車"
+      ],
+      "training": [
+        "機器人控制實務",
+        "自主移動與感知",
+        "AI 競賽與專題實作"
+      ]
+    },
+    {
+      "name": "智慧影像實驗室",
+      "location": "國秀樓 B1 樓 KB105",
+      "summary": "發展醫療影像辨識、智慧城市、安全監控、工業自動化與品質檢測等影像 AI 應用。",
+      "themes": [
+        "醫療影像",
+        "安全監控",
+        "AOI",
+        "品質檢測"
+      ],
+      "training": [
+        "影像資料標註與前處理",
+        "電腦視覺模型訓練",
+        "產線檢測應用"
+      ]
+    },
+    {
+      "name": "智慧虛實實驗室",
+      "location": "國秀樓 5 樓 K502",
+      "summary": "發展 VR、AR、MR、虛實整合與沉浸式互動智慧應用。",
+      "themes": [
+        "VR",
+        "AR",
+        "MR",
+        "沉浸式互動"
+      ],
+      "training": [
+        "虛實整合介面設計",
+        "互動內容製作",
+        "AI 與沉浸體驗應用"
+      ]
+    },
+    {
+      "name": "鹿鳴台視聽教室",
+      "location": "SOB114",
+      "summary": "支援系所課程、專題發表、講座與跨域交流活動，作為教學展示與成果分享場域。",
+      "themes": [
+        "視聽教學",
+        "專題發表",
+        "講座活動",
+        "成果展示"
+      ],
+      "training": [
+        "專題簡報",
+        "技術展示",
+        "跨域交流"
+      ]
+    }
+  ],
+  "studentResources": [
+    {
+      "title": "學分計畫表",
+      "category": "課程規劃",
+      "summary": "整理大學部修課架構與學分規劃，是學生安排四年課程與畢業檢核的主要依據。",
+      "href": "https://oaa.ncut.edu.tw/p/412-1009-6033.php?Lang=zh-tw",
+      "children": []
+    },
+    {
+      "title": "課程地圖",
+      "category": "課程規劃",
+      "summary": "協助學生理解課程先後順序、能力養成路徑與系所專業模組的關聯。",
+      "href": "./student-resource.html?id=64",
+      "children": []
+    },
+    {
+      "title": "課程綱要",
+      "category": "課程規劃",
+      "summary": "提供課程內容、授課方向與學習重點，便於學生選課與規劃自主學習。",
+      "href": "https://nmsd.ncut.edu.tw/wbcmss/",
+      "children": []
+    },
+    {
+      "title": "實務專題",
+      "category": "專題實作",
+      "summary": "包含歷屆專題、專題影片、專題海報、實務專題時程與競賽辦法等資訊。",
+      "href": "./student-resource.html?id=66",
+      "children": [
+        {
+          "title": "歷屆專題",
+          "href": "./student-resource.html?id=67"
+        },
+        {
+          "title": "實務專題時程",
+          "href": "./student-resource.html?id=68"
+        },
+        {
+          "title": "實務專題課程實施與專題製作競賽辦法",
+          "href": "./student-resource.html?id=69"
+        }
+      ]
+    },
+    {
+      "title": "畢業門檻",
+      "category": "畢業檢核",
+      "summary": "日間部四技學生至少應修滿 130 學分，並依入學年度檢核英文能力、自主學習與通識領域要求。",
+      "href": "./student-resource.html?id=70",
+      "children": [
+        {
+          "title": "畢業門檻明細",
+          "href": "./student-resource.html?id=71"
+        },
+        {
+          "title": "畢業門檻規章及辦法",
+          "href": "https://nmsd.ncut.edu.tw/wbcmss/Graduate"
+        }
+      ]
+    },
+    {
+      "title": "核心證照",
+      "category": "畢業檢核",
+      "summary": "彙整系上認列之核心證照資訊，供學生準備專業證照與能力檢核。",
+      "href": "./student-resource.html?id=72",
+      "children": []
+    },
+    {
+      "title": "校外實習",
+      "category": "產業實務",
+      "summary": "提供校外實習相關資訊，銜接學生產業實作、職場體驗與就業準備。",
+      "href": "./student-resource.html?id=73",
+      "children": []
+    },
+    {
+      "title": "課程抵免",
+      "category": "學務流程",
+      "summary": "提供課程抵免申請資訊，協助轉學生、重修或具相關修課經驗學生辦理抵免。",
+      "href": "./student-resource.html?id=81",
+      "children": []
+    },
+    {
+      "title": "系學會",
+      "category": "學生組織",
+      "summary": "系學會資訊與學生活動入口，連結學生自治、系上活動與同儕交流。",
+      "href": "./student-resource.html?id=79",
+      "children": []
+    },
+    {
+      "title": "系友會",
+      "category": "學生組織",
+      "summary": "系友會資訊與畢業系友連結，協助維繫系友網絡與職涯交流。",
+      "href": "./student-resource.html?id=80",
+      "children": []
+    }
+  ],
+  "specialPrograms": [
+    {
+      "slug": "industry-program",
+      "title": "產學攜手合作專班",
+      "summary": "整合學校課程、產業實作與合作廠商訓練，提供學生技職銜接與就業導向培育路徑。",
+      "links": [
+        {
+          "title": "產攜班招生訊息",
+          "type": "招生入口",
+          "href": "https://industry.ncut.edu.tw/web/index.html"
+        },
+        {
+          "title": "112 學年度智慧科技應用製造專班學分計畫表",
+          "type": "PDF",
+          "href": "https://oaa.ncut.edu.tw/var/file/9/1009/attach/38/pta_65513_4369440_35469.pdf"
+        },
+        {
+          "title": "113 學年度半導體封測產攜專班學分計畫表",
+          "type": "PDF",
+          "href": "https://oaa.ncut.edu.tw/var/file/9/1009/attach/40/pta_67478_9100620_69847.pdf"
+        },
+        {
+          "title": "產學攜手合作專班原始頁面",
+          "type": "原系網",
+          "href": "./official-detail.html?id=41"
+        }
+      ]
+    },
+    {
+      "slug": "overseas-youth",
+      "title": "海外青年技術訓練班",
+      "summary": "提供海外青年技術訓練與產學合作課程資訊，聚焦半導體製造實務技術與技職專業養成。",
+      "links": [
+        {
+          "title": "海青班招生訊息",
+          "type": "招生入口",
+          "href": "https://recruit.ncut.edu.tw/p/406-1033-70888,r1131.php?Lang=zh-tw"
+        },
+        {
+          "title": "僑委會服務專線",
+          "type": "外部資源",
+          "href": "https://www.ocac.gov.tw/OCAC/Pages/Detail.aspx?nodeid=618&pid=507599"
+        },
+        {
+          "title": "僑委會緊急通報",
+          "type": "外部資源",
+          "href": "https://www.ocac.gov.tw/OCAC/Pages/VDetail.aspx?nodeid=4492&pid=13193977"
+        },
+        {
+          "title": "112 學年度半導體製造實務技術專班學分計畫表",
+          "type": "PDF",
+          "href": "https://oaa.ncut.edu.tw/var/file/9/1009/attach/38/pta_65512_1114416_35469.pdf"
+        },
+        {
+          "title": "113 學年度半導體製造實務技術專班學分計畫表",
+          "type": "PDF",
+          "href": "https://oaa.ncut.edu.tw/var/file/9/1009/attach/40/pta_65271_3490401_17435.pdf"
+        },
+        {
+          "title": "114 學年度半導體製造實務技術專班學分計畫表",
+          "type": "PDF",
+          "href": "https://oaa.ncut.edu.tw/var/file/9/1009/attach/26/pta_65303_7948568_18887.pdf"
+        },
+        {
+          "title": "海外青年技術訓練班原始頁面",
+          "type": "原系網",
+          "href": "./official-detail.html?id=63"
+        }
+      ]
+    }
+  ],
+  "campusLinks": [
+    {
+      "label": "招生訊息(另開新視窗)",
+      "href": "https://recruit.ncut.edu.tw/"
+    },
+    {
+      "label": "地圖與交通資訊(另開新視窗)",
+      "href": "https://www.ncut.edu.tw/p/412-1000-6947.php?Lang=zh-tw"
+    },
+    {
+      "label": "勤益科大新鮮人服務網(另開新視窗)",
+      "href": "https://freshman.ncut.edu.tw/p/412-1038-82.php?Lang=zh-tw"
+    },
+    {
+      "label": "勤益科大首頁(另開新視窗)",
+      "href": "https://www.ncut.edu.tw/"
+    },
+    {
+      "label": "單簽E化平台(另開新視窗)",
+      "href": "https://sso.ncut.edu.tw/login.php"
+    },
+    {
+      "label": "校務行政系統-學生篇(另開新視窗)",
+      "href": "https://nmsd.ncut.edu.tw/wbcmss/"
+    },
+    {
+      "label": "數位學習平台(另開新視窗)",
+      "href": "https://elearn.ncut.edu.tw/inner.php?link"
+    },
+    {
+      "label": "勤益科大校園地圖(另開新視窗)",
+      "href": "https://www.ncut.edu.tw/var/file/0/1000/img/195/652677467.pdf"
+    },
+    {
+      "label": "學生請假系統(另開新視窗)",
+      "href": "https://stdl.ncut.edu.tw/StdL/Web/main.html"
+    },
+    {
+      "label": "開課查詢系統(另開新視窗)",
+      "href": "https://nmsd.ncut.edu.tw/wbcmss/Query/CourseView"
+    },
+    {
+      "label": "圖書館(另開新視窗)",
+      "href": "https://library.ncut.edu.tw/?Lang=zh-tw"
+    },
+    {
+      "label": "校內外獎助學金(另開新視窗)",
+      "href": "https://scholarship.ncut.edu.tw/"
+    },
+    {
+      "label": "畢業門檻(另開新視窗)",
+      "href": "https://nmsd.ncut.edu.tw/wbcmss/Graduate"
+    },
+    {
+      "label": "行事曆(另開新視窗)",
+      "href": "https://www.ncut.edu.tw/p/412-1000-856.php?Lang=zh-tw"
+    },
+    {
+      "label": "證照管理系統(另開新視窗)",
+      "href": "https://ncutbase.ncut.edu.tw/ncutotc/"
+    },
+    {
+      "label": "學生網路郵局(Webmail)(另開新視窗)",
+      "href": "https://student.ncut.edu.tw/EIP/cc_login.php?sslall=1"
+    },
+    {
+      "label": "教務處【註冊組】表單下載(另開新視窗)",
+      "href": "https://oaa.ncut.edu.tw/p/412-1009-2714.php?Lang=zh-tw"
+    },
+    {
+      "label": "學生就學貸款規章與辦法(另開新視窗)",
+      "href": "https://nmsd.ncut.edu.tw/Loan/Web/index.html"
+    },
+    {
+      "label": "勤益學生校外租屋資訊網(另開新視窗)",
+      "href": "https://rent.ncut.edu.tw/rent2018/"
+    },
+    {
+      "label": "地址",
+      "href": "https://goo.gl/maps/nch4BpKbVPGS5jsZ7"
+    },
+    {
+      "label": "map",
+      "href": "https://goo.gl/maps/nch4BpKbVPGS5jsZ7"
+    }
+  ],
+  "awardSlides": [
+    {
+      "title": "【恭賀】本系學生伍義光同學，榮獲 2026 年 SCF 程速勁賽第三名",
+      "date": "2026-04-27",
+      "summary": "學生競賽獲獎公告。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1809_2282472_68020.jpg",
+      "href": "./official-detail.html?id=45"
+    },
+    {
+      "title": "2024 AERC 亞洲機器人運動競技大賽",
+      "date": "2024-12-01",
+      "summary": "2024 AERC 亞洲機器人運動競技大賽。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1524_4467697_58880.png",
+      "href": ""
+    },
+    {
+      "title": "劉川綱老師榮獲114年國科會補助",
+      "date": "2024-08-01",
+      "summary": "劉川綱老師榮獲114年國科會補助。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1792_962416_41711.jpg",
+      "href": ""
+    },
+    {
+      "title": "吳憲珠老師榮獲114年國科會補助",
+      "date": "2024-08-01",
+      "summary": "吳憲珠老師榮獲114年國科會補助。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1793_9416576_42174.jpg",
+      "href": ""
+    },
+    {
+      "title": "劉秉睿老師榮獲114年國科會補助",
+      "date": "2024-08-01",
+      "summary": "劉秉睿老師榮獲114年國科會補助。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1794_1491476_43988.jpg",
+      "href": ""
+    },
+    {
+      "title": "張偉鉉老師榮獲114年國科會補助",
+      "date": "2024-08-01",
+      "summary": "張偉鉉老師榮獲114年國科會補助。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1795_8044715_44050.jpg",
+      "href": ""
+    },
+    {
+      "title": "張顧耀老師榮獲114年國科會補助",
+      "date": "2024-08-01",
+      "summary": "張顧耀老師榮獲114年國科會補助。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1796_5015606_44075.jpg",
+      "href": ""
+    },
+    {
+      "title": "王秉豐老師榮獲114年國科會補助",
+      "date": "2024-08-01",
+      "summary": "王秉豐老師榮獲114年國科會補助。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1797_6032067_44106.jpg",
+      "href": ""
+    },
+    {
+      "title": "程榮祥老師榮獲114年國科會補助",
+      "date": "2024-08-01",
+      "summary": "程榮祥老師榮獲114年國科會補助。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1798_6143153_44127.jpg",
+      "href": ""
+    },
+    {
+      "title": "2023專題競賽第三名",
+      "date": "2023-12-01",
+      "summary": "2023專題競賽第三名。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1262_8390672_58949.png",
+      "href": ""
+    },
+    {
+      "title": "2023專題競賽第二名",
+      "date": "2023-12-01",
+      "summary": "2023專題競賽第二名。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1263_7941076_58942.png",
+      "href": ""
+    },
+    {
+      "title": "2023專題競賽第一名",
+      "date": "2023-12-01",
+      "summary": "2023專題競賽第一名。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1264_7625540_58932.png",
+      "href": ""
+    },
+    {
+      "title": "2023金象盃佳作",
+      "date": "2023-12-01",
+      "summary": "2023金象盃佳作。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1265_5068868_58907.png",
+      "href": ""
+    },
+    {
+      "title": "2023金象盃優勝",
+      "date": "2023-12-01",
+      "summary": "2023金象盃優勝。",
+      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1268_8345816_58892.png",
+      "href": ""
+    }
+  ],
+  "originalHome": {
+    "title": "原系網內容整理",
+    "summary": "",
+    "teachingFeatures": [
+      "產學合作專題",
+      "Windows與Mac雙平台環境",
+      "游泳者追蹤偵測",
+      "AI 影像辨識",
+      "四軸飛行器程式開發",
+      "飛行機器人"
+    ],
+    "campusLinks": [
+      {
+        "label": "招生訊息(另開新視窗)",
+        "href": "https://recruit.ncut.edu.tw/"
+      },
+      {
+        "label": "地圖與交通資訊(另開新視窗)",
+        "href": "https://www.ncut.edu.tw/p/412-1000-6947.php?Lang=zh-tw"
+      },
+      {
+        "label": "勤益科大新鮮人服務網(另開新視窗)",
+        "href": "https://freshman.ncut.edu.tw/p/412-1038-82.php?Lang=zh-tw"
+      },
+      {
+        "label": "勤益科大首頁(另開新視窗)",
+        "href": "https://www.ncut.edu.tw/"
+      },
+      {
+        "label": "單簽E化平台(另開新視窗)",
+        "href": "https://sso.ncut.edu.tw/login.php"
+      },
+      {
+        "label": "校務行政系統-學生篇(另開新視窗)",
+        "href": "https://nmsd.ncut.edu.tw/wbcmss/"
+      },
+      {
+        "label": "數位學習平台(另開新視窗)",
+        "href": "https://elearn.ncut.edu.tw/inner.php?link"
+      },
+      {
+        "label": "勤益科大校園地圖(另開新視窗)",
+        "href": "https://www.ncut.edu.tw/var/file/0/1000/img/195/652677467.pdf"
+      },
+      {
+        "label": "學生請假系統(另開新視窗)",
+        "href": "https://stdl.ncut.edu.tw/StdL/Web/main.html"
+      },
+      {
+        "label": "開課查詢系統(另開新視窗)",
+        "href": "https://nmsd.ncut.edu.tw/wbcmss/Query/CourseView"
+      },
+      {
+        "label": "圖書館(另開新視窗)",
+        "href": "https://library.ncut.edu.tw/?Lang=zh-tw"
+      },
+      {
+        "label": "校內外獎助學金(另開新視窗)",
+        "href": "https://scholarship.ncut.edu.tw/"
+      },
+      {
+        "label": "畢業門檻(另開新視窗)",
+        "href": "https://nmsd.ncut.edu.tw/wbcmss/Graduate"
+      },
+      {
+        "label": "行事曆(另開新視窗)",
+        "href": "https://www.ncut.edu.tw/p/412-1000-856.php?Lang=zh-tw"
+      },
+      {
+        "label": "證照管理系統(另開新視窗)",
+        "href": "https://ncutbase.ncut.edu.tw/ncutotc/"
+      },
+      {
+        "label": "學生網路郵局(Webmail)(另開新視窗)",
+        "href": "https://student.ncut.edu.tw/EIP/cc_login.php?sslall=1"
+      },
+      {
+        "label": "教務處【註冊組】表單下載(另開新視窗)",
+        "href": "https://oaa.ncut.edu.tw/p/412-1009-2714.php?Lang=zh-tw"
+      },
+      {
+        "label": "學生就學貸款規章與辦法(另開新視窗)",
+        "href": "https://nmsd.ncut.edu.tw/Loan/Web/index.html"
+      },
+      {
+        "label": "勤益學生校外租屋資訊網(另開新視窗)",
+        "href": "https://rent.ncut.edu.tw/rent2018/"
+      },
+      {
+        "label": "地址",
+        "href": "https://goo.gl/maps/nch4BpKbVPGS5jsZ7"
+      },
+      {
+        "label": "map",
+        "href": "https://goo.gl/maps/nch4BpKbVPGS5jsZ7"
+      }
+    ],
+    "archiveCards": [
+      {
+        "title": "國立勤益科技大學 - 人工智慧應用工程系",
+        "id": 0,
+        "summary": "國立勤益科技大學 - 人工智慧應用工程系 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 校內連結"
+      },
+      {
+        "title": "系所介紹",
+        "id": 1,
+        "summary": "系所介紹 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所介紹"
+      },
+      {
+        "title": "系所成員",
+        "id": 2,
+        "summary": "系所成員 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所成員"
+      },
+      {
+        "title": "讀取失敗",
+        "id": 3,
+        "summary": ""
+      },
+      {
+        "title": "學分計畫表",
+        "id": 4,
+        "summary": "學分計畫表 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 大學部"
+      },
+      {
+        "title": "產學攜手合作專班",
+        "id": 5,
+        "summary": "產學攜手合作專班 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 產攜專班"
+      },
+      {
+        "title": "海外青年技術訓練班",
+        "id": 6,
+        "summary": "海外青年技術訓練班 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 海青專班"
+      },
+      {
+        "title": "聯絡我們",
+        "id": 7,
+        "summary": "聯絡我們 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 首頁"
+      },
+      {
+        "title": "系所公告",
+        "id": 8,
+        "summary": "系所公告 / 2026-05-15 / 【重要通知】115學年度四技甄選入學招生-第二階段各指定項目試題範圍及範例公告 / 2026-04-29 / 本系學生參與電資學院跨校計畫 共同推動基隆河無人機智慧監測應用 / 2026-04-27 / 【恭賀】本系學生伍義光同學，榮獲2026年 SCF程速勁賽 第三名 / 2026-04-22 / 【活動公告】115年度夢想啟航校園徵才博覽會 / 2026-04-10 / 【學生公告】114學年度暑期課程學生聯署調查表開放填寫 / MORE"
+      },
+      {
+        "title": "吳憲珠",
+        "id": 9,
+        "summary": "吳憲珠 / Hsien-Chu Wu / 信箱：wuhc@ncut.edu.tw / 電話：04-23924505 分機 8542 / 程榮祥 / Rung-Shiang Cheng / 信箱：rscheng@ncut.edu.tw / 電話：04-23924505 分機 8546 / 陳彥佑 / Yen-Yu Chen / 信箱：aicyy@ncut.edu.tw / 電話：04-23924505 分機 8539"
+      },
+      {
+        "title": "系所沿革",
+        "id": 10,
+        "summary": "系所沿革 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所介紹"
+      },
+      {
+        "title": "教學宗旨",
+        "id": 11,
+        "summary": "教學宗旨 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所介紹"
+      },
+      {
+        "title": "發展方向",
+        "id": 12,
+        "summary": "發展方向 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所介紹"
+      },
+      {
+        "title": "課程與就業",
+        "id": 13,
+        "summary": "課程與就業 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所介紹"
+      },
+      {
+        "title": "專業實驗室",
+        "id": 14,
+        "summary": "專業實驗室 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所介紹"
+      },
+      {
+        "title": "本校校務發展",
+        "id": 15,
+        "summary": "本校校務發展 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所介紹"
+      },
+      {
+        "title": "系所介紹",
+        "id": 16,
+        "summary": "系所介紹 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所介紹"
+      },
+      {
+        "title": "系所沿革",
+        "id": 17,
+        "summary": "系所沿革 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所介紹"
+      },
+      {
+        "title": "教學宗旨",
+        "id": 18,
+        "summary": "教學宗旨 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所介紹"
+      },
+      {
+        "title": "發展方向",
+        "id": 19,
+        "summary": "發展方向 / 國立勤益科技大學 - 人工智慧應用工程系 / 招生訊息 / 系所介紹 / 系所成員 / 教師專區 / 學生專區 / 產學攜手合作專班 / 海外青年技術訓練班 / 聯絡我們 / 首頁 / 系所介紹"
+      }
+    ]
+  }
+}
