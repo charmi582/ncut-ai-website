@@ -4,7 +4,7 @@
     "subtitle": "Department of Artificial Intelligence and Computer Engineering",
     "logo": "./assets/ai-official-icon.png",
     "footerLogo": "./assets/ai-official-icon.png",
-    "defaultImage": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1436_2272241_19992.png",
+    "defaultImage": "./assets/optimized/S__18858244_0.webp",
     "copyright": "國立勤益科技大學 人工智慧應用工程系 © Department of Artificial Intelligence and Computer Engineering, National Chin-Yi University of Technology. All rights reserved."
   },
   "contact": {
@@ -18,7 +18,7 @@
       "kicker": "NCUT AI Engineering",
       "title": "把人工智慧做成能落地的工程能力",
       "text": "以 AI 影像辨識、智慧控制、飛行機器人與產學合作專題為核心，培育能整合軟硬體、資料與應用場域的新世代工程人才。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1436_2272241_19992.png",
+      "image": "./assets/optimized/S__18858244_0.webp",
       "position": "center center",
       "video": "https://www.youtube.com/embed/ZFy_9ASLVWo?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=ZFy_9ASLVWo&playsinline=1&modestbranding=1",
       "primary": {
@@ -123,7 +123,7 @@
       "kicker": "教學特色",
       "title": "產學合作專題",
       "text": "以產業需求與實作專題連接課程，培養學生整合 AI、軟體與應用場域的工程能力。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1436_2272241_19992.png",
+      "image": "./assets/optimized/S__18858244_0.webp",
       "primary": {
         "label": "招生資訊",
         "href": "./page.html?slug=history"
@@ -205,11 +205,6 @@
       "kicker": "Students",
       "label": "學生專區",
       "href": "./page.html?slug=student-zone"
-    },
-    {
-      "kicker": "Archive",
-      "label": "官方資訊庫",
-      "href": "./official.html"
     }
   ],
   "homeFeatures": [

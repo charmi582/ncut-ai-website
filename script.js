@@ -13,7 +13,9 @@ const linkTarget = (href = "") => String(href).startsWith("http") ? "_blank" : "
 const isExternalHref = (href = "") => /^https?:\/\//i.test(String(href));
 const isOriginalDeptLink = (href = "") => /^https?:\/\/(n063|ai)\.ncut\.edu\.tw/i.test(String(href));
 const archiveKey = (href = "") => String(href).replace(/^https?:\/\/(n063|ai)\.ncut\.edu\.tw/i, "").replace(/#.*$/, "");
-const isLegacyImportEntry = (item = {}) => /原系網|匯入資料/.test(`${item.label || ""} ${item.title || ""} ${item.type || ""}`) || String(item.href || "").includes("official-detail.html");
+const isRetiredOfficialHref = (href = "") => /official(?:-detail)?\.html/i.test(String(href));
+const isLegacyImportEntry = (item = {}) => /原系網|匯入資料/.test(`${item.label || ""} ${item.title || ""} ${item.type || ""}`) || isRetiredOfficialHref(item.href);
+const isBlockedSiteImage = (src = "") => /linkdet_1436_2272241_19992\.png/i.test(String(src));
 const pageLoader = createPageLoader();
 
 function createPageLoader() {
@@ -58,9 +60,7 @@ function archiveLink(link, archive) {
   const rawLabel = cleanLabel(link.label || link.title || "");
   if (/^(跳到主要內容區|首頁|回首頁|English|:::|LINK)$/i.test(rawLabel)) return null;
   if (!isOriginalDeptLink(href)) return { href, label: rawLabel || href, external: href.startsWith("http") };
-  const index = archive.pages.findIndex((page) => archiveKey(page.url) === archiveKey(href));
-  if (index < 0) return null;
-  return { href: `./official-detail.html?id=${index}`, label: rawLabel || archive.pages[index].title, external: false };
+  return null;
 }
 
 async function loadSite() {
@@ -68,6 +68,7 @@ async function loadSite() {
   if (!response.ok) throw new Error(`site.json ${response.status}`);
   siteData = await response.json();
   normalizeSiteData();
+  document.body.classList.toggle("is-inner-page", !$("[data-hero]"));
   renderShared();
   renderMegaMenu();
   if ($("[data-hero]")) renderHome();
@@ -142,7 +143,6 @@ function renderShared() {
     <a href="./page.html?slug=curriculum-careers">課程就業</a>
     <a href="./page.html?slug=labs">專業實驗室</a>
     <a href="./campus-links.html">校內連結</a>
-    <a href="./official.html">官方資訊庫</a>
     <a href="./news.html">最新消息</a>
     <a href="#contact">聯絡我們</a>`;
   $$("nav.site-nav").forEach((nav) => { nav.innerHTML = navMarkup; });
@@ -175,7 +175,7 @@ function markActiveNav() {
     path === "faculty.html" || path === "faculty-detail.html" ? "faculty" :
     path === "awards.html" ? "awards" :
     path === "campus-links.html" ? "campus" :
-    path === "official.html" || path === "official-detail.html" || path === "resources.html" || path === "original.html" ? "official" :
+    path === "resources.html" || path === "original.html" ? "resources" :
     path === "news.html" ? "news" :
     path === "page.html" && ["curriculum-careers"].includes(slug) ? "curriculum" :
     path === "page.html" && ["labs"].includes(slug) ? "labs" :
@@ -185,7 +185,6 @@ function markActiveNav() {
     const key = href.includes("faculty") ? "faculty" :
       href.includes("awards") ? "awards" :
       href.includes("campus-links") ? "campus" :
-      href.includes("official") ? "official" :
       href.includes("news") ? "news" :
       href.includes("curriculum-careers") ? "curriculum" :
       href.includes("labs") ? "labs" :
@@ -287,7 +286,7 @@ function updateDocumentMeta(title = document.title, description = "") {
         publisher: { "@id": `${siteRoot}#organization` },
         potentialAction: {
           "@type": "SearchAction",
-          target: `${siteRoot}official.html?q={search_term_string}`,
+          target: `${siteRoot}news.html?q={search_term_string}`,
           "query-input": "required name=search_term_string"
         }
       },
@@ -433,10 +432,8 @@ function renderMegaMenu() {
         <h2>快速入口</h2>
         <a href="./faculty.html">師資陣容</a>
         <a href="./news.html">最新消息</a>
-        <a href="./official.html">官方資訊庫</a>
         <a href="./awards.html">獲獎資訊</a>
         <a href="./campus-links.html">校內連結</a>
-        <a href="./resources.html">文件與資源索引</a>
       </section>
     </div>`;
 }
@@ -458,7 +455,9 @@ function renderHome() {
   $("[data-dots]").setAttribute("aria-label", "主視覺輪播分頁");
   $("[data-dots]").innerHTML = siteData.hero.map((slide, index) => `<button type="button" class="${index === 0 ? "is-active" : ""}" data-dot="${index}" aria-label="切換主視覺 ${index + 1}：${esc(slide.title)}" aria-controls="hero-slide-${index}" ${index === 0 ? `aria-current="true"` : ""}></button>`).join("");
   $("[data-metrics]").innerHTML = siteData.metrics.map((item) => `<div><strong>${esc(item.value)}</strong><span>${esc(item.label)}</span></div>`).join("");
-  $("[data-quick-links]").innerHTML = siteData.quickLinks.map((link) => `<a href="${esc(link.href)}"><span>${esc(link.kicker)}</span><strong>${esc(link.label)}</strong></a>`).join("");
+  $("[data-quick-links]").innerHTML = siteData.quickLinks
+    .filter((link) => !isRetiredOfficialHref(link.href) && !/官方(?:資訊|資料)庫/.test(link.label || ""))
+    .map((link) => `<a href="${esc(link.href)}"><span>${esc(link.kicker)}</span><strong>${esc(link.label)}</strong></a>`).join("");
   $("[data-feature-cards]").innerHTML = siteData.homeFeatures.map((item, index) => `<article><span class="card-index">${String(index + 1).padStart(2, "0")}</span><h3>${esc(item.title)}</h3><p>${esc(item.text)}</p></article>`).join("");
   $("[data-page-modules]").innerHTML = siteData.pages.slice(0, 6).map((page, index) => `<article class="module-card"><span class="module-index">${String(index + 1).padStart(2, "0")}</span><h3>${esc(page.title)}</h3><p>${esc(page.summary)}</p><a href="./page.html?slug=${esc(page.slug)}">閱讀內容</a></article>`).join("");
   $("[data-faculty-preview]").innerHTML = siteData.faculty.slice(0, 6).map(renderFacultyCard).join("");
@@ -499,9 +498,9 @@ function renderNewsWidgets() {
         <span class="news-category">${esc(item.category || "系所公告")}</span>
         <strong>${esc(item.title)}</strong>
         ${item.summary ? `<p>${esc(item.summary)}</p>` : ""}
-        <small>${item.href ? "查看公告" : "本站公告"}</small>
+        <small>${item.href && !isRetiredOfficialHref(item.href) ? "查看公告" : "本站公告"}</small>
       </div>`;
-    return item.href ? `<a class="news-item" href="${esc(item.href)}" target="${linkTarget(item.href)}">${body}</a>` : `<article class="news-item">${body}</article>`;
+    return item.href && !isRetiredOfficialHref(item.href) ? `<a class="news-item" href="${esc(item.href)}" target="${linkTarget(item.href)}">${body}</a>` : `<article class="news-item">${body}</article>`;
   }).join("");
   list?.setAttribute("aria-busy", "false");
   if (pagination) {
@@ -542,7 +541,7 @@ function renderPage() {
         <small>${esc(page.group || "NCUT")}</small>
       </div>
     </section>
-    ${page.image ? `<figure class="page-image"><img src="${esc(page.image)}" alt="${esc(page.title)}"></figure>` : ""}
+    ${page.image && page.slug !== "history" && !isBlockedSiteImage(page.image) ? `<figure class="page-image"><img src="${esc(page.image)}" alt="${esc(page.title)}"></figure>` : ""}
     <div class="content-section-stack">
       ${page.sections.map((section) => `
         <section class="content-section">
@@ -561,11 +560,55 @@ function renderPage() {
 }
 
 function renderPageEnhancements(page) {
+  if (page.slug === "history") return renderHistoryEnhancement();
   if (page.slug === "curriculum-careers") return renderCurriculumEnhancement();
   if (page.slug === "labs") return renderLabEnhancement();
   if (page.slug === "student-zone") return renderStudentEnhancement();
   if (["industry-program", "overseas-youth"].includes(page.slug)) return renderSpecialProgramEnhancement(page.slug);
   return "";
+}
+
+function renderHistoryEnhancement() {
+  const timeline = [
+    {
+      year: "2021",
+      title: "教育部核准成立",
+      text: "人工智慧應用工程系奉准設立，回應智慧科技與 AI 應用人才需求。"
+    },
+    {
+      year: "2022",
+      title: "招收四技日間學制第一屆",
+      text: "正式招收四技日間部學生，建立 AI 工程實作與跨域課程基礎。"
+    },
+    {
+      year: "2023",
+      title: "專班與技優管道拓展",
+      text: "設立產學攜手專班、海外青年技術訓練班與四技技優專班，擴大多元培育路徑。"
+    },
+    {
+      year: "2024",
+      title: "設立四技進修部學制",
+      text: "延伸進修部學制，提供在職與多元學習者進入 AI 應用工程領域的管道。"
+    }
+  ];
+  return `
+    <section class="page-feature-block history-timeline-block">
+      <p class="section-kicker">Department Timeline</p>
+      <h2>系所發展時間軸</h2>
+      <div class="history-timeline">
+        ${timeline.map((item, index) => `
+          <article class="history-timeline-item">
+            <span class="history-year">${esc(item.year)}</span>
+            <div>
+              <small>${String(index + 1).padStart(2, "0")}</small>
+              <h3>${esc(item.title)}</h3>
+              <p>${esc(item.text)}</p>
+            </div>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
 }
 
 function renderCurriculumEnhancement() {
@@ -734,6 +777,38 @@ function cleanStudentPageText(page) {
   return lines.filter((line, index) => lines.indexOf(line) === index);
 }
 
+function studentResourceMedia(images = []) {
+  const skipImage = /(\/images\/icon\/|pdf\.gif|doc\.gif|xls\.gif|ppt\.gif|zip\.gif|mail\.gif|print\.gif|msys_1063_6835814_22293\.png)/i;
+  const skipAlt = /(logo|map|地址|頁面圖片|友善列印)/i;
+  return images
+    .filter((image) => image?.src && !skipImage.test(image.src) && !isBlockedSiteImage(image.src))
+    .filter((image) => !skipAlt.test(String(image.alt || "").trim()))
+    .filter((image, index, list) => list.findIndex((item) => item.src === image.src) === index);
+}
+
+function studentResourceType(link = {}) {
+  const text = `${link.label || ""} ${link.href || ""}`.toLowerCase();
+  if (/\.pdf(\?|$)/.test(text)) return "PDF";
+  if (/\.(doc|docx)(\?|$)/.test(text)) return "Word";
+  if (/\.(xls|xlsx)(\?|$)/.test(text)) return "Excel";
+  if (/\.(ppt|pptx)(\?|$)/.test(text)) return "簡報";
+  if (/nmsd|stdl|elearn|sso|webmail|system|query|graduate/.test(text)) return "校務系統";
+  if (link.external) return "外部入口";
+  return "本站內容";
+}
+
+function studentResourceCard(link = {}) {
+  const type = studentResourceType(link);
+  const icon = type === "PDF" ? "PDF" : type === "Word" ? "DOC" : type === "Excel" ? "XLS" : type === "簡報" ? "PPT" : type === "校務系統" ? "SYS" : type === "外部入口" ? "EXT" : "AI";
+  return `<a class="student-resource-link-card" href="${esc(link.href)}" target="${link.external ? "_blank" : "_self"}" rel="noreferrer">
+    <span class="student-resource-filetype">${esc(icon)}</span>
+    <span class="student-resource-link-copy">
+      <strong>${esc(link.label)}</strong>
+      <small>${esc(type)}</small>
+    </span>
+  </a>`;
+}
+
 async function renderStudentResourceDetail() {
   const archive = await fetch("./data/official-pages.json", { cache: "no-store" }).then((r) => r.json());
   const resourceItems = studentResourceIndex();
@@ -748,9 +823,14 @@ async function renderStudentResourceDetail() {
   const bodyLines = cleanStudentPageText(page);
   const links = (page.links || []).map((link) => normalizeStudentResourceLink(link, archive, id)).filter(Boolean);
   const resources = links.filter((link, index, list) => list.findIndex((item) => item.href === link.href && item.label === link.label) === index);
+  const mediaImages = studentResourceMedia(page.images || []);
+  const primaryImage = mediaImages[0];
+  const supportingImages = mediaImages.slice(1);
+  const summaryLines = bodyLines.slice(0, 3);
+  const detailLines = bodyLines.slice(3);
   updateDocumentMeta(`${current.title || page.title} - 學生專區`, current.summary || bodyLines.slice(0, 2).join(" "));
   $("[data-student-side-nav]").innerHTML = (siteData.studentResources || []).map((item) => {
-    const href = item.href?.includes("official-detail.html") ? item.href.replace("official-detail.html", "student-resource.html") : item.href;
+    const href = isRetiredOfficialHref(item.href) ? item.href.replace(/official-detail\.html/i, "student-resource.html") : item.href;
     const active = String(item.href || "").includes(`id=${id}`) || (item.children || []).some((child) => String(child.href || "").includes(`id=${id}`));
     return `<a class="${active ? "is-active" : ""}" ${active ? `aria-current="page"` : ""} href="${esc(href)}" target="${linkTarget(href)}" rel="noreferrer">${esc(item.title)}</a>`;
   }).join("");
@@ -764,13 +844,22 @@ async function renderStudentResourceDetail() {
       </div>
       <div class="content-hero-mark" aria-hidden="true"><img src="${esc(siteData.identity.logo)}" alt=""><small>Student</small></div>
     </section>
-    ${page.images?.length ? `<figure class="page-image student-resource-image"><img src="${esc(page.images[0].src)}" alt="${esc(page.images[0].alt || page.title)}"></figure>` : ""}
-    <section class="content-section student-resource-body">
-      <h2>內容整理</h2>
-      ${bodyLines.length ? `<div class="student-detail-lines">${bodyLines.map((line) => `<p>${esc(line)}</p>`).join("")}</div>` : `<p>此項目主要提供文件或系統入口，請使用下方相關入口查看。</p>`}
+    <section class="student-resource-overview">
+      <article><span>Category</span><strong>${esc(current.category || "學生專區")}</strong></article>
+      <article><span>Resources</span><strong>${resources.length}</strong></article>
+      <article><span>Media</span><strong>${mediaImages.length}</strong></article>
     </section>
-    ${resources.length ? `<section class="content-section related-links student-resource-links"><h2>相關入口與文件</h2><div class="related-link-grid">${resources.map((link) => `<a href="${esc(link.href)}" target="${link.external ? "_blank" : "_self"}" rel="noreferrer">${esc(link.label)}</a>`).join("")}</div></section>` : ""}
-    ${(page.images || []).length > 1 ? `<section class="content-section"><h2>圖片資料</h2><div class="image-resource-grid">${(page.images || []).slice(1).map((image) => `<figure><img src="${esc(image.src)}" alt="${esc(image.alt || "頁面圖片")}"><figcaption>${esc(image.alt || "頁面圖片")}</figcaption></figure>`).join("")}</div></section>` : ""}
+    ${primaryImage ? `<figure class="page-image student-resource-image student-resource-primary-media"><button class="image-zoom-trigger" type="button" data-lightbox-src="${esc(primaryImage.src)}" data-lightbox-alt="${esc(primaryImage.alt || page.title)}" aria-label="放大檢視${esc(primaryImage.alt || current.title || page.title)}"><img src="${esc(primaryImage.src)}" alt="${esc(primaryImage.alt || page.title)}"><span>放大檢視</span></button><figcaption>${esc(primaryImage.alt || current.title || page.title)}</figcaption></figure>` : ""}
+    <section class="content-section student-resource-body">
+      <div class="student-section-head">
+        <p class="section-kicker">整理內容</p>
+        <h2>頁面重點</h2>
+      </div>
+      ${summaryLines.length ? `<div class="student-detail-lines featured">${summaryLines.map((line) => `<p>${esc(line)}</p>`).join("")}</div>` : `<p>此項目主要提供文件或系統入口，請使用下方相關入口查看。</p>`}
+      ${detailLines.length ? `<details class="student-detail-more"><summary>展開完整文字資料</summary><div>${detailLines.map((line) => `<p>${esc(line)}</p>`).join("")}</div></details>` : ""}
+    </section>
+    ${resources.length ? `<section class="content-section related-links student-resource-links"><div class="student-section-head"><p class="section-kicker">Links & Files</p><h2>相關入口與文件</h2></div><div class="student-resource-card-grid">${resources.map(studentResourceCard).join("")}</div></section>` : ""}
+    ${supportingImages.length ? `<section class="content-section student-media-section"><div class="student-section-head"><p class="section-kicker">Media</p><h2>圖片資料</h2></div><div class="image-resource-grid student-image-grid">${supportingImages.map((image) => `<figure><button class="image-zoom-trigger" type="button" data-lightbox-src="${esc(image.src)}" data-lightbox-alt="${esc(image.alt || "頁面圖片")}" aria-label="放大檢視${esc(image.alt || "頁面圖片")}"><img src="${esc(image.src)}" alt="${esc(image.alt || "頁面圖片")}"><span>放大檢視</span></button><figcaption>${esc(image.alt || "頁面圖片")}</figcaption></figure>`).join("")}</div></section>` : ""}
   `;
   enhanceRenderedMediaAndLinks($("[data-student-detail]"));
   enhanceRenderedMediaAndLinks($("[data-student-side-nav]"));
@@ -936,11 +1025,13 @@ function renderOriginalHome() {
     <section class="original-block">
       <p class="section-kicker">Archive Pages</p>
       <h2>系所頁面資料</h2>
-      <div class="archive-grid original-grid">${(original.archiveCards || []).map((page) => `<article class="archive-card"><p class="archive-source">本站資料頁</p><h2><a href="./official-detail.html?id=${page.id}">${esc(page.title)}</a></h2><p>${esc(page.summary)}</p></article>`).join("")}</div>
+      <div class="archive-grid original-grid">${(original.archiveCards || []).map((page) => `<article class="archive-card"><p class="archive-source">本站資料頁</p><h2>${esc(page.title)}</h2><p>${esc(page.summary)}</p></article>`).join("")}</div>
     </section>`;
 }
 
 async function renderOfficialArchive() {
+  location.replace("./");
+  return;
   const archive = await fetch("./data/official-pages.json", { cache: "no-store" }).then((r) => r.json());
   const meta = $("[data-archive-meta]");
   const list = $("[data-official-list]");
@@ -981,16 +1072,18 @@ async function renderOfficialArchive() {
     list.innerHTML = pages.length ? pages.map((page, index) => {
       const links = (page.links || []).map((link) => archiveLink(link, archive)).filter(Boolean);
       const category = officialCategory(page);
+      const cardImages = (page.images || []).filter((image) => !isBlockedSiteImage(image.src));
+      const cardImage = cardImages[0];
       return `
         <article class="archive-card">
           <div class="archive-card-head">
             <span class="archive-number">${String(index + 1).padStart(2, "0")}</span>
             <p class="archive-source">${esc(category)}</p>
           </div>
-          <h2><a href="./official-detail.html?id=${page.id ?? archive.pages.indexOf(page)}">${esc(page.title)}</a></h2>
+          <h2>${esc(page.title)}</h2>
           <p>${esc((page.text || []).slice(0, 9).join(" / "))}</p>
-          <div class="archive-card-meta"><span>本站資料頁</span><span>${links.length} 個連結</span><span>${page.images?.length || 0} 張圖片</span></div>
-          ${page.images?.length ? `<img src="${esc(page.images[0].src)}" alt="${esc(page.images[0].alt || page.title)}">` : ""}
+          <div class="archive-card-meta"><span>本站資料頁</span><span>${links.length} 個連結</span><span>${cardImages.length} 張圖片</span></div>
+          ${cardImage ? `<img src="${esc(cardImage.src)}" alt="${esc(cardImage.alt || page.title)}">` : ""}
           <details>
             <summary>查看頁面文字${links.length ? "與可用連結" : ""}</summary>
             <div class="archive-text">${(page.text || []).slice(0, 80).map((line) => `<p>${esc(line)}</p>`).join("")}</div>
@@ -998,8 +1091,7 @@ async function renderOfficialArchive() {
           </details>
         </article>
       `;
-    }).join("") : renderEmptyState("找不到符合條件的官方資料", "請嘗試縮短關鍵字、切換分類，或回到全部資料瀏覽原系網匯入內容。", [
-      { label: "返回官方資訊庫", href: "./official.html", className: "text-link" },
+    }).join("") : renderEmptyState("找不到符合條件的資料", "請嘗試縮短關鍵字、切換分類，或回到最新消息查看公開資訊。", [
       { label: "查看最新消息", href: "./news.html", className: "text-link" }
     ]);
     meta.innerHTML = `<strong>${pages.length}</strong> / ${archive.pageCount} 頁符合「${esc(activeCategory)}」與搜尋條件。系所內容由本站資料頁承接，其他外部資源保留。資料更新時間：${esc(archive.generatedAt)}`;
@@ -1038,15 +1130,15 @@ async function renderResources() {
       const haystack = `${item.label} ${item.href}`.toLowerCase();
       return !isOriginalDeptLink(item.href) && (!query || haystack.includes(query));
     });
-    meta.innerHTML = `<strong>${resources.length}</strong> / ${archive.resourceCount} 個外部與文件資源符合搜尋。系所內容請改由官方資訊庫本站資料頁瀏覽。資料更新時間：${esc(archive.generatedAt)}`;
+    meta.innerHTML = `<strong>${resources.length}</strong> / ${archive.resourceCount} 個外部與文件資源符合搜尋。系所內容請改由本站各分類頁瀏覽。資料更新時間：${esc(archive.generatedAt)}`;
     list.innerHTML = resources.length ? resources.map((item) => `
       <a class="resource-item" href="${esc(item.href)}" target="_blank" rel="noreferrer">
         <span>${esc(resourceType(item.href))}</span>
         <strong>${esc(item.label || item.href)}</strong>
         <small>${esc(item.href)}</small>
-      </a>`).join("") : renderEmptyState("找不到符合條件的文件或資源", "請改用其他關鍵字搜尋，或返回官方資訊庫瀏覽完整資料索引。", [
+      </a>`).join("") : renderEmptyState("找不到符合條件的文件或資源", "請改用其他關鍵字搜尋，或回到最新消息查看目前公開資訊。", [
       { label: "清除搜尋", href: "./resources.html", className: "text-link" },
-      { label: "官方資訊庫", href: "./official.html", className: "text-link" }
+      { label: "查看最新消息", href: "./news.html", className: "text-link" }
     ]);
     enhanceRenderedMediaAndLinks(list);
   };
@@ -1068,23 +1160,26 @@ function resourceType(href) {
 }
 
 async function renderOfficialDetail() {
+  location.replace("./");
+  return;
   const archive = await fetch("./data/official-pages.json", { cache: "no-store" }).then((r) => r.json());
   const id = Number(new URLSearchParams(location.search).get("id") || 0);
   const page = archive.pages[id] || archive.pages[0];
   const visibleLinks = (page.links || []).map((link) => archiveLink(link, archive)).filter(Boolean);
-  updateDocumentMeta(`${page.title} - 官方資訊庫`, (page.text || []).slice(0, 3).join(" "));
+  const pageImages = (page.images || []).filter((image) => !isBlockedSiteImage(image.src));
+  updateDocumentMeta(`${page.title} - 資料頁`, (page.text || []).slice(0, 3).join(" "));
   $("[data-official-detail]").innerHTML = `
-    <nav class="breadcrumb" aria-label="麵包屑"><a href="./">首頁</a><a href="./official.html">官方資訊庫</a><span>${esc(page.title)}</span></nav>
+    <nav class="breadcrumb" aria-label="麵包屑"><a href="./">首頁</a><span>${esc(page.title)}</span></nav>
     <p class="section-kicker">Official Archive</p>
     <h1>${esc(page.title)}</h1>
     <p class="local-note">本頁內容已整理為新網站資料頁；校外與校內系統連結保留外部入口。</p>
-    ${page.images?.length ? `<figure class="official-hero-image"><img src="${esc(page.images[0].src)}" alt="${esc(page.images[0].alt || page.title)}"></figure>` : ""}
+    ${pageImages.length ? `<figure class="official-hero-image"><img src="${esc(pageImages[0].src)}" alt="${esc(pageImages[0].alt || page.title)}"></figure>` : ""}
     <section class="content-section official-text-section">
       <h2>頁面內容</h2>
       <div class="official-text-stack">${(page.text || []).map((line) => `<p>${esc(line)}</p>`).join("")}</div>
     </section>
     ${visibleLinks.length ? `<section class="content-section related-links"><h2>相關入口</h2><div class="related-link-grid">${visibleLinks.map((link) => `<a href="${esc(link.href)}" target="${link.external ? "_blank" : "_self"}" rel="noreferrer">${esc(link.label || link.href)}</a>`).join("")}</div></section>` : ""}
-    ${(page.images || []).length > 1 ? `<section class="content-section"><h2>圖片資源</h2><div class="image-resource-grid">${(page.images || []).slice(1).map((image) => `<figure><img src="${esc(image.src)}" alt="${esc(image.alt || "頁面圖片")}"><figcaption>${esc(image.alt || "頁面圖片")}</figcaption></figure>`).join("")}</div></section>` : ""}
+    ${pageImages.length > 1 ? `<section class="content-section"><h2>圖片資源</h2><div class="image-resource-grid">${pageImages.slice(1).map((image) => `<figure><img src="${esc(image.src)}" alt="${esc(image.alt || "頁面圖片")}"><figcaption>${esc(image.alt || "頁面圖片")}</figcaption></figure>`).join("")}</div></section>` : ""}
   `;
   enhanceRenderedMediaAndLinks($("[data-official-detail]"));
 }
@@ -1448,8 +1543,55 @@ function enhanceRenderedMediaAndLinks(root = document) {
       image.src = siteData?.identity?.logo || "./assets/ai-official-icon.png";
     });
   });
+  $$("[data-lightbox-src]", root).forEach((trigger) => {
+    if (trigger.dataset.lightboxReady) return;
+    trigger.dataset.lightboxReady = "true";
+    trigger.addEventListener("click", () => {
+      openImageLightbox(trigger.dataset.lightboxSrc, trigger.dataset.lightboxAlt || trigger.querySelector("img")?.alt || "圖片資料");
+    });
+  });
   updateBreadcrumbSchema();
 }
+
+function openImageLightbox(src, alt = "圖片資料") {
+  if (!src) return;
+  document.querySelector(".image-lightbox")?.remove();
+  const lightbox = document.createElement("div");
+  lightbox.className = "image-lightbox";
+  lightbox.setAttribute("role", "dialog");
+  lightbox.setAttribute("aria-modal", "true");
+  lightbox.setAttribute("aria-label", alt || "圖片放大檢視");
+  lightbox.innerHTML = `
+    <div class="image-lightbox-panel">
+      <button class="image-lightbox-close" type="button" aria-label="關閉圖片檢視">×</button>
+      <img src="${esc(src)}" alt="${esc(alt)}">
+      <p>${esc(alt)}</p>
+    </div>
+  `;
+  document.body.append(lightbox);
+  document.body.classList.add("has-lightbox");
+  const close = () => {
+    lightbox.remove();
+    document.body.classList.remove("has-lightbox");
+    document.removeEventListener("keydown", onKeydown);
+  };
+  const onKeydown = (event) => {
+    if (event.key === "Escape") close();
+  };
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox || event.target.closest(".image-lightbox-close")) close();
+  });
+  document.addEventListener("keydown", onKeydown);
+  lightbox.querySelector(".image-lightbox-close")?.focus();
+}
+
+window.openImageLightbox = openImageLightbox;
+
+document.addEventListener("click", (event) => {
+  const trigger = event.target.closest("[data-lightbox-src]");
+  if (!trigger) return;
+  openImageLightbox(trigger.dataset.lightboxSrc, trigger.dataset.lightboxAlt || trigger.querySelector("img")?.alt || "圖片資料");
+});
 
 loadSite().catch(renderSiteError);
 
