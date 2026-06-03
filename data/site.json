@@ -20,7 +20,7 @@
       "text": "以 AI 影像辨識、智慧控制、飛行機器人與產學合作專題為核心，培育能整合軟硬體、資料與應用場域的新世代工程人才。",
       "image": "./assets/optimized/S__18858244_0.webp",
       "position": "center center",
-      "video": "https://www.youtube.com/embed/ZFy_9ASLVWo?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=ZFy_9ASLVWo&playsinline=1&modestbranding=1",
+      "video": "./assets/videos/0602.mp4",
       "primary": {
         "label": "招生資訊",
         "href": "https://recruit.ncut.edu.tw/"
@@ -916,12 +916,8 @@
   ],
   "videos": [
     {
-      "title": "人工智慧應用工程系介紹影片",
-      "embed": "https://www.youtube.com/embed/3t6qeF7h_jk?si=VlUcNuVbzEJ6rVw3"
-    },
-    {
-      "title": "人工智慧應用工程系系所影片",
-      "embed": "https://www.youtube.com/embed/-C8v0Llc5WE?si=rmtm5vo6_HrEtTOT"
+      "title": "國立勤益科技大學人工智慧應用工程系形象影片",
+      "embed": "./assets/videos/0602.mp4"
     }
   ],
   "careerPaths": [

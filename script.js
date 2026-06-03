@@ -441,7 +441,7 @@ function renderMegaMenu() {
 function renderHome() {
   $("[data-hero]").innerHTML = siteData.hero.map((slide, index) => `
     <article id="hero-slide-${index}" class="hero-slide ${index === 0 ? "is-active" : ""} ${slide.video ? "has-video" : ""}" role="group" aria-roledescription="slide" aria-label="${index + 1} / ${siteData.hero.length}：${esc(slide.title)}" aria-hidden="${index === 0 ? "false" : "true"}" style="--bg:url('${esc(slide.image)}');--pos:${esc(slide.position || "center center")}">
-      ${slide.video ? `<iframe class="hero-video" src="${esc(slide.video)}" title="${esc(slide.title)} 背景影片" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" loading="eager" tabindex="-1" aria-hidden="true"></iframe>` : ""}
+      ${renderHeroVideo(slide)}
       <div class="hero-copy">
         <p class="eyebrow">${esc(slide.kicker)}</p>
         ${index === 0 ? `<h1>${esc(slide.title)}</h1>` : `<h2>${esc(slide.title)}</h2>`}
@@ -463,8 +463,28 @@ function renderHome() {
   $("[data-faculty-preview]").innerHTML = siteData.faculty.slice(0, 6).map(renderFacultyCard).join("");
   renderAwardsCarousel();
   renderNewsWidgets();
-  $("[data-videos]").innerHTML = siteData.videos.map((video) => `<iframe src="${esc(video.embed)}" title="${esc(video.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`).join("");
+  $("[data-videos]").innerHTML = siteData.videos.map(renderMediaVideo).join("");
   startHero();
+}
+
+function isMp4Video(src = "") {
+  return /\.mp4(?:$|\?)/i.test(String(src));
+}
+
+function renderHeroVideo(slide = {}) {
+  if (!slide.video) return "";
+  if (isMp4Video(slide.video)) {
+    return `<video class="hero-video" src="${esc(slide.video)}" title="${esc(slide.title)} 背景影片" autoplay muted loop playsinline preload="metadata" tabindex="-1" aria-hidden="true"></video>`;
+  }
+  return `<iframe class="hero-video" src="${esc(slide.video)}" title="${esc(slide.title)} 背景影片" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" loading="eager" tabindex="-1" aria-hidden="true"></iframe>`;
+}
+
+function renderMediaVideo(video = {}) {
+  const src = video.embed || video.src || "";
+  if (isMp4Video(src)) {
+    return `<video class="media-video" src="${esc(src)}" title="${esc(video.title)}" controls playsinline preload="metadata"></video>`;
+  }
+  return `<iframe src="${esc(src)}" title="${esc(video.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
 }
 
 function renderNewsWidgets() {
@@ -1192,9 +1212,23 @@ function startHero() {
   const progress = $("[data-hero-progress]");
   const pauseButton = $("[data-hero-pause]");
   const hoverTargets = [$("[data-hero]"), $(".slider-controls"), $("[data-metrics]")].filter(Boolean);
+  const mobileHeroQuery = window.matchMedia("(max-width: 700px)");
   let userPaused = false;
   let interactionPaused = false;
   if (total) total.textContent = String(slides.length).padStart(2, "0");
+  const syncMobileHeroVideo = () => {
+    const isMobile = mobileHeroQuery.matches;
+    $$(".hero-video").forEach((media) => {
+      if (media.tagName !== "VIDEO") return;
+      media.toggleAttribute("data-mobile-paused", isMobile);
+      if (isMobile) {
+        media.pause();
+        media.currentTime = 0;
+      } else {
+        media.play?.().catch(() => {});
+      }
+    });
+  };
   const show = (index) => {
     heroIndex = (index + slides.length) % slides.length;
     slides.forEach((slide, i) => {
@@ -1263,6 +1297,8 @@ function startHero() {
       if (!userPaused) resume();
     });
   });
+  mobileHeroQuery.addEventListener?.("change", syncMobileHeroVideo);
+  syncMobileHeroVideo();
   show(heroIndex);
   updatePauseButton();
   scheduleNext();
