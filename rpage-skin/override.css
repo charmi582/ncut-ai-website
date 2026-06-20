@@ -1,0 +1,224 @@
+/* ============================================================
+   NCUT AI 系網 — RPage 改版 override 樣式
+   貼進後台：頁面管理 →（首頁）→「頭部 CSS / 頁面頭部 CSS」欄位
+   設計 token 對照 ncut_ai_redesign_mock.html（藍＝學術主色／金＝獲獎強調色）
+
+   寫法原則：
+   - 只綁 RPage 穩定的結構 class（.module / .mt-title / .d-item / .o-footer…）
+   - 跟 inline style 或預設 skin 打架的地方才用 !important
+   - 抓不到的元素就讓它維持原樣，不會整頁壞掉
+   ※ class 若與你站上實際略有出入，對照 DevTools 把對應 selector 改掉即可
+   ============================================================ */
+
+:root{
+  --paper:#F2F6FB;   --surface:#FFFFFF;
+  --ink:#0A2138;     --ink-soft:#21384F;  --muted:#5C6F82;
+  --brand:#16487E;   --brand-deep:#0B2E56;
+  --gold:#BD862A;    --gold-soft:#E7C880;
+  --line:#E1E8F0;    --mist:#EAF0F7;
+  --maxw:1200px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --display:"Space Grotesk","Noto Sans TC",system-ui,"微軟正黑體",sans-serif;
+  --body:"Noto Sans TC",system-ui,"微軟正黑體",sans-serif;
+}
+
+/* ---------- 全站基底 ---------- */
+body{
+  font-family:var(--body) !important;
+  color:var(--ink);
+  background:var(--paper) !important;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+a{transition:color .2s}
+img{max-width:100%}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:3px}
+
+/* 把每個版芯收進置中容器（RPage 的 .mrow.container） */
+.mrow.container{max-width:var(--maxw);margin-inline:auto;padding-inline:24px}
+
+/* ============================================================
+   1) 頂部導覽列  .header / .mnavbar / ul.nav.navbar-nav
+   ============================================================ */
+#Dyn_head,.header{
+  position:sticky;top:0;z-index:60;
+  background:rgba(255,255,255,.9) !important;
+  backdrop-filter:saturate(160%) blur(12px);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 2px 12px -8px rgba(11,46,86,.25);
+}
+.mlogo img{max-height:52px;width:auto}
+
+.mnavbar .nav.navbar-nav{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.mnavbar .nav.navbar-nav>li{float:none}
+.mnavbar .nav.navbar-nav>li>a{
+  padding:9px 14px !important;
+  border-radius:9px;
+  font-weight:500;font-size:.94rem;
+  color:var(--ink-soft) !important;
+  background:transparent !important;
+  transition:background .2s,color .2s;
+}
+.mnavbar .nav.navbar-nav>li>a:hover,
+.mnavbar .nav.navbar-nav>li>a:focus{
+  background:var(--mist) !important;
+  color:var(--brand) !important;
+}
+/* 招生訊息（第一個 li）做成實心 pill，呼應 mock 的 .cta-sm */
+.mnavbar .nav.navbar-nav>li:first-child>a{
+  background:var(--ink) !important;color:#fff !important;
+  border-radius:999px;font-weight:700;padding-inline:18px !important;
+}
+.mnavbar .nav.navbar-nav>li:first-child>a:hover{background:var(--brand) !important}
+
+.navbar-toggle{border-radius:10px}
+
+/* ============================================================
+   2) 模組標題  header.mt > h2.mt-title  → eyebrow + 大標質感
+   ============================================================ */
+.module .mt{border:0 !important;background:transparent !important;margin-bottom:22px;position:relative}
+.module .mt-title{
+  font-family:var(--display) !important;
+  font-weight:900 !important;
+  font-size:clamp(1.5rem,3vw,2.2rem) !important;
+  letter-spacing:-.01em;
+  color:var(--ink) !important;
+  line-height:1.2;
+  padding-left:0 !important;
+}
+/* 標題上方的金色 eyebrow 短線 */
+.module .mt-title::before{
+  content:"";display:block;width:30px;height:3px;border-radius:3px;
+  background:var(--gold);margin-bottom:14px;
+}
+
+/* 模組外殼留白 */
+.module{margin-bottom:56px}
+.module .mb{background:transparent}
+
+/* ============================================================
+   3) 最新消息分頁  .module-complex / .nav-tabs / .tab-pane / .d-item
+   ============================================================ */
+.module-complex .nav-tabs{
+  border-bottom:1px solid var(--line) !important;
+  display:flex;flex-wrap:wrap;gap:6px;
+}
+.module-complex .nav-tabs>li{margin-bottom:-1px;float:none}
+.module-complex .nav-tabs>li>a{
+  border:0 !important;background:transparent !important;
+  border-bottom:2px solid transparent !important;
+  border-radius:0 !important;margin:0 !important;
+  padding:11px 16px !important;
+  font-weight:700;font-size:.95rem;color:var(--muted) !important;
+  transition:color .2s,border-color .2s;
+}
+.module-complex .nav-tabs>li.active>a,
+.module-complex .nav-tabs>li>a:hover{
+  color:var(--brand) !important;
+  border-bottom-color:var(--gold) !important;
+}
+
+/* 公告列表項 */
+.listBS{margin:0}
+.d-item.v-it{
+  padding:0 !important;border:0 !important;
+  border-bottom:1px solid var(--line) !important;
+}
+.d-item.v-it .mbox{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 6px;transition:background .2s,padding .2s;
+}
+.d-item.v-it .mbox:hover{background:#fff;padding-inline:14px}
+/* 多數公告沒有縮圖（d-img 空的）→ 收掉，避免空白佔位 */
+.d-item.v-it .d-img:empty{display:none}
+.d-item.v-it .d-img img{
+  width:96px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0;
+}
+.d-item.v-it .mtitle a{
+  font-weight:500;color:var(--ink-soft) !important;font-size:1rem;line-height:1.5;
+}
+.d-item.v-it .mbox:hover .mtitle a{color:var(--brand) !important}
+/* 日期/標籤若存在則靠右、字體用 display 字 */
+.d-item .d-date,.d-item time{
+  font-family:var(--display);font-size:.82rem;color:var(--muted);flex-shrink:0;
+}
+
+/* ============================================================
+   4) 獲獎輪播  .module-adv / figure.figBS / img.madv-img
+      —— 把亂尺寸圖統一成整齊卡片（保留 owl 輪播，最穩）
+   ============================================================ */
+.module-adv .figBS{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:14px;overflow:hidden;
+  box-shadow:0 10px 30px -22px rgba(11,46,86,.5);
+  margin:6px;
+}
+.module-adv .figBS::before{           /* 金色頂條，呼應 mock 的教師獎卡 */
+  content:"";display:block;height:6px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-soft));
+}
+.module-adv .madv-img,
+.module-adv .figBS img{
+  width:100% !important;height:200px !important;
+  object-fit:cover !important;display:block;
+}
+.module-adv .bn-txt{
+  padding:14px 16px;font-weight:700;color:var(--ink);
+  font-size:.96rem;line-height:1.4;
+}
+.module-adv .bn-txt:empty{display:none}
+/* owl 點點與箭頭配色 */
+.module-adv .owl-dots .owl-dot.active span{background:var(--gold) !important}
+.module-adv .owl-nav button{color:var(--brand) !important}
+
+/* 想改成「不滾動的整齊牆」（取代輪播）時，解開下面這段：
+.module-adv .owl-stage{display:flex !important;flex-wrap:wrap;width:auto !important;transform:none !important}
+.module-adv .owl-item{width:25% !important;flex:0 0 25%}
+@media(max-width:980px){.module-adv .owl-item{width:50% !important;flex-basis:50%}}
+.module-adv .owl-nav,.module-adv .owl-dots{display:none !important}
+*/
+
+/* ============================================================
+   5) 校內連結等 link 模組  .module-link
+   ============================================================ */
+.module-link .listBS{display:grid;grid-template-columns:repeat(2,1fr);gap:0 24px}
+.module-link .d-item.v-it .mbox{gap:10px}
+.module-link .d-item.v-it .mtitle a::before{content:"→ ";color:var(--gold);font-weight:700}
+
+/* ============================================================
+   6) 頁尾  .o-footer  —— 深藍版（注意壓 inline style）
+   ============================================================ */
+.o-footer{
+  background:var(--ink) !important;
+  color:#cdd9ea !important;
+  padding:56px 0 28px !important;
+}
+.o-footer *{font-family:var(--body) !important}          /* 蓋掉 inline 微軟正黑體 */
+.o-footer .o-footer__container{max-width:var(--maxw);margin-inline:auto;padding-inline:24px}
+.o-footer__dept-name strong{color:#fff !important;font-size:1.15rem;letter-spacing:.02em}
+.o-footer span[style*="color"],
+.o-footer p,.o-footer td{color:#aebfd4 !important}        /* 壓掉 inline color */
+.o-footer a{color:var(--gold-soft) !important}
+.o-footer a:hover{color:#fff !important}
+.o-footer__logo img{filter:brightness(0) invert(1);opacity:.92} /* logo 反白配深底，視站上 logo 而定可移除 */
+.o-footer table{margin-inline:auto}
+
+/* ============================================================
+   7) 捲動淡入（搭配 enhance.js 的 .is-in）
+   ============================================================ */
+.module,.o-footer{opacity:1}              /* 預設可見，JS 在時才接管 */
+.js-reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.js-reveal.is-in{opacity:1;transform:none}
+
+/* ============================================================
+   8) RWD 收尾
+   ============================================================ */
+@media(max-width:980px){
+  .module-link .listBS{grid-template-columns:1fr}
+  .module-adv .madv-img,.module-adv .figBS img{height:170px !important}
+}
+@media(prefers-reduced-motion:reduce){
+  .js-reveal{opacity:1 !important;transform:none !important}
+  *{scroll-behavior:auto}
+}

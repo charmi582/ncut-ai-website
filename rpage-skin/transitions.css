@@ -1,0 +1,30 @@
+/* ============================================================
+   頁面轉場（跨子頁面淡入淡出）—— 純 CSS，無 JS
+   機制：CSS Cross-Document View Transitions（同源多頁面導航時自動觸發）
+   ★ 重要：要貼在「每一頁」的頭部 CSS，不能只貼首頁！
+     RPage 後台通常分兩欄：
+       - 首頁頭部 CSS  → 貼
+       - 內頁頭部 CSS  → 也要貼（子頁面才會有轉場）
+     若有全站／母版層級的 CSS 欄位，貼一次即可。
+   ============================================================ */
+
+@view-transition{
+  navigation:auto;
+}
+::view-transition-old(root){
+  animation:pageFadeOut .22s ease both;
+}
+::view-transition-new(root){
+  animation:pageFadeIn .42s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes pageFadeOut{
+  to{ opacity:.88; transform:translateY(-8px); filter:blur(2px); }
+}
+@keyframes pageFadeIn{
+  from{ opacity:0; transform:translateY(18px); filter:blur(4px); }
+  to{ opacity:1; transform:none; filter:none; }
+}
+@media(prefers-reduced-motion:reduce){
+  ::view-transition-old(root),
+  ::view-transition-new(root){ animation:none; }
+}
