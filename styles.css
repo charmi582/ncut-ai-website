@@ -1377,35 +1377,7 @@ select:focus-visible {
   }
 }
 
-/* Progressive page-transition and interaction polish */
-@view-transition {
-  navigation:auto;
-}
-::view-transition-old(root) {
-  animation:pageFadeOut .22s ease both;
-}
-::view-transition-new(root) {
-  animation:pageFadeIn .42s cubic-bezier(.2,.8,.2,1) both;
-}
-@keyframes pageFadeOut {
-  to {
-    opacity:.88;
-    transform:translateY(-8px);
-    filter:blur(2px);
-  }
-}
-@keyframes pageFadeIn {
-  from {
-    opacity:0;
-    transform:translateY(18px);
-    filter:blur(4px);
-  }
-  to {
-    opacity:1;
-    transform:none;
-    filter:none;
-  }
-}
+/* Progressive interaction polish */
 html {
   scroll-padding-top:112px;
 }
@@ -1675,10 +1647,6 @@ button:active,
   }
 }
 @media(prefers-reduced-motion:reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation:none;
-  }
   html {
     scroll-behavior:auto;
   }

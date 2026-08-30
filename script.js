@@ -1565,6 +1565,10 @@ function setupAICursor() {
   });
 
   document.addEventListener("click", (event) => {
+    if (document.body.classList.contains("is-exiting-page")) {
+      event.preventDefault();
+      return;
+    }
     if (!canAnimateClick()) return;
     const target = event.target.closest(interactiveSelector);
     if (!target || isDisabledControl(target)) return;
@@ -1573,6 +1577,7 @@ function setupAICursor() {
     animateEating(target, !navigationUrl);
     if (!navigationUrl) return;
     event.preventDefault();
+    document.body.classList.add("is-exiting-page");
     window.setTimeout(() => {
       showPageTransition();
       window.setTimeout(() => {
