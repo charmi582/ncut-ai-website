@@ -3596,8 +3596,8 @@ body.is-inner-page .site-header .brand img,
   .hero-slide:before {
     inset:0!important;
     background-color:rgba(7,24,38,.62)!important;
-    background-image:var(--bg)!important;
-    background-position:var(--pos,center center)!important;
+    background-image:var(--mobile-bg,var(--bg))!important;
+    background-position:var(--mobile-pos,var(--pos,center center))!important;
     background-size:cover!important;
     background-repeat:no-repeat!important;
     transform:none!important;
@@ -3613,6 +3613,12 @@ body.is-inner-page .site-header .brand img,
 
   .hero-slide.has-video .hero-video {
     display:none!important;
+  }
+
+  .hero-slide.has-mobile-image:before {
+    background-color:#061c36!important;
+    background-position:center top!important;
+    background-size:100% 100%!important;
   }
 }
 
