@@ -442,8 +442,11 @@ function renderMegaMenu() {
 }
 
 function renderHome() {
+  const mobileHeroQuery = window.matchMedia("(max-width: 700px)");
+  const initialHeroIndex = mobileHeroQuery.matches && siteData.hero[0]?.video && siteData.hero.length > 1 ? 1 : 0;
+  heroIndex = initialHeroIndex;
   $("[data-hero]").innerHTML = siteData.hero.map((slide, index) => `
-    <article id="hero-slide-${index}" class="hero-slide ${index === 0 ? "is-active" : ""} ${slide.video ? "has-video" : ""}" role="group" aria-roledescription="slide" aria-label="${index + 1} / ${siteData.hero.length}：${esc(slide.title)}" aria-hidden="${index === 0 ? "false" : "true"}" style="--bg:url('${esc(slide.image)}');--pos:${esc(slide.position || "center center")}">
+    <article id="hero-slide-${index}" class="hero-slide ${index === initialHeroIndex ? "is-active" : ""} ${slide.video ? "has-video" : ""}" role="group" aria-roledescription="slide" aria-label="${index + 1} / ${siteData.hero.length}：${esc(slide.title)}" aria-hidden="${index === initialHeroIndex ? "false" : "true"}" style="--bg:url('${esc(slide.image)}');--pos:${esc(slide.position || "center center")}">
       ${renderHeroVideo(slide)}
       <div class="hero-copy">
         <p class="eyebrow">${esc(slide.kicker)}</p>
@@ -456,7 +459,7 @@ function renderHome() {
       </div>
     </article>`).join("");
   $("[data-dots]").setAttribute("aria-label", "主視覺輪播分頁");
-  $("[data-dots]").innerHTML = siteData.hero.map((slide, index) => `<button type="button" class="${index === 0 ? "is-active" : ""}" data-dot="${index}" aria-label="切換主視覺 ${index + 1}：${esc(slide.title)}" aria-controls="hero-slide-${index}" ${index === 0 ? `aria-current="true"` : ""}></button>`).join("");
+  $("[data-dots]").innerHTML = siteData.hero.map((slide, index) => `<button type="button" class="${index === initialHeroIndex ? "is-active" : ""}" data-dot="${index}" aria-label="切換主視覺 ${index + 1}：${esc(slide.title)}" aria-controls="hero-slide-${index}" ${index === initialHeroIndex ? `aria-current="true"` : ""}></button>`).join("");
   $("[data-metrics]").innerHTML = siteData.metrics.map((item) => `<div><strong>${esc(item.value)}</strong><span>${esc(item.label)}</span></div>`).join("");
   $("[data-quick-links]").innerHTML = siteData.quickLinks
     .filter((link) => !isRetiredOfficialHref(link.href) && !/官方(?:資訊|資料)庫/.test(link.label || ""))
@@ -1219,6 +1222,16 @@ function startHero() {
   let userPaused = false;
   let interactionPaused = false;
   if (total) total.textContent = String(slides.length).padStart(2, "0");
+  const resolveMobileHeroIndex = (index, direction = 1) => {
+    if (!slides.length) return index;
+    let nextIndex = (index + slides.length) % slides.length;
+    if (!mobileHeroQuery.matches) return nextIndex;
+    for (let attempts = 0; attempts < slides.length; attempts += 1) {
+      if (!slides[nextIndex].classList.contains("has-video")) return nextIndex;
+      nextIndex = (nextIndex + direction + slides.length) % slides.length;
+    }
+    return index;
+  };
   const syncMobileHeroVideo = () => {
     const isMobile = mobileHeroQuery.matches;
     $$(".hero-video").forEach((media) => {
@@ -1231,9 +1244,12 @@ function startHero() {
         media.play?.().catch(() => {});
       }
     });
+    if (isMobile && slides[heroIndex]?.classList.contains("has-video")) {
+      show(resolveMobileHeroIndex(heroIndex + 1, 1));
+    }
   };
-  const show = (index) => {
-    heroIndex = (index + slides.length) % slides.length;
+  const show = (index, direction = index < heroIndex ? -1 : 1) => {
+    heroIndex = resolveMobileHeroIndex(index, direction);
     slides.forEach((slide, i) => {
       const active = i === heroIndex;
       slide.classList.toggle("is-active", active);
@@ -1281,9 +1297,9 @@ function startHero() {
     pauseButton.textContent = userPaused ? "▶" : "Ⅱ";
   };
   const restart = () => { scheduleNext(); };
-  $("[data-prev]")?.addEventListener("click", () => { show(heroIndex - 1); restart(); });
-  $("[data-next]")?.addEventListener("click", () => { show(heroIndex + 1); restart(); });
-  dots.forEach((dot) => dot.addEventListener("click", () => { show(Number(dot.dataset.dot)); restart(); }));
+  $("[data-prev]")?.addEventListener("click", () => { show(heroIndex - 1, -1); restart(); });
+  $("[data-next]")?.addEventListener("click", () => { show(heroIndex + 1, 1); restart(); });
+  dots.forEach((dot) => dot.addEventListener("click", () => { show(Number(dot.dataset.dot), 1); restart(); }));
   pauseButton?.addEventListener("click", () => {
     userPaused = !userPaused;
     updatePauseButton();

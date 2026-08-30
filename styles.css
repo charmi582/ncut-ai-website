@@ -3584,7 +3584,7 @@ body.is-inner-page .site-header .brand img,
     background-color:rgba(7,24,38,.62)!important;
     background-image:var(--bg)!important;
     background-position:var(--pos,center center)!important;
-    background-size:contain!important;
+    background-size:cover!important;
     background-repeat:no-repeat!important;
     transform:none!important;
     filter:none!important;
