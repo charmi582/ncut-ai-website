@@ -18,6 +18,12 @@ const isLegacyImportEntry = (item = {}) => /原系網|匯入資料/.test(`${item
 const isBlockedSiteImage = (src = "") => /linkdet_1436_2272241_19992\.png/i.test(String(src));
 const pageLoader = createPageLoader();
 
+function englishTranslateHref() {
+  const currentUrl = new URL(location.href);
+  currentUrl.hash = "";
+  return `https://translate.google.com/translate?sl=zh-TW&tl=en&u=${encodeURIComponent(currentUrl.href)}`;
+}
+
 function pageLoaderMarkup() {
   return `
     <div class="loader-stage">
@@ -151,6 +157,7 @@ function renderEmptyState(title, text, actions = []) {
 
 function renderShared() {
   updateDocumentMeta();
+  const englishHref = englishTranslateHref();
   const navMarkup = `
     <a href="./page.html?slug=history">系所介紹</a>
     <a href="./faculty.html">師資陣容</a>
@@ -159,8 +166,13 @@ function renderShared() {
     <a href="./page.html?slug=labs">專業實驗室</a>
     <a href="./campus-links.html">校內連結</a>
     <a href="./news.html">最新消息</a>
-    <a href="#contact">聯絡我們</a>`;
+    <a href="#contact">聯絡我們</a>
+    <a class="language-switch" href="${esc(englishHref)}" target="_blank" rel="noopener noreferrer" lang="en" aria-label="Translate this page to English">English</a>`;
   $$("nav.site-nav").forEach((nav) => { nav.innerHTML = navMarkup; });
+  $$(".utility-bar").forEach((bar) => {
+    if (bar.querySelector("[data-translate-current]")) return;
+    bar.insertAdjacentHTML("beforeend", `<a class="language-switch utility-language" href="${esc(englishHref)}" target="_blank" rel="noopener noreferrer" lang="en" data-translate-current aria-label="Translate this page to English">English</a>`);
+  });
   markActiveNav();
   $$("[data-logo]").forEach((img) => { img.src = siteData.identity.logo; });
   $$("[data-footer-logo]").forEach((img) => { img.src = siteData.identity.footerLogo; });
