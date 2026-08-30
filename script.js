@@ -65,6 +65,7 @@ class LanguageService {
 
 class PageLoader {
   static skipIntroStorageKey = "ncut-ai-skip-intro";
+  static skipIntroUrlKey = "_ncut_skip_intro";
 
   constructor({ fullMotion = true, exit = false, skipMinimum = false } = {}) {
     this.startedAt = Date.now();
@@ -90,6 +91,7 @@ class PageLoader {
 
   static startIntro() {
     const skipIntro = PageLoader.consumeSkipIntro();
+    if (skipIntro) return PageLoader.noop();
     const loader = new PageLoader({ fullMotion: !skipIntro, skipMinimum: skipIntro });
     loader.mount();
     return loader;
@@ -105,12 +107,18 @@ class PageLoader {
   }
 
   static consumeSkipIntro() {
+    const url = new URL(location.href);
+    const urlRequestsSkip = url.searchParams.get(PageLoader.skipIntroUrlKey) === "1";
+    if (urlRequestsSkip) {
+      url.searchParams.delete(PageLoader.skipIntroUrlKey);
+      history.replaceState(history.state, "", `${url.pathname}${url.search}${url.hash}`);
+    }
     try {
       const shouldSkip = sessionStorage.getItem(PageLoader.skipIntroStorageKey) === "1";
       if (shouldSkip) sessionStorage.removeItem(PageLoader.skipIntroStorageKey);
-      return shouldSkip;
+      return urlRequestsSkip || shouldSkip;
     } catch {
-      return false;
+      return urlRequestsSkip;
     }
   }
 
@@ -120,6 +128,16 @@ class PageLoader {
     } catch {
       // sessionStorage can be unavailable in strict privacy modes.
     }
+  }
+
+  static withSkipIntro(href) {
+    const url = new URL(href, location.href);
+    url.searchParams.set(PageLoader.skipIntroUrlKey, "1");
+    return url.href;
+  }
+
+  static noop() {
+    return { hide() {} };
   }
 
   mount() {
@@ -1658,11 +1676,12 @@ class AICursorController {
     if (!navigationUrl) return;
     event.preventDefault();
     document.body.classList.add("is-exiting-page");
+    PageLoader.skipNextIntro();
+    const nextUrl = PageLoader.withSkipIntro(navigationUrl);
     window.setTimeout(() => {
       showPageTransition();
       window.setTimeout(() => {
-        PageLoader.skipNextIntro();
-        location.assign(navigationUrl);
+        location.assign(nextUrl);
       }, 760);
     }, 520);
   }

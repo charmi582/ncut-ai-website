@@ -3129,9 +3129,9 @@ body.is-inner-page .site-header .brand img,
   position:relative;
   z-index:1;
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:clamp(18px,2vw,30px);
-  max-width:1680px;
+  grid-template-columns:repeat(2,minmax(280px,1fr));
+  gap:clamp(14px,1.6vw,24px);
+  max-width:1180px;
   margin:clamp(28px,3vw,44px) auto 0;
 }
 .video-grid iframe,.video-grid video {
@@ -3154,7 +3154,7 @@ body.is-inner-page .site-header .brand img,
   }
 }
 
-@media(max-width:900px) {
+@media(max-width:640px) {
   .video-grid {
     grid-template-columns:1fr;
     max-width:760px;
