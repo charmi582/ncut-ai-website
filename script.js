@@ -199,6 +199,8 @@ function markActiveNav() {
 function updateDocumentMeta(title = document.title, description = "") {
   const siteTitle = siteData?.identity?.title || "人工智慧應用工程系";
   const subtitle = siteData?.identity?.subtitle || "Department of Artificial Intelligence and Computer Engineering";
+  const allowSearchIndexing = siteData?.identity?.searchIndexing !== false;
+  const organizationName = allowSearchIndexing ? `國立勤益科技大學${siteTitle}` : siteTitle;
   const desc = description || document.querySelector('meta[name="description"]')?.content ||
     "國立勤益科技大學人工智慧應用工程系網站，整合系所介紹、師資陣容、招生資訊、學生資源、校內連結與獲獎成果。";
   const siteRoot = new URL("./", location.href).href;
@@ -220,7 +222,7 @@ function updateDocumentMeta(title = document.title, description = "") {
   setMeta('meta[name="application-name"]', { name: "application-name", content: siteTitle });
   setMeta('meta[name="apple-mobile-web-app-title"]', { name: "apple-mobile-web-app-title", content: siteTitle });
   setMeta('meta[name="description"]', { name: "description", content: desc });
-  setMeta('meta[property="og:site_name"]', { property: "og:site_name", content: `國立勤益科技大學${siteTitle}` });
+  setMeta('meta[property="og:site_name"]', { property: "og:site_name", content: organizationName });
   setMeta('meta[property="og:title"]', { property: "og:title", content: title });
   setMeta('meta[property="og:description"]', { property: "og:description", content: desc });
   setMeta('meta[property="og:type"]', { property: "og:type", content: "website" });
@@ -235,7 +237,7 @@ function updateDocumentMeta(title = document.title, description = "") {
   setMeta('meta[name="twitter:description"]', { name: "twitter:description", content: desc });
   setMeta('meta[name="twitter:image"]', { name: "twitter:image", content: image });
   setMeta('meta[name="twitter:image:alt"]', { name: "twitter:image:alt", content: `${siteTitle} 系所形象圖` });
-  setMeta('meta[name="robots"]', { name: "robots", content: "index,follow,max-image-preview:large" });
+  setMeta('meta[name="robots"]', { name: "robots", content: allowSearchIndexing ? "index,follow,max-image-preview:large" : "noindex,nofollow" });
   ensureResourceHints();
   let canonical = document.head.querySelector('link[rel="canonical"]');
   if (!canonical) {
@@ -251,39 +253,14 @@ function updateDocumentMeta(title = document.title, description = "") {
     schema.id = "site-schema";
     document.head.append(schema);
   }
-  schema.textContent = JSON.stringify({
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "CollegeOrUniversity",
-        "@id": `${siteRoot}#organization`,
-        name: `國立勤益科技大學${siteTitle}`,
-        alternateName: subtitle,
-        url: siteRoot,
-        logo,
-        email: siteData?.contact?.email,
-        telephone: siteData?.contact?.phone,
-        parentOrganization: {
-          "@type": "CollegeOrUniversity",
-          name: "國立勤益科技大學",
-          url: "https://www.ncut.edu.tw/"
-        },
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: siteData?.contact?.address,
-          addressLocality: "臺中市",
-          addressRegion: "太平區",
-          addressCountry: "TW"
-        }
-      },
+  const graph = [
       {
         "@type": "WebSite",
         "@id": `${siteRoot}#website`,
-        name: `${siteTitle}｜國立勤益科技大學`,
-        alternateName: "NCUT AI",
+        name: allowSearchIndexing ? `${siteTitle}｜國立勤益科技大學` : siteTitle,
+        alternateName: allowSearchIndexing ? "NCUT AI" : "Website Preview",
         url: siteRoot,
         inLanguage: "zh-Hant-TW",
-        publisher: { "@id": `${siteRoot}#organization` },
         potentialAction: {
           "@type": "SearchAction",
           target: `${siteRoot}news.html?q={search_term_string}`,
@@ -297,12 +274,37 @@ function updateDocumentMeta(title = document.title, description = "") {
         name: title,
         description: desc,
         isPartOf: { "@id": `${siteRoot}#website` },
-        about: { "@id": `${siteRoot}#organization` },
         inLanguage: "zh-Hant-TW",
         primaryImageOfPage: image
       }
-    ]
-  });
+  ];
+  if (allowSearchIndexing) {
+    graph.unshift({
+      "@type": "CollegeOrUniversity",
+      "@id": `${siteRoot}#organization`,
+      name: organizationName,
+      alternateName: subtitle,
+      url: siteRoot,
+      logo,
+      email: siteData?.contact?.email,
+      telephone: siteData?.contact?.phone,
+      parentOrganization: {
+        "@type": "CollegeOrUniversity",
+        name: "國立勤益科技大學",
+        url: "https://www.ncut.edu.tw/"
+      },
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: siteData?.contact?.address,
+        addressLocality: "臺中市",
+        addressRegion: "太平區",
+        addressCountry: "TW"
+      }
+    });
+    graph.find((item) => item["@type"] === "WebSite").publisher = { "@id": `${siteRoot}#organization` };
+    graph.find((item) => item["@type"] === "WebPage").about = { "@id": `${siteRoot}#organization` };
+  }
+  schema.textContent = JSON.stringify({ "@context": "https://schema.org", "@graph": graph });
   document.head.querySelector("#person-schema")?.remove();
 }
 
