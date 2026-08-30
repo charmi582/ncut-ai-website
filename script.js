@@ -618,7 +618,9 @@ function isMp4Video(src = "") {
 function renderHeroVideo(slide = {}) {
   if (!slide.video) return "";
   if (isMp4Video(slide.video)) {
-    return `<video class="hero-video" src="${esc(slide.video)}" title="${esc(slide.title)} 背景影片" autoplay muted loop playsinline preload="metadata" tabindex="-1" aria-hidden="true"></video>`;
+    const startTime = Number(slide.videoStartTime || 0);
+    const startAttr = startTime > 0 ? ` data-start-time="${startTime}"` : "";
+    return `<video class="hero-video" src="${esc(slide.video)}" title="${esc(slide.title)} 背景影片" autoplay muted loop playsinline preload="metadata" tabindex="-1" aria-hidden="true"${startAttr}></video>`;
   }
   return `<iframe class="hero-video" src="${esc(slide.video)}" title="${esc(slide.title)} 背景影片" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" loading="eager" tabindex="-1" aria-hidden="true"></iframe>`;
 }
@@ -626,9 +628,27 @@ function renderHeroVideo(slide = {}) {
 function renderMediaVideo(video = {}) {
   const src = video.embed || video.src || "";
   if (isMp4Video(src)) {
-    return `<video class="media-video" src="${esc(src)}" title="${esc(video.title)}" controls playsinline preload="metadata"></video>`;
+    const startTime = Number(video.startTime || 0);
+    const startAttr = startTime > 0 ? ` data-start-time="${startTime}"` : "";
+    return `<video class="media-video" src="${esc(src)}" title="${esc(video.title)}" controls playsinline preload="metadata"${startAttr}></video>`;
   }
   return `<iframe src="${esc(src)}" title="${esc(video.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+}
+
+function setupVideoStartTimes(root = document) {
+  $$("video[data-start-time]", root).forEach((video) => {
+    if (video.dataset.startReady === "true") return;
+    video.dataset.startReady = "true";
+    const startTime = Number(video.dataset.startTime);
+    if (!Number.isFinite(startTime) || startTime <= 0) return;
+    const seekToStart = () => {
+      if (video.dataset.startApplied === "true") return;
+      video.dataset.startApplied = "true";
+      video.currentTime = Math.min(startTime, Math.max(0, video.duration || startTime));
+    };
+    if (video.readyState >= 1) seekToStart();
+    else video.addEventListener("loadedmetadata", seekToStart, { once: true });
+  });
 }
 
 function newsItemId(item = {}, index = 0) {
@@ -1736,6 +1756,7 @@ function setupInteractions() {
 }
 
 function enhanceRenderedMediaAndLinks(root = document) {
+  setupVideoStartTimes(root);
   $$("a[href]", root).forEach((link) => {
     const href = link.getAttribute("href") || "";
     if (!isExternalHref(href)) return;
