@@ -73,12 +73,13 @@ class LanguageService {
 class PageLoader {
   static skipIntroStorageKey = "ncut-ai-skip-intro";
   static skipIntroUrlKey = "_ncut_skip_intro";
+  static continueTransitionStorageKey = "ncut-ai-continue-transition";
 
-  constructor({ fullMotion = true, exit = false, skipMinimum = false } = {}) {
+  constructor({ fullMotion = true, exit = false, skipMinimum = false, hidden = false } = {}) {
     this.startedAt = Date.now();
     this.skipMinimum = skipMinimum;
     this.element = document.createElement("div");
-    this.element.className = `site-loader${fullMotion ? " is-full-motion" : ""}${exit ? " is-exit-loader" : ""}${skipMinimum ? " is-skip-intro" : ""}`;
+    this.element.className = `site-loader${fullMotion ? " is-full-motion" : ""}${exit ? " is-exit-loader" : ""}${hidden ? " is-skip-intro" : ""}`;
     this.element.setAttribute("aria-hidden", "true");
     this.element.innerHTML = PageLoader.markup();
   }
@@ -97,6 +98,12 @@ class PageLoader {
   }
 
   static startIntro() {
+    const continueTransition = PageLoader.consumeContinueTransition();
+    if (continueTransition) {
+      const loader = new PageLoader({ fullMotion: true, skipMinimum: true });
+      loader.mount();
+      return loader;
+    }
     const skipIntro = PageLoader.consumeSkipIntro();
     if (skipIntro) return PageLoader.noop();
     const loader = new PageLoader({ fullMotion: !skipIntro, skipMinimum: skipIntro });
@@ -134,6 +141,24 @@ class PageLoader {
       sessionStorage.setItem(PageLoader.skipIntroStorageKey, "1");
     } catch {
       // sessionStorage can be unavailable in strict privacy modes.
+    }
+  }
+
+  static continueNextTransition() {
+    try {
+      sessionStorage.setItem(PageLoader.continueTransitionStorageKey, "1");
+    } catch {
+      // sessionStorage can be unavailable in strict privacy modes.
+    }
+  }
+
+  static consumeContinueTransition() {
+    try {
+      const shouldContinue = sessionStorage.getItem(PageLoader.continueTransitionStorageKey) === "1";
+      if (shouldContinue) sessionStorage.removeItem(PageLoader.continueTransitionStorageKey);
+      return shouldContinue;
+    } catch {
+      return false;
     }
   }
 
@@ -558,11 +583,6 @@ function renderMegaMenu() {
   const campusLinks = (siteData.campusLinks || []).slice(0, 8).map((link) => `<a href="${esc(link.href)}" target="_blank" rel="noreferrer">${esc(link.label)}</a>`).join("");
   host.innerHTML = `
     <div class="mega-inner">
-      <section class="mega-feature">
-        <p class="section-kicker">NCUT AI</p>
-        <h2>人工智慧應用工程系</h2>
-        <p>整合系所介紹、師資陣容、學生資源、專班資訊與校內連結，提供新網站一致化導覽。</p>
-      </section>
       ${groups}
       <section>
         <h2>校內連結</h2>
@@ -1557,11 +1577,10 @@ class PageTransitionController {
     const navigationUrl = this.sameSiteNavigationUrl(event);
     if (!navigationUrl) return;
     event.preventDefault();
-    PageLoader.skipNextIntro();
-    const nextUrl = PageLoader.withSkipIntro(navigationUrl);
+    PageLoader.continueNextTransition();
     showPageTransition();
     window.setTimeout(() => {
-      location.assign(nextUrl);
+      location.assign(navigationUrl);
     }, this.exitDuration);
   }
 }
