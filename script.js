@@ -1411,7 +1411,9 @@ function startHero() {
       return;
     }
     const activeSlide = slides[heroIndex];
-    const delay = activeSlide?.querySelector(".hero-video") ? 60000 : 6500;
+    const delay = mobileHeroQuery.matches && activeSlide?.classList.contains("has-mobile-image")
+      ? 6500
+      : activeSlide?.querySelector(".hero-video") ? 60000 : 6500;
     if (progress) {
       progress.style.animation = "none";
       progress.offsetHeight;

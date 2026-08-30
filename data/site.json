@@ -41,6 +41,8 @@
       "text": "透過程式設計、智慧系統、影像處理與跨域專題訓練，讓學生在真實問題中累積作品集與就業競爭力。",
       "image": "./assets/optimized/S__18858240_0.webp",
       "position": "center center",
+      "mobileImage": "./assets/mobile-hero-nstc-projects.png",
+      "mobilePosition": "center top",
       "primary": {
         "label": "專業實驗室",
         "href": "./page.html?slug=labs"
