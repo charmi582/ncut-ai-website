@@ -77,7 +77,8 @@ function bindAddButtons() {
   });
   $("[data-add-news]")?.addEventListener("click", () => {
     data.news ||= [];
-    data.news.unshift({ date: today(), category: "系所公告", title: "新增最新消息", summary: "", href: "", image: data.identity?.defaultImage || "" });
+    const id = `news-${today()}-${Date.now()}`;
+    data.news.unshift({ id, date: today(), category: "系所公告", title: "新增最新消息", summary: "", detail: [], href: `./news-detail.html?id=${id}`, sourceHref: "", image: data.identity?.defaultImage || "" });
     renderAll();
   });
   $("[data-add-faculty]")?.addEventListener("click", () => {
@@ -296,11 +297,14 @@ function renderQuickLinks() {
 
 function renderNews() {
   return (data.news || []).map((item, i) => itemCard("消息", i, `news.${i}`, [
+    input("站內公告 ID", `news.${i}.id`, item.id || ""),
     input("日期", `news.${i}.date`, item.date, "date"),
     input("分類", `news.${i}.category`, item.category),
     input("標題", `news.${i}.title`, item.title),
     textarea("摘要", `news.${i}.summary`, item.summary),
-    input("連結", `news.${i}.href`, item.href || ""),
+    textarea("詳細內容，每行一段", `news.${i}.detail`, fromList(item.detail), "list"),
+    input("站內連結", `news.${i}.href`, item.href || ""),
+    input("原始來源連結（備查）", `news.${i}.sourceHref`, item.sourceHref || ""),
     input("圖片路徑", `news.${i}.image`, item.image || "")
   ], item.title)).join("");
 }

@@ -16,12 +16,44 @@ const archiveKey = (href = "") => String(href).replace(/^https?:\/\/(n063|ai)\.n
 const isRetiredOfficialHref = (href = "") => /official(?:-detail)?\.html/i.test(String(href));
 const isLegacyImportEntry = (item = {}) => /原系網|匯入資料/.test(`${item.label || ""} ${item.title || ""} ${item.type || ""}`) || isRetiredOfficialHref(item.href);
 const isBlockedSiteImage = (src = "") => /linkdet_1436_2272241_19992\.png/i.test(String(src));
+const publicSiteOrigin = "https://charmi582.github.io";
+const publicSiteBasePath = "/ncut-ai-website";
 const pageLoader = createPageLoader();
 
-function englishTranslateHref() {
-  const currentUrl = new URL(location.href);
-  currentUrl.hash = "";
-  return `https://translate.google.com/translate?sl=zh-TW&tl=en&u=${encodeURIComponent(currentUrl.href)}`;
+function isTranslateProxyPage() {
+  return location.hostname.endsWith(".translate.goog");
+}
+
+function translateProxyHost(hostname) {
+  return `${hostname.replace(/\./g, "-")}.translate.goog`;
+}
+
+function publicSiteUrlFor(href = location.href) {
+  const url = new URL(href, location.href);
+  if (isTranslateProxyPage()) {
+    ["_x_tr_sl", "_x_tr_tl", "_x_tr_hl", "_x_tr_pto"].forEach((key) => url.searchParams.delete(key));
+  }
+  if (/^(localhost|127\.0\.0\.1)$/i.test(url.hostname)) {
+    const publicUrl = new URL(publicSiteOrigin);
+    publicUrl.pathname = `${publicSiteBasePath}${url.pathname === "/" ? "/" : url.pathname}`;
+    publicUrl.search = url.search;
+    publicUrl.hash = "";
+    return publicUrl;
+  }
+  url.hash = "";
+  return url;
+}
+
+function englishTranslateHref(href = location.href) {
+  const sourceUrl = publicSiteUrlFor(href);
+  const translated = new URL(sourceUrl.href);
+  translated.protocol = "https:";
+  translated.hostname = isTranslateProxyPage() ? location.hostname : translateProxyHost(sourceUrl.hostname);
+  translated.searchParams.set("_x_tr_sl", "zh-TW");
+  translated.searchParams.set("_x_tr_tl", "en");
+  translated.searchParams.set("_x_tr_hl", "en");
+  translated.searchParams.set("_x_tr_pto", "wapp");
+  return translated.href;
 }
 
 function pageLoaderMarkup() {
@@ -97,6 +129,7 @@ async function loadSite() {
   if ($("[data-faculty-list]")) renderFacultyPage();
   if ($("[data-faculty-detail]")) renderFacultyDetail();
   if (location.pathname.endsWith("news.html")) renderNewsPage();
+  if ($("[data-news-detail]")) renderNewsDetail();
   if ($("[data-official-list]")) renderOfficialArchive();
   if ($("[data-official-detail]")) renderOfficialDetail();
   if ($("[data-student-detail]")) renderStudentResourceDetail();
@@ -524,6 +557,20 @@ function renderMediaVideo(video = {}) {
   return `<iframe src="${esc(src)}" title="${esc(video.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
 }
 
+function newsItemId(item = {}, index = 0) {
+  return item.id || `news-${index}`;
+}
+
+function newsDetailHref(item = {}, index = 0) {
+  return item.href && !isExternalHref(item.href) ? item.href : `./news-detail.html?id=${encodeURIComponent(newsItemId(item, index))}`;
+}
+
+function newsDetailLines(item = {}) {
+  if (Array.isArray(item.detail)) return item.detail.filter(Boolean);
+  if (typeof item.detail === "string" && item.detail.trim()) return item.detail.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  return [item.summary, "詳細公告內容可由本地 CMS 於 data/site.json 的 detail 欄位維護。"].filter(Boolean);
+}
+
 function renderNewsWidgets() {
   const isNewsPage = Boolean($("[data-news-pagination]"));
   const newsItems = isNewsPage ? siteData.news : siteData.news.filter((item) => item.category !== "獲獎公告");
@@ -549,15 +596,16 @@ function renderNewsWidgets() {
       { label: "查看全部消息", href: "./news.html", className: "text-link" }
     ]);
   } else if (list) list.innerHTML = items.map((item) => {
+    const itemIndex = siteData.news.indexOf(item);
     const body = `
       <time>${esc(item.date)}</time>
       <div class="news-item-body">
         <span class="news-category">${esc(item.category || "系所公告")}</span>
         <strong>${esc(item.title)}</strong>
         ${item.summary ? `<p>${esc(item.summary)}</p>` : ""}
-        <small>${item.href && !isRetiredOfficialHref(item.href) ? "查看公告" : "本站公告"}</small>
+        <small>閱讀完整內容</small>
       </div>`;
-    return item.href && !isRetiredOfficialHref(item.href) ? `<a class="news-item" href="${esc(item.href)}" target="${linkTarget(item.href)}">${body}</a>` : `<article class="news-item">${body}</article>`;
+    return `<a class="news-item" href="${esc(newsDetailHref(item, itemIndex))}">${body}</a>`;
   }).join("");
   list?.setAttribute("aria-busy", "false");
   if (pagination) {
@@ -574,6 +622,43 @@ function renderNewsWidgets() {
 
 function renderNewsPage() {
   renderNewsWidgets();
+}
+
+function renderNewsDetail() {
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id") || "";
+  const indexParam = Number(id);
+  const item = siteData.news.find((news) => newsItemId(news) === id) || (Number.isInteger(indexParam) ? siteData.news[indexParam] : null);
+  const target = $("[data-news-detail]");
+  if (!target) return;
+  if (!item) {
+    updateDocumentMeta(`找不到公告 - ${siteData.identity.title}`, "找不到指定的最新消息。");
+    target.innerHTML = renderEmptyState("找不到這則公告", "此公告可能已移除，請返回最新消息列表查看目前公告。", [
+      { label: "返回最新消息", href: "./news.html", className: "primary-action" }
+    ]);
+    return;
+  }
+  updateDocumentMeta(`${item.title} - 最新消息`, item.summary || newsDetailLines(item).slice(0, 2).join(" "));
+  const detailLines = newsDetailLines(item);
+  target.innerHTML = `
+    <nav class="breadcrumb" aria-label="麵包屑"><a href="./">首頁</a><a href="./news.html">最新消息</a><span>${esc(item.title)}</span></nav>
+    <p class="section-kicker">${esc(item.category || "系所公告")}</p>
+    <h1>${esc(item.title)}</h1>
+    <div class="news-detail-meta">
+      <time datetime="${esc(item.date || "")}">${esc(item.date || "未標示日期")}</time>
+      <span>${esc(item.category || "系所公告")}</span>
+    </div>
+    ${item.image ? `<figure class="news-detail-image"><img src="${esc(item.image)}" alt="${esc(item.title)}"></figure>` : ""}
+    ${item.summary ? `<p class="page-lead">${esc(item.summary)}</p>` : ""}
+    <section class="content-section news-detail-content">
+      <h2>公告內容</h2>
+      ${detailLines.map((line) => `<p>${esc(line)}</p>`).join("")}
+    </section>
+    <div class="hero-actions news-detail-actions">
+      <a class="primary-action" href="./news.html">返回最新消息</a>
+    </div>
+  `;
+  enhanceRenderedMediaAndLinks(target);
 }
 
 function renderPage() {
@@ -1419,6 +1504,7 @@ function setupAICursor() {
 
   const canUseCursor = () => finePointer.matches && !reducedMotion.matches;
   const canAnimateClick = () => !reducedMotion.matches;
+  const canDelayNavigation = () => finePointer.matches && !reducedMotion.matches;
   const setEnabled = () => document.body.classList.toggle("has-ai-cursor", canUseCursor());
   const interactiveSelector = "a[href], button, [role='button'], .primary-action, .secondary-action, .text-link, .tab, [data-category], [data-news-page], [data-lightbox-src]";
   const isDisabledControl = (element) => element?.disabled || element?.getAttribute("aria-disabled") === "true";
@@ -1433,6 +1519,7 @@ function setupAICursor() {
     if (!href || href.startsWith("#") || /^(mailto|tel|javascript):/i.test(href)) return "";
     const url = new URL(href, location.href);
     if (url.origin !== location.origin) return "";
+    if (isTranslateProxyPage()) return englishTranslateHref(href);
     if (url.pathname === location.pathname && url.search === location.search && url.hash) return "";
     if (url.href === location.href) return "";
     return url.href;
@@ -1482,6 +1569,7 @@ function setupAICursor() {
     const target = event.target.closest(interactiveSelector);
     if (!target || isDisabledControl(target)) return;
     const navigationUrl = getSameSiteNavigationUrl(event, target);
+    if (navigationUrl && !canDelayNavigation()) return;
     animateEating(target, !navigationUrl);
     if (!navigationUrl) return;
     event.preventDefault();

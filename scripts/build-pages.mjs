@@ -13,6 +13,7 @@ const files = [
   "faculty.html",
   "index.html",
   "manifest.webmanifest",
+  "news-detail.html",
   "news.html",
   "official-detail.html",
   "official.html",
