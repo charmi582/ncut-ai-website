@@ -1389,6 +1389,12 @@ button:active,
   opacity:1;
   visibility:visible;
 }
+.site-loader.is-skip-intro {
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:none;
+}
 .is-ai-eating {
   position:relative;
   overflow:hidden;

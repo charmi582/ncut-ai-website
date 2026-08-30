@@ -16,93 +16,147 @@ const archiveKey = (href = "") => String(href).replace(/^https?:\/\/(n063|ai)\.n
 const isRetiredOfficialHref = (href = "") => /official(?:-detail)?\.html/i.test(String(href));
 const isLegacyImportEntry = (item = {}) => /原系網|匯入資料/.test(`${item.label || ""} ${item.title || ""} ${item.type || ""}`) || isRetiredOfficialHref(item.href);
 const isBlockedSiteImage = (src = "") => /linkdet_1436_2272241_19992\.png/i.test(String(src));
-const publicSiteOrigin = "https://charmi582.github.io";
-const publicSiteBasePath = "/ncut-ai-website";
-const pageLoader = createPageLoader();
+let languageService;
+let pageLoader;
+
+class LanguageService {
+  constructor({ publicOrigin, publicBasePath }) {
+    this.publicOrigin = publicOrigin;
+    this.publicBasePath = publicBasePath;
+    this.translateKeys = ["_x_tr_sl", "_x_tr_tl", "_x_tr_hl", "_x_tr_pto"];
+  }
+
+  isTranslateProxyPage() {
+    return location.hostname.endsWith(".translate.goog");
+  }
+
+  englishHref(href = location.href) {
+    const sourceUrl = this.publicSiteUrlFor(href);
+    const translated = new URL(sourceUrl.href);
+    translated.protocol = "https:";
+    translated.hostname = this.isTranslateProxyPage() ? location.hostname : this.translateProxyHost(sourceUrl.hostname);
+    translated.searchParams.set("_x_tr_sl", "zh-TW");
+    translated.searchParams.set("_x_tr_tl", "en");
+    translated.searchParams.set("_x_tr_hl", "en");
+    translated.searchParams.set("_x_tr_pto", "wapp");
+    return translated.href;
+  }
+
+  translateProxyHost(hostname) {
+    return `${hostname.replace(/\./g, "-")}.translate.goog`;
+  }
+
+  publicSiteUrlFor(href = location.href) {
+    const url = new URL(href, location.href);
+    if (this.isTranslateProxyPage()) {
+      this.translateKeys.forEach((key) => url.searchParams.delete(key));
+    }
+    if (/^(localhost|127\.0\.0\.1)$/i.test(url.hostname)) {
+      const publicUrl = new URL(this.publicOrigin);
+      publicUrl.pathname = `${this.publicBasePath}${url.pathname === "/" ? "/" : url.pathname}`;
+      publicUrl.search = url.search;
+      publicUrl.hash = "";
+      return publicUrl;
+    }
+    url.hash = "";
+    return url;
+  }
+}
+
+class PageLoader {
+  static skipIntroStorageKey = "ncut-ai-skip-intro";
+
+  constructor({ fullMotion = true, exit = false, skipMinimum = false } = {}) {
+    this.startedAt = Date.now();
+    this.skipMinimum = skipMinimum;
+    this.element = document.createElement("div");
+    this.element.className = `site-loader${fullMotion ? " is-full-motion" : ""}${exit ? " is-exit-loader" : ""}${skipMinimum ? " is-skip-intro" : ""}`;
+    this.element.setAttribute("aria-hidden", "true");
+    this.element.innerHTML = PageLoader.markup();
+  }
+
+  static markup() {
+    return `
+      <div class="loader-stage">
+        <div class="loader-word">Artificial Intelligence</div>
+        <div class="loader-mark">
+          <span></span>
+          <img src="./assets/ai-official-icon.png" alt="">
+        </div>
+      </div>
+      <small>Department of Artificial Intelligence and Computer Engineering</small>
+    `;
+  }
+
+  static startIntro() {
+    const skipIntro = PageLoader.consumeSkipIntro();
+    const loader = new PageLoader({ fullMotion: !skipIntro, skipMinimum: skipIntro });
+    loader.mount();
+    return loader;
+  }
+
+  static showExit() {
+    document.querySelector(".site-loader.is-exit-loader")?.remove();
+    const loader = new PageLoader({ fullMotion: true, exit: true });
+    loader.mount();
+    document.body.classList.add("is-exiting-page");
+    requestAnimationFrame(() => loader.element.classList.add("is-active"));
+    return loader;
+  }
+
+  static consumeSkipIntro() {
+    try {
+      const shouldSkip = sessionStorage.getItem(PageLoader.skipIntroStorageKey) === "1";
+      if (shouldSkip) sessionStorage.removeItem(PageLoader.skipIntroStorageKey);
+      return shouldSkip;
+    } catch {
+      return false;
+    }
+  }
+
+  static skipNextIntro() {
+    try {
+      sessionStorage.setItem(PageLoader.skipIntroStorageKey, "1");
+    } catch {
+      // sessionStorage can be unavailable in strict privacy modes.
+    }
+  }
+
+  mount() {
+    document.body.classList.add("is-loading");
+    document.body.prepend(this.element);
+  }
+
+  hide(immediate = false) {
+    const minimumDuration = this.skipMinimum ? 0 : 2300;
+    const wait = immediate ? 0 : Math.max(0, minimumDuration - (Date.now() - this.startedAt));
+    window.setTimeout(() => {
+      this.element.classList.add("is-done");
+      document.body.classList.remove("is-loading");
+      window.setTimeout(() => {
+        this.element.remove();
+      }, this.skipMinimum ? 0 : 1300);
+    }, wait);
+  }
+}
 
 function isTranslateProxyPage() {
-  return location.hostname.endsWith(".translate.goog");
-}
-
-function translateProxyHost(hostname) {
-  return `${hostname.replace(/\./g, "-")}.translate.goog`;
-}
-
-function publicSiteUrlFor(href = location.href) {
-  const url = new URL(href, location.href);
-  if (isTranslateProxyPage()) {
-    ["_x_tr_sl", "_x_tr_tl", "_x_tr_hl", "_x_tr_pto"].forEach((key) => url.searchParams.delete(key));
-  }
-  if (/^(localhost|127\.0\.0\.1)$/i.test(url.hostname)) {
-    const publicUrl = new URL(publicSiteOrigin);
-    publicUrl.pathname = `${publicSiteBasePath}${url.pathname === "/" ? "/" : url.pathname}`;
-    publicUrl.search = url.search;
-    publicUrl.hash = "";
-    return publicUrl;
-  }
-  url.hash = "";
-  return url;
+  return languageService.isTranslateProxyPage();
 }
 
 function englishTranslateHref(href = location.href) {
-  const sourceUrl = publicSiteUrlFor(href);
-  const translated = new URL(sourceUrl.href);
-  translated.protocol = "https:";
-  translated.hostname = isTranslateProxyPage() ? location.hostname : translateProxyHost(sourceUrl.hostname);
-  translated.searchParams.set("_x_tr_sl", "zh-TW");
-  translated.searchParams.set("_x_tr_tl", "en");
-  translated.searchParams.set("_x_tr_hl", "en");
-  translated.searchParams.set("_x_tr_pto", "wapp");
-  return translated.href;
-}
-
-function pageLoaderMarkup() {
-  return `
-    <div class="loader-stage">
-      <div class="loader-word">Artificial Intelligence</div>
-      <div class="loader-mark">
-        <span></span>
-        <img src="./assets/ai-official-icon.png" alt="">
-      </div>
-    </div>
-    <small>Department of Artificial Intelligence and Computer Engineering</small>
-  `;
-}
-
-function createPageLoader() {
-  const forceFullIntroAnimation = true;
-  const startedAt = Date.now();
-  const loader = document.createElement("div");
-  loader.className = `site-loader${forceFullIntroAnimation ? " is-full-motion" : ""}`;
-  loader.setAttribute("aria-hidden", "true");
-  loader.innerHTML = pageLoaderMarkup();
-  document.body.classList.add("is-loading");
-  document.body.prepend(loader);
-  return {
-    hide(immediate = false) {
-      const minimumDuration = 2300;
-      const wait = immediate ? 0 : Math.max(0, minimumDuration - (Date.now() - startedAt));
-      window.setTimeout(() => {
-        loader.classList.add("is-done");
-        document.body.classList.remove("is-loading");
-        window.setTimeout(() => {
-          loader.remove();
-        }, 1300);
-      }, wait);
-    }
-  };
+  return languageService.englishHref(href);
 }
 
 function showPageTransition() {
-  document.querySelector(".site-loader.is-exit-loader")?.remove();
-  const loader = document.createElement("div");
-  loader.className = "site-loader is-full-motion is-exit-loader";
-  loader.setAttribute("aria-hidden", "true");
-  loader.innerHTML = pageLoaderMarkup();
-  document.body.classList.add("is-loading", "is-exiting-page");
-  document.body.prepend(loader);
-  requestAnimationFrame(() => loader.classList.add("is-active"));
+  return PageLoader.showExit();
 }
+
+languageService = new LanguageService({
+  publicOrigin: "https://charmi582.github.io",
+  publicBasePath: "/ncut-ai-website"
+});
+pageLoader = PageLoader.startIntro();
 
 function archiveLink(link, archive) {
   const href = link?.href || "";
@@ -1475,38 +1529,73 @@ function startAwards() {
   restart();
 }
 
-function setupAICursor() {
-  if (document.documentElement.dataset.aiCursorReady) return;
-  document.documentElement.dataset.aiCursorReady = "true";
+class AICursorController {
+  constructor() {
+    this.finePointer = window.matchMedia("(pointer: fine)");
+    this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    this.interactiveSelector = "a[href], button, [role='button'], .primary-action, .secondary-action, .text-link, .tab, [data-category], [data-news-page], [data-lightbox-src]";
+    this.cursor = this.createCursor();
+  }
 
-  const finePointer = window.matchMedia("(pointer: fine)");
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const cursor = document.createElement("div");
-  cursor.className = "ai-cursor";
-  cursor.setAttribute("aria-hidden", "true");
-  cursor.innerHTML = `
-    <div class="ai-cursor-head">
-      <span class="ai-cursor-antenna"></span>
-      <span class="ai-cursor-ear ai-cursor-ear-left"></span>
-      <span class="ai-cursor-ear ai-cursor-ear-right"></span>
-      <span class="ai-cursor-eye ai-cursor-eye-left"></span>
-      <span class="ai-cursor-eye ai-cursor-eye-right"></span>
-      <span class="ai-cursor-mouth"></span>
-      <span class="ai-cursor-chip">AI</span>
-    </div>
-  `;
-  document.body.append(cursor);
+  static installOnce() {
+    if (document.documentElement.dataset.aiCursorReady) return;
+    document.documentElement.dataset.aiCursorReady = "true";
+    new AICursorController().install();
+  }
 
-  const canUseCursor = () => finePointer.matches && !reducedMotion.matches;
-  const canAnimateClick = () => !reducedMotion.matches;
-  const canDelayNavigation = () => finePointer.matches && !reducedMotion.matches;
-  const setEnabled = () => document.body.classList.toggle("has-ai-cursor", canUseCursor());
-  const interactiveSelector = "a[href], button, [role='button'], .primary-action, .secondary-action, .text-link, .tab, [data-category], [data-news-page], [data-lightbox-src]";
-  const isDisabledControl = (element) => element?.disabled || element?.getAttribute("aria-disabled") === "true";
+  createCursor() {
+    const cursor = document.createElement("div");
+    cursor.className = "ai-cursor";
+    cursor.setAttribute("aria-hidden", "true");
+    cursor.innerHTML = `
+      <div class="ai-cursor-head">
+        <span class="ai-cursor-antenna"></span>
+        <span class="ai-cursor-ear ai-cursor-ear-left"></span>
+        <span class="ai-cursor-ear ai-cursor-ear-right"></span>
+        <span class="ai-cursor-eye ai-cursor-eye-left"></span>
+        <span class="ai-cursor-eye ai-cursor-eye-right"></span>
+        <span class="ai-cursor-mouth"></span>
+        <span class="ai-cursor-chip">AI</span>
+      </div>
+    `;
+    document.body.append(cursor);
+    return cursor;
+  }
 
-  const getSameSiteNavigationUrl = (event, target) => {
+  install() {
+    document.addEventListener("pointermove", (event) => this.onPointerMove(event));
+    document.addEventListener("pointerover", (event) => this.onPointerOver(event));
+    document.addEventListener("pointerdown", (event) => this.onPointerDown(event));
+    document.addEventListener("pointerup", () => this.cursor.classList.remove("is-pressing"));
+    document.addEventListener("click", (event) => this.onClick(event), true);
+    this.finePointer.addEventListener?.("change", () => this.setEnabled());
+    this.reducedMotion.addEventListener?.("change", () => this.setEnabled());
+    this.setEnabled();
+  }
+
+  canUseCursor() {
+    return this.finePointer.matches && !this.reducedMotion.matches;
+  }
+
+  canAnimateClick() {
+    return !this.reducedMotion.matches;
+  }
+
+  canDelayNavigation() {
+    return this.finePointer.matches && !this.reducedMotion.matches;
+  }
+
+  setEnabled() {
+    document.body.classList.toggle("has-ai-cursor", this.canUseCursor());
+  }
+
+  isDisabledControl(element) {
+    return element?.disabled || element?.getAttribute("aria-disabled") === "true";
+  }
+
+  sameSiteNavigationUrl(event, target) {
     const link = target?.closest("a[href]");
-    if (!link || isDisabledControl(link)) return "";
+    if (!link || this.isDisabledControl(link)) return "";
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return "";
     if (link.target && link.target !== "_self") return "";
     if (link.hasAttribute("download")) return "";
@@ -1518,72 +1607,69 @@ function setupAICursor() {
     if (url.pathname === location.pathname && url.search === location.search && url.hash) return "";
     if (url.href === location.href) return "";
     return url.href;
-  };
+  }
 
-  const animateEating = (target, shouldRestore = true) => {
+  animateEating(target, shouldRestore = true) {
     if (!target || target.dataset.aiEating === "true") return;
     target.dataset.aiEating = "true";
     target.classList.add("is-ai-eating");
-    if (canUseCursor()) cursor.classList.add("is-biting");
+    if (this.canUseCursor()) this.cursor.classList.add("is-biting");
     window.setTimeout(() => {
-      cursor.classList.remove("is-biting");
-      if (canUseCursor()) cursor.classList.add("is-thinking");
+      this.cursor.classList.remove("is-biting");
+      if (this.canUseCursor()) this.cursor.classList.add("is-thinking");
     }, 260);
     if (shouldRestore) {
       window.setTimeout(() => {
         target.classList.remove("is-ai-eating");
         delete target.dataset.aiEating;
-        cursor.classList.remove("is-thinking");
+        this.cursor.classList.remove("is-thinking");
       }, 920);
     }
-  };
+  }
 
-  document.addEventListener("pointermove", (event) => {
-    if (!canUseCursor()) return;
-    cursor.style.setProperty("--cursor-x", `${event.clientX}px`);
-    cursor.style.setProperty("--cursor-y", `${event.clientY}px`);
-    cursor.classList.add("is-visible");
-  });
+  onPointerMove(event) {
+    if (!this.canUseCursor()) return;
+    this.cursor.style.setProperty("--cursor-x", `${event.clientX}px`);
+    this.cursor.style.setProperty("--cursor-y", `${event.clientY}px`);
+    this.cursor.classList.add("is-visible");
+  }
 
-  document.addEventListener("pointerover", (event) => {
-    if (!canUseCursor()) return;
-    cursor.classList.toggle("is-hovering", Boolean(event.target.closest(interactiveSelector)));
-  });
+  onPointerOver(event) {
+    if (!this.canUseCursor()) return;
+    this.cursor.classList.toggle("is-hovering", Boolean(event.target.closest(this.interactiveSelector)));
+  }
 
-  document.addEventListener("pointerdown", (event) => {
-    if (!canUseCursor() || event.button !== 0) return;
-    if (event.target.closest(interactiveSelector)) cursor.classList.add("is-pressing");
-  });
+  onPointerDown(event) {
+    if (!this.canUseCursor() || event.button !== 0) return;
+    if (event.target.closest(this.interactiveSelector)) this.cursor.classList.add("is-pressing");
+  }
 
-  document.addEventListener("pointerup", () => {
-    cursor.classList.remove("is-pressing");
-  });
-
-  document.addEventListener("click", (event) => {
+  onClick(event) {
     if (document.body.classList.contains("is-exiting-page")) {
       event.preventDefault();
       return;
     }
-    if (!canAnimateClick()) return;
-    const target = event.target.closest(interactiveSelector);
-    if (!target || isDisabledControl(target)) return;
-    const navigationUrl = getSameSiteNavigationUrl(event, target);
-    if (navigationUrl && !canDelayNavigation()) return;
-    animateEating(target, !navigationUrl);
+    if (!this.canAnimateClick()) return;
+    const target = event.target.closest(this.interactiveSelector);
+    if (!target || this.isDisabledControl(target)) return;
+    const navigationUrl = this.sameSiteNavigationUrl(event, target);
+    if (navigationUrl && !this.canDelayNavigation()) return;
+    this.animateEating(target, !navigationUrl);
     if (!navigationUrl) return;
     event.preventDefault();
     document.body.classList.add("is-exiting-page");
     window.setTimeout(() => {
       showPageTransition();
       window.setTimeout(() => {
+        PageLoader.skipNextIntro();
         location.assign(navigationUrl);
       }, 760);
     }, 520);
-  }, true);
+  }
+}
 
-  finePointer.addEventListener?.("change", setEnabled);
-  reducedMotion.addEventListener?.("change", setEnabled);
-  setEnabled();
+function setupAICursor() {
+  AICursorController.installOnce();
 }
 
 function setupInteractions() {
