@@ -3575,11 +3575,6 @@ body.is-inner-page .site-header .brand img,
   object-fit:cover;
 }
 
-.media-video {
-  display:block;
-  object-fit:cover;
-}
-
 @media(max-width:700px) {
   .hero {
     min-height:100svh!important;
@@ -3853,4 +3848,125 @@ body.is-inner-page .site-header .brand img,
 
 .hero-slide.has-video .hero-copy {
   display:none!important;
+}
+
+/* Mobile homepage primary links */
+@media(max-width:700px) {
+  .quick-links {
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+
+  .quick-links a {
+    min-width:0;
+    min-height:96px!important;
+    padding:14px 8px!important;
+    border-right:1px solid rgba(255,255,255,.12)!important;
+    border-bottom:0!important;
+  }
+
+  .quick-links a:last-child {
+    border-right:0!important;
+  }
+
+  .quick-links span {
+    font-size:.68rem!important;
+    line-height:1.15;
+  }
+
+  .quick-links strong {
+    margin-top:8px!important;
+    font-size:clamp(.98rem,5vw,1.2rem)!important;
+    line-height:1.18!important;
+    word-break:keep-all;
+  }
+
+  .awards-section {
+    padding-top:54px!important;
+    padding-bottom:54px!important;
+  }
+
+  .awards-section .section-head {
+    margin-bottom:22px!important;
+  }
+
+  .awards-carousel {
+    border:1px solid rgba(31,111,159,.12)!important;
+    border-radius:8px!important;
+    background:#fff!important;
+    box-shadow:0 18px 44px rgba(8,25,39,.1)!important;
+  }
+
+  .award-viewport {
+    min-height:0!important;
+    aspect-ratio:16/9;
+    background:#f7fafb!important;
+  }
+
+  .award-slide {
+    position:absolute!important;
+    inset:0!important;
+    display:block!important;
+  }
+
+  .award-slide img {
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    margin:0!important;
+    border:0!important;
+    object-fit:contain!important;
+    background:#fff!important;
+  }
+
+  .award-controls {
+    display:grid!important;
+    grid-template-columns:42px minmax(0,1fr) 42px!important;
+    gap:10px!important;
+    align-items:center!important;
+    padding:12px!important;
+    background:linear-gradient(180deg,#fff,#f7fafb)!important;
+    border-top:1px solid #e3edf1!important;
+  }
+
+  .award-controls>button {
+    width:42px!important;
+    height:42px!important;
+    border:1px solid #d7e6ec!important;
+    border-radius:8px!important;
+    background:#fff!important;
+    box-shadow:0 8px 18px rgba(8,25,39,.06);
+  }
+
+  .award-dots {
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    justify-content:flex-start!important;
+    gap:7px!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    padding:6px 2px!important;
+    scrollbar-width:none;
+  }
+
+  .award-dots::-webkit-scrollbar {
+    display:none;
+  }
+
+  .award-dots button {
+    flex:0 0 auto!important;
+    width:9px!important;
+    height:9px!important;
+    min-width:9px!important;
+    min-height:9px!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:99px!important;
+    background:#c7d3d9!important;
+  }
+
+  .award-dots button.is-active,
+  .award-dots button[aria-current="true"] {
+    width:32px!important;
+    background:var(--blue)!important;
+  }
 }

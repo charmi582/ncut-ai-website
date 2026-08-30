@@ -608,7 +608,6 @@ function renderHome() {
   $("[data-faculty-preview]").innerHTML = siteData.faculty.slice(0, 6).map(renderFacultyCard).join("");
   renderAwardsCarousel();
   renderNewsWidgets();
-  $("[data-videos]").innerHTML = siteData.videos.map(renderMediaVideo).join("");
   startHero();
 }
 
@@ -624,16 +623,6 @@ function renderHeroVideo(slide = {}) {
     return `<video class="hero-video" src="${esc(slide.video)}" title="${esc(slide.title)} 背景影片" autoplay muted loop playsinline preload="metadata" tabindex="-1" aria-hidden="true"${startAttr}></video>`;
   }
   return `<iframe class="hero-video" src="${esc(slide.video)}" title="${esc(slide.title)} 背景影片" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" loading="eager" tabindex="-1" aria-hidden="true"></iframe>`;
-}
-
-function renderMediaVideo(video = {}) {
-  const src = video.embed || video.src || "";
-  if (isMp4Video(src)) {
-    const startTime = Number(video.startTime || 0);
-    const startAttr = startTime > 0 ? ` data-start-time="${startTime}"` : "";
-    return `<video class="media-video" src="${esc(src)}" title="${esc(video.title)}" controls playsinline preload="metadata"${startAttr}></video>`;
-  }
-  return `<iframe src="${esc(src)}" title="${esc(video.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
 }
 
 function setupVideoStartTimes(root = document) {
