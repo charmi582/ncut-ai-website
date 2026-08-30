@@ -581,8 +581,8 @@ function renderMegaMenu() {
 
 function renderHome() {
   const mobileHeroQuery = window.matchMedia("(max-width: 700px)");
-  const firstHeroHasMobileImage = Boolean(siteData.hero[0]?.mobileImage);
-  const initialHeroIndex = mobileHeroQuery.matches && siteData.hero[0]?.video && !firstHeroHasMobileImage && siteData.hero.length > 1 ? 1 : 0;
+  const firstMobileHeroIndex = siteData.hero.findIndex((slide) => slide.mobileImage);
+  const initialHeroIndex = mobileHeroQuery.matches && firstMobileHeroIndex >= 0 ? firstMobileHeroIndex : 0;
   heroIndex = initialHeroIndex;
   $("[data-hero]").innerHTML = siteData.hero.map((slide, index) => `
     <article id="hero-slide-${index}" class="hero-slide ${index === initialHeroIndex ? "is-active" : ""} ${slide.video ? "has-video" : ""} ${slide.mobileImage ? "has-mobile-image" : ""}" role="group" aria-roledescription="slide" aria-label="${index + 1} / ${siteData.hero.length}：${esc(slide.title)}" aria-hidden="${index === initialHeroIndex ? "false" : "true"}" style="--bg:url('${esc(slide.image)}');--pos:${esc(slide.position || "center center")};${slide.mobileImage ? `--mobile-bg:url('${esc(slide.mobileImage)}');--mobile-pos:${esc(slide.mobilePosition || slide.position || "center center")};` : ""}">
@@ -598,7 +598,7 @@ function renderHome() {
       </div>
     </article>`).join("");
   $("[data-dots]").setAttribute("aria-label", "主視覺輪播分頁");
-  $("[data-dots]").innerHTML = siteData.hero.map((slide, index) => `<button type="button" class="${index === initialHeroIndex ? "is-active" : ""}" data-dot="${index}" aria-label="切換主視覺 ${index + 1}：${esc(slide.title)}" aria-controls="hero-slide-${index}" ${index === initialHeroIndex ? `aria-current="true"` : ""}></button>`).join("");
+  $("[data-dots]").innerHTML = siteData.hero.map((slide, index) => `<button type="button" class="${index === initialHeroIndex ? "is-active" : ""}" data-dot="${index}" data-mobile-slide="${slide.mobileImage ? "true" : "false"}" aria-label="切換主視覺 ${index + 1}：${esc(slide.title)}" aria-controls="hero-slide-${index}" ${index === initialHeroIndex ? `aria-current="true"` : ""}></button>`).join("");
   $("[data-metrics]").innerHTML = siteData.metrics.map((item) => `<div><strong>${esc(item.value)}</strong><span>${esc(item.label)}</span></div>`).join("");
   $("[data-quick-links]").innerHTML = siteData.quickLinks
     .filter((link) => !isRetiredOfficialHref(link.href) && !/官方(?:資訊|資料)庫/.test(link.label || ""))
@@ -1368,7 +1368,7 @@ function startHero() {
     let nextIndex = (index + slides.length) % slides.length;
     if (!mobileHeroQuery.matches) return nextIndex;
     for (let attempts = 0; attempts < slides.length; attempts += 1) {
-      if (!slides[nextIndex].classList.contains("has-video") || slides[nextIndex].classList.contains("has-mobile-image")) return nextIndex;
+      if (slides[nextIndex].classList.contains("has-mobile-image")) return nextIndex;
       nextIndex = (nextIndex + direction + slides.length) % slides.length;
     }
     return index;

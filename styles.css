@@ -3619,6 +3619,15 @@ body.is-inner-page .site-header .brand img,
     background-color:#061c36!important;
     background-position:center top!important;
     background-size:100% 100%!important;
+    box-shadow:none!important;
+  }
+
+  .hero-slide.has-mobile-image:after {
+    background:none!important;
+  }
+
+  .hero .slider-dots button:not([data-mobile-slide="true"]) {
+    display:none!important;
   }
 }
 
