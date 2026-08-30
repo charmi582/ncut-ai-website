@@ -2893,10 +2893,10 @@ body.is-inner-page .site-header .brand img,
   position:relative;
   z-index:1;
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:clamp(14px,1.6vw,24px);
-  width:min(100%,1180px);
-  max-width:1180px;
+  width:min(100%,1280px);
+  max-width:1280px;
   margin:clamp(28px,3vw,44px) auto 0;
   align-items:start;
 }
