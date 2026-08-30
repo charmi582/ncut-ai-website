@@ -179,7 +179,7 @@
   ],
   "metrics": [
     {
-      "value": "13",
+      "value": "14",
       "label": "專任教師，涵蓋人工智慧相關專長"
     },
     {
@@ -515,24 +515,24 @@
   ],
   "faculty": [
     {
-      "name": "劉川綱",
-      "enName": "Chuan-Kang Liu",
-      "role": "副教授兼系主任",
-      "email": "ckliu@ncut.edu.tw",
-      "phone": "04-23924505 分機 8500 或 8536",
-      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/514061381.jpg",
-      "profile": "./official-detail.html?id=53",
-      "education": "國立成功大學 電機工程 博士",
-      "expertise": "電腦網路、資訊安全、人工智慧與機器學習、物聯網智慧應用、VR創新應用",
-      "office": "青永館3樓 研究室1",
+      "name": "陳彥佑",
+      "enName": "Yen-Yu Chen",
+      "role": "教授兼代理系主任",
+      "email": "aicyy@ncut.edu.tw",
+      "phone": "04-23924505 分機 8500 或 8539",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/586827758.jpg",
+      "profile": "./official-detail.html?id=51",
+      "education": "國立成功大學 電機工程研究所（計算機組）博士",
+      "expertise": "深度學習、醫學影像分析、影像處理",
+      "office": "創新研發大樓2樓 LA210-2",
       "lab": "",
-      "sourceProfile": "./official-detail.html?id=53",
+      "sourceProfile": "./official-detail.html?id=51",
       "detailHref": "./faculty-detail.html?id=0"
     },
     {
       "name": "吳憲珠",
       "enName": "Hsien-Chu Wu",
-      "role": "專任教師",
+      "role": "教授",
       "email": "wuhc@ncut.edu.tw",
       "phone": "04-23924505 分機 8542",
       "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/621365151.jpg",
@@ -547,7 +547,7 @@
     {
       "name": "程榮祥",
       "enName": "Rung-Shiang Cheng",
-      "role": "專任教師",
+      "role": "教授兼電資學院院長",
       "email": "rscheng@ncut.edu.tw",
       "phone": "04-23924505 分機 8546",
       "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/678/dean_rscheng.jpg",
@@ -565,24 +565,9 @@
       "detailHref": "./faculty-detail.html?id=2"
     },
     {
-      "name": "陳彥佑",
-      "enName": "Yen-Yu Chen",
-      "role": "專任教師",
-      "email": "aicyy@ncut.edu.tw",
-      "phone": "04-23924505 分機 8539",
-      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/586827758.jpg",
-      "profile": "./official-detail.html?id=51",
-      "education": "國立成功大學 電機工程研究所(計算機組) 博士",
-      "expertise": "深度學習、醫學影像分析、影像處理",
-      "office": "創新研發大樓2樓 LA210-2",
-      "lab": "",
-      "sourceProfile": "./official-detail.html?id=51",
-      "detailHref": "./faculty-detail.html?id=3"
-    },
-    {
       "name": "黃詰琳",
       "enName": "Chieh-Ling Huang",
-      "role": "專任教師",
+      "role": "副教授",
       "email": "kaio@ncut.edu.tw",
       "phone": "04-23924505 分機 8531",
       "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/76F1C0ED-3512-4286-A795-FE2C5C302BA7.jpg",
@@ -592,12 +577,42 @@
       "office": "青永館3樓 研究室7",
       "lab": "",
       "sourceProfile": "./official-detail.html?id=52",
+      "detailHref": "./faculty-detail.html?id=3"
+    },
+    {
+      "name": "劉川綱",
+      "enName": "Chuan-Kang Liu",
+      "role": "副教授",
+      "email": "ckliu@ncut.edu.tw",
+      "phone": "04-23924505 分機 8500 或 8536",
+      "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/514061381.jpg",
+      "profile": "./official-detail.html?id=53",
+      "education": "國立成功大學 電機工程 博士",
+      "expertise": "電腦網路、資訊安全、人工智慧與機器學習、物聯網智慧應用、VR創新應用",
+      "office": "青永館3樓 研究室1",
+      "lab": "",
+      "sourceProfile": "./official-detail.html?id=53",
       "detailHref": "./faculty-detail.html?id=4"
+    },
+    {
+      "name": "江榮隆",
+      "enName": "Jung-Lung Chiang",
+      "role": "副教授",
+      "email": "",
+      "phone": "04-23924505 分機 6476",
+      "photo": "https://pteecs.ncut.edu.tw/var/file/6/1006/img/JLJ.png",
+      "profile": "https://pteecs.ncut.edu.tw/p/404-1006-19728.php?Lang=zh-tw",
+      "education": "國立中山大學 電機工程 博士",
+      "expertise": "半導體材料分析與應用、離子及生醫感測元件與應用、電子電路、數位邏輯電路",
+      "office": "",
+      "lab": "",
+      "sourceProfile": "https://pteecs.ncut.edu.tw/p/404-1006-19728.php?Lang=zh-tw",
+      "detailHref": "./faculty-detail.html?id=5"
     },
     {
       "name": "張俊隆",
       "enName": "Chun-Lung Chang",
-      "role": "專任教師",
+      "role": "助理教授",
       "email": "VincentChang0304@ncut.edu.tw",
       "phone": "04-23924505 分機 8534",
       "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/738519009.jpg",
@@ -607,12 +622,12 @@
       "office": "青永館3樓 研究室6",
       "lab": "",
       "sourceProfile": "./official-detail.html?id=54",
-      "detailHref": "./faculty-detail.html?id=5"
+      "detailHref": "./faculty-detail.html?id=6"
     },
     {
       "name": "張顧耀",
       "enName": "Ku-Yaw Chang",
-      "role": "專任教師",
+      "role": "助理教授",
       "email": "canseco@ncut.edu.tw",
       "phone": "04-23924505 分機 8535",
       "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/388760334.jpg",
@@ -622,12 +637,12 @@
       "office": "青永館3樓 研究室2",
       "lab": "",
       "sourceProfile": "./official-detail.html?id=55",
-      "detailHref": "./faculty-detail.html?id=6"
+      "detailHref": "./faculty-detail.html?id=7"
     },
     {
       "name": "王秉豐",
       "enName": "Ping-Feng Wang",
-      "role": "專任教師",
+      "role": "助理教授",
       "email": "pfwang@ncut.edu.tw",
       "phone": "04-23924505 分機 8545",
       "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/795106425.jpg",
@@ -637,12 +652,12 @@
       "office": "誠樸館4樓 G409",
       "lab": "",
       "sourceProfile": "./official-detail.html?id=56",
-      "detailHref": "./faculty-detail.html?id=7"
+      "detailHref": "./faculty-detail.html?id=8"
     },
     {
       "name": "劉秉睿",
       "enName": "Ping-Juei Liu",
-      "role": "專任教師",
+      "role": "助理教授",
       "email": "immich@ncut.edu.tw",
       "phone": "04-23924505 分機 8541",
       "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/644662333.jpg",
@@ -652,12 +667,12 @@
       "office": "創新研發大樓2樓 LA210-3",
       "lab": "",
       "sourceProfile": "./official-detail.html?id=57",
-      "detailHref": "./faculty-detail.html?id=8"
+      "detailHref": "./faculty-detail.html?id=9"
     },
     {
       "name": "張偉鉉",
       "enName": "Wei-Hsuan Chang",
-      "role": "專任教師",
+      "role": "助理教授",
       "email": "brantchang@ncut.edu.tw",
       "phone": "04-23924505 分機 8544",
       "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/114924641.jpg",
@@ -667,12 +682,12 @@
       "office": "誠樸館4樓 G403",
       "lab": "",
       "sourceProfile": "./official-detail.html?id=58",
-      "detailHref": "./faculty-detail.html?id=9"
+      "detailHref": "./faculty-detail.html?id=10"
     },
     {
       "name": "黃聖維",
       "enName": "Sheng-Wei Huang",
-      "role": "專任教師",
+      "role": "助理教授",
       "email": "swhuang@ncut.edu.tw",
       "phone": "04-23924505 分機 8537",
       "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/528561806.jpg",
@@ -682,12 +697,12 @@
       "office": "誠樸館2樓 G205",
       "lab": "",
       "sourceProfile": "./official-detail.html?id=59",
-      "detailHref": "./faculty-detail.html?id=10"
+      "detailHref": "./faculty-detail.html?id=11"
     },
     {
       "name": "朱邵威",
       "enName": "Shao-Wei Chu",
-      "role": "專任教師",
+      "role": "助理教授",
       "email": "swchu@ncut.edu.tw",
       "phone": "04-23924505 分機 8532",
       "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/794197652.jpg",
@@ -697,12 +712,12 @@
       "office": "青永館3樓 研究室5",
       "lab": "",
       "sourceProfile": "./official-detail.html?id=60",
-      "detailHref": "./faculty-detail.html?id=11"
+      "detailHref": "./faculty-detail.html?id=12"
     },
     {
       "name": "王暐鈞",
       "enName": "Wei-Jyun Wang",
-      "role": "專任教師",
+      "role": "助理教授",
       "email": "wjwang@ncut.edu.tw",
       "phone": "04-23924505 分機 8543",
       "photo": "https://ai.ncut.edu.tw/var/file/63/1063/img/228459057.jpg",
@@ -712,7 +727,7 @@
       "office": "誠樸館2樓 G210",
       "lab": "",
       "sourceProfile": "./official-detail.html?id=61",
-      "detailHref": "./faculty-detail.html?id=12"
+      "detailHref": "./faculty-detail.html?id=13"
     }
   ],
   "staff": [
