@@ -786,6 +786,46 @@
   ],
   "news": [
     {
+      "date": "2026-08-20",
+      "category": "系所公告",
+      "title": "2026 人工智慧（SSE 生成式 AI 規劃與應用）國際證照種子教師研習營圓滿完成",
+      "summary": "本系於 2026 年 8 月 20 日辦理「2026 人工智慧（SSE 生成式 AI 規劃與應用）國際證照種子教師研習營」。",
+      "href": "https://ai.ncut.edu.tw/p/406-1063-95645,r726.php?Lang=zh-tw",
+      "image": "./assets/optimized/S__18858244_0.webp"
+    },
+    {
+      "date": "2026-08-11",
+      "category": "系所公告",
+      "title": "本系學生參與經濟部產業發展署「115 年度半導體創新技術與產業應用驅動智匯菁英計畫」實習專題",
+      "summary": "本系學生參與經濟部產業發展署「115 年度半導體創新技術與產業應用驅動智匯菁英計畫」實習專題。",
+      "href": "https://ai.ncut.edu.tw/p/406-1063-95533,r726.php?Lang=zh-tw",
+      "image": "./assets/optimized/S__18858244_0.webp"
+    },
+    {
+      "date": "2026-07-27",
+      "category": "獲獎公告",
+      "title": "【獲獎公告】恭賀本系學生參加「2026 實務專題競賽」榮獲佳績",
+      "summary": "恭賀本系學生參加「2026 實務專題競賽」榮獲佳績。",
+      "href": "https://ai.ncut.edu.tw/p/406-1063-95295,r726.php?Lang=zh-tw",
+      "image": "./assets/optimized/S__18858244_0.webp"
+    },
+    {
+      "date": "2026-07-27",
+      "category": "獲獎公告",
+      "title": "【獲獎公告】恭賀本系學生參加「產業實務專題競賽」榮獲佳績",
+      "summary": "恭賀本系學生參加「產業實務專題競賽」榮獲佳績。",
+      "href": "https://ai.ncut.edu.tw/p/406-1063-95296,r726.php?Lang=zh-tw",
+      "image": "./assets/optimized/S__18858244_0.webp"
+    },
+    {
+      "date": "2026-07-27",
+      "category": "獲獎公告",
+      "title": "恭賀本系學生榮獲「2026 永續發展目標（SDGs）× EMI 全英海報競賽」季軍",
+      "summary": "恭賀本系學生榮獲「2026 永續發展目標（SDGs）× EMI 全英海報競賽」季軍。",
+      "href": "https://ai.ncut.edu.tw/p/406-1063-95294,r726.php?Lang=zh-tw",
+      "image": "./assets/optimized/S__18858244_0.webp"
+    },
+    {
       "date": "2026-05-15",
       "category": "系所公告",
       "title": "【重要通知】115學年度四技甄選入學招生-第二階段各指定項目試題範圍及範例公告",
@@ -1359,101 +1399,339 @@
   ],
   "awardSlides": [
     {
-      "title": "【恭賀】本系學生伍義光同學，榮獲 2026 年 SCF 程速勁賽第三名",
-      "date": "2026-04-27",
-      "summary": "學生競賽獲獎公告。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1809_2282472_68020.jpg",
-      "href": "./official-detail.html?id=45"
+      "title": "教師研究計畫 #1",
+      "date": "",
+      "summary": "教師研究計畫",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1870_9514163_40532.png",
+      "href": ""
     },
     {
-      "title": "2024 AERC 亞洲機器人運動競技大賽",
-      "date": "2024-12-01",
-      "summary": "2024 AERC 亞洲機器人運動競技大賽。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1524_4467697_58880.png",
+      "title": "教師研究計畫 #2",
+      "date": "",
+      "summary": "教師研究計畫",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1871_6406390_40552.png",
+      "href": ""
+    },
+    {
+      "title": "教師研究計畫 #3",
+      "date": "",
+      "summary": "教師研究計畫",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1872_5883497_40566.png",
       "href": ""
     },
     {
       "title": "劉川綱老師榮獲114年國科會補助",
       "date": "2024-08-01",
       "summary": "劉川綱老師榮獲114年國科會補助。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1792_962416_41711.jpg",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1792_962416_41711.jpg",
       "href": ""
     },
     {
       "title": "吳憲珠老師榮獲114年國科會補助",
       "date": "2024-08-01",
       "summary": "吳憲珠老師榮獲114年國科會補助。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1793_9416576_42174.jpg",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1793_9416576_42174.jpg",
       "href": ""
     },
     {
       "title": "劉秉睿老師榮獲114年國科會補助",
       "date": "2024-08-01",
       "summary": "劉秉睿老師榮獲114年國科會補助。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1794_1491476_43988.jpg",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1794_1491476_43988.jpg",
       "href": ""
     },
     {
       "title": "張偉鉉老師榮獲114年國科會補助",
       "date": "2024-08-01",
       "summary": "張偉鉉老師榮獲114年國科會補助。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1795_8044715_44050.jpg",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1795_8044715_44050.jpg",
       "href": ""
     },
     {
       "title": "張顧耀老師榮獲114年國科會補助",
       "date": "2024-08-01",
       "summary": "張顧耀老師榮獲114年國科會補助。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1796_5015606_44075.jpg",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1796_5015606_44075.jpg",
       "href": ""
     },
     {
       "title": "王秉豐老師榮獲114年國科會補助",
       "date": "2024-08-01",
       "summary": "王秉豐老師榮獲114年國科會補助。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1797_6032067_44106.jpg",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1797_6032067_44106.jpg",
       "href": ""
     },
     {
       "title": "程榮祥老師榮獲114年國科會補助",
       "date": "2024-08-01",
       "summary": "程榮祥老師榮獲114年國科會補助。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1798_6143153_44127.jpg",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1798_6143153_44127.jpg",
       "href": ""
     },
     {
       "title": "2023專題競賽第三名",
       "date": "2023-12-01",
       "summary": "2023專題競賽第三名。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1262_8390672_58949.png",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1262_8390672_58949.png",
+      "href": ""
+    },
+    {
+      "title": "學生入取研究所 #1",
+      "date": "",
+      "summary": "學生入取研究所",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1799_7536513_88694.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生入取研究所 #2",
+      "date": "",
+      "summary": "學生入取研究所",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1800_1653031_88748.jpg",
       "href": ""
     },
     {
       "title": "2023專題競賽第二名",
       "date": "2023-12-01",
       "summary": "2023專題競賽第二名。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1263_7941076_58942.png",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1263_7941076_58942.png",
       "href": ""
     },
     {
       "title": "2023專題競賽第一名",
       "date": "2023-12-01",
       "summary": "2023專題競賽第一名。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1264_7625540_58932.png",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1264_7625540_58932.png",
       "href": ""
     },
     {
-      "title": "2023金象盃佳作",
+      "title": "2023金象盃佳作 #1",
       "date": "2023-12-01",
       "summary": "2023金象盃佳作。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1265_5068868_58907.png",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1265_5068868_58907.png",
+      "href": ""
+    },
+    {
+      "title": "2023金象盃佳作 #2",
+      "date": "2023-12-01",
+      "summary": "2023金象盃佳作。",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1266_1385782_58897.png",
+      "href": ""
+    },
+    {
+      "title": "2023金象盃佳作 #3",
+      "date": "2023-12-01",
+      "summary": "2023金象盃佳作。",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1267_33349_58902.png",
       "href": ""
     },
     {
       "title": "2023金象盃優勝",
       "date": "2023-12-01",
       "summary": "2023金象盃優勝。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1268_8345816_58892.png",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1268_8345816_58892.png",
+      "href": ""
+    },
+    {
+      "title": "2024 AERC 亞洲機器人運動競技大賽 #1",
+      "date": "2024-12-01",
+      "summary": "2024 AERC 亞洲機器人運動競技大賽。",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1524_4467697_58880.png",
+      "href": ""
+    },
+    {
+      "title": "2024 AERC 亞洲機器人運動競技大賽 #2",
+      "date": "2024-12-01",
+      "summary": "2024 AERC 亞洲機器人運動競技大賽。",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1525_597421_58885.png",
+      "href": ""
+    },
+    {
+      "title": "2024 AERC 亞洲機器人運動競技大賽 #3",
+      "date": "2024-12-01",
+      "summary": "2024 AERC 亞洲機器人運動競技大賽。",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1526_5396218_58874.png",
+      "href": ""
+    },
+    {
+      "title": "2024 AERC 亞洲機器人運動競技大賽 #4",
+      "date": "2024-12-01",
+      "summary": "2024 AERC 亞洲機器人運動競技大賽。",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1527_1763189_58869.png",
+      "href": ""
+    },
+    {
+      "title": "2026年學生獲獎",
+      "date": "2026-04-27",
+      "summary": "學生競賽獲獎公告。",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1809_2282472_68020.jpg",
+      "href": "./official-detail.html?id=45"
+    },
+    {
+      "title": "學生獲獎 #1",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1844_109085_83735.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生大專生計畫 #1",
+      "date": "",
+      "summary": "學生大專生計畫",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1849_7235061_38874.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生大專生計畫 #2",
+      "date": "",
+      "summary": "學生大專生計畫",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1851_4503633_38909.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生大專生計畫 #3",
+      "date": "",
+      "summary": "學生大專生計畫",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1850_882387_38893.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生大專生計畫 #4",
+      "date": "",
+      "summary": "學生大專生計畫",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1852_2827368_38924.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生大專生計畫 #5",
+      "date": "",
+      "summary": "學生大專生計畫",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1853_3465442_38940.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #2",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1854_4957043_39130.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #3",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1855_5197357_39189.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #4",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1857_3394580_39324.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #5",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1858_2420432_39338.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #6",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1859_7891983_39355.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #7",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1860_3507163_39369.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #8",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1861_1954362_39386.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #9",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1862_4681723_39399.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #10",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1863_496136_39411.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #11",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1864_8209643_39421.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #12",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1865_1304417_39436.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #13",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1866_2983427_39448.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #14",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1867_7450147_39466.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #15",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1868_1523674_39478.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生獲獎 #16",
+      "date": "",
+      "summary": "學生獲獎",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1869_9320586_39491.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生考取證照 #1",
+      "date": "",
+      "summary": "學生考取證照",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1848_343382_38805.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生考取證照 #2",
+      "date": "",
+      "summary": "學生考取證照",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1847_3742357_38778.jpg",
+      "href": ""
+    },
+    {
+      "title": "學生考取證照 #3",
+      "date": "",
+      "summary": "學生考取證照",
+      "image": "https://ai.ncut.edu.tw/var/file/63/1063/randimg/mobileadv_1826_3155014_52276.jpg",
       "href": ""
     }
   ],
