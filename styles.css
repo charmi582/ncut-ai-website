@@ -3811,3 +3811,17 @@ body.is-inner-page .site-header .brand img,
     background:currentColor!important;
   }
 }
+
+/* Homepage hero media-only presentation */
+.hero .hero-copy {
+  display:none!important;
+}
+
+.hero-slide:after {
+  background:
+    linear-gradient(180deg,rgba(7,24,38,.12),transparent 30%,rgba(7,24,38,.18) 100%)!important;
+}
+
+.hero-slide.has-video .hero-copy {
+  display:none!important;
+}
