@@ -173,6 +173,10 @@ function renderShared() {
     if (bar.querySelector("[data-translate-current]")) return;
     bar.insertAdjacentHTML("beforeend", `<a class="language-switch utility-language" href="${esc(englishHref)}" target="_blank" rel="noopener noreferrer" lang="en" data-translate-current aria-label="Translate this page to English">English</a>`);
   });
+  $$(".nav-shell").forEach((shell) => {
+    if (shell.querySelector("[data-header-language]")) return;
+    shell.querySelector(".menu-toggle")?.insertAdjacentHTML("beforebegin", `<a class="header-language-switch" href="${esc(englishHref)}" target="_blank" rel="noopener noreferrer" lang="en" data-header-language aria-label="Translate this page to English">EN</a>`);
+  });
   markActiveNav();
   $$("[data-logo]").forEach((img) => { img.src = siteData.identity.logo; });
   $$("[data-footer-logo]").forEach((img) => { img.src = siteData.identity.footerLogo; });
