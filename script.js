@@ -16,6 +16,13 @@ const archiveKey = (href = "") => String(href).replace(/^https?:\/\/(n063|ai)\.n
 const isRetiredOfficialHref = (href = "") => /official(?:-detail)?\.html/i.test(String(href));
 const isLegacyImportEntry = (item = {}) => /原系網|匯入資料/.test(`${item.label || ""} ${item.title || ""} ${item.type || ""}`) || isRetiredOfficialHref(item.href);
 const isBlockedSiteImage = (src = "") => /linkdet_1436_2272241_19992\.png/i.test(String(src));
+const debounce = (callback, delay = 180) => {
+  let timer;
+  return (...args) => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => callback(...args), delay);
+  };
+};
 let languageService;
 let pageLoader;
 
@@ -1240,77 +1247,6 @@ function renderOriginalHome() {
 
 async function renderOfficialArchive() {
   location.replace("./");
-  return;
-  const archive = await fetch("./data/official-pages.json", { cache: "no-store" }).then((r) => r.json());
-  const meta = $("[data-archive-meta]");
-  const list = $("[data-official-list]");
-  const search = $("[data-archive-search]");
-  const categories = $("[data-archive-categories]");
-  let activeCategory = "全部資料";
-  if (search) search.value = initialSearchQuery();
-  const categoryCounts = archive.pages.reduce((acc, page) => {
-    const category = officialCategory(page);
-    acc[category] = (acc[category] || 0) + 1;
-    return acc;
-  }, { "全部資料": archive.pages.length });
-  const categoryOrder = ["全部資料", "系所介紹", "師資與成員", "學生專區", "專班與招生", "公告消息", "教師專區", "聯絡與其他"];
-  if (categories) {
-    categories.innerHTML = categoryOrder.filter((name) => categoryCounts[name]).map((name) => `
-      <button type="button" class="${name === activeCategory ? "is-active" : ""}" data-archive-category="${esc(name)}" aria-pressed="${name === activeCategory ? "true" : "false"}">
-        <strong>${esc(name)}</strong><span>${categoryCounts[name]}</span>
-      </button>`).join("");
-    categories.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-archive-category]");
-      if (!button) return;
-      activeCategory = button.dataset.archiveCategory;
-      categories.querySelectorAll("button").forEach((item) => {
-        const isActive = item === button;
-        item.classList.toggle("is-active", isActive);
-        item.setAttribute("aria-pressed", String(isActive));
-      });
-      render();
-    });
-  }
-  const render = () => {
-    const query = (search?.value || "").trim().toLowerCase();
-    const pages = archive.pages.filter((page) => {
-      const haystack = `${page.title} ${page.url} ${(page.text || []).join(" ")}`.toLowerCase();
-      const categoryMatched = activeCategory === "全部資料" || officialCategory(page) === activeCategory;
-      return categoryMatched && (!query || haystack.includes(query));
-    });
-    list.innerHTML = pages.length ? pages.map((page, index) => {
-      const links = (page.links || []).map((link) => archiveLink(link, archive)).filter(Boolean);
-      const category = officialCategory(page);
-      const cardImages = (page.images || []).filter((image) => !isBlockedSiteImage(image.src));
-      const cardImage = cardImages[0];
-      return `
-        <article class="archive-card">
-          <div class="archive-card-head">
-            <span class="archive-number">${String(index + 1).padStart(2, "0")}</span>
-            <p class="archive-source">${esc(category)}</p>
-          </div>
-          <h2>${esc(page.title)}</h2>
-          <p>${esc((page.text || []).slice(0, 9).join(" / "))}</p>
-          <div class="archive-card-meta"><span>本站資料頁</span><span>${links.length} 個連結</span><span>${cardImages.length} 張圖片</span></div>
-          ${cardImage ? `<img src="${esc(cardImage.src)}" alt="${esc(cardImage.alt || page.title)}">` : ""}
-          <details>
-            <summary>查看頁面文字${links.length ? "與可用連結" : ""}</summary>
-            <div class="archive-text">${(page.text || []).slice(0, 80).map((line) => `<p>${esc(line)}</p>`).join("")}</div>
-            ${links.length ? `<ul>${links.slice(0, 30).map((link) => `<li><a href="${esc(link.href)}" target="${link.external ? "_blank" : "_self"}" rel="noreferrer">${esc(link.label || link.href)}</a></li>`).join("")}</ul>` : ""}
-          </details>
-        </article>
-      `;
-    }).join("") : renderEmptyState("找不到符合條件的資料", "請嘗試縮短關鍵字、切換分類，或回到最新消息查看公開資訊。", [
-      { label: "查看最新消息", href: "./news.html", className: "text-link" }
-    ]);
-    meta.innerHTML = `<strong>${pages.length}</strong> / ${archive.pageCount} 頁符合「${esc(activeCategory)}」與搜尋條件。系所內容由本站資料頁承接，其他外部資源保留。資料更新時間：${esc(archive.generatedAt)}`;
-    enhanceRenderedMediaAndLinks(list);
-  };
-  search?.addEventListener("input", () => {
-    syncSearchQuery(search.value);
-    render();
-  });
-  render();
 }
 
 function officialCategory(page) {
@@ -1351,10 +1287,10 @@ async function renderResources() {
     ]);
     enhanceRenderedMediaAndLinks(list);
   };
-  search?.addEventListener("input", () => {
+  search?.addEventListener("input", debounce(() => {
     syncSearchQuery(search.value);
     render();
-  });
+  }));
   render();
 }
 
@@ -1396,6 +1332,7 @@ async function renderOfficialDetail() {
 function startHero() {
   const slides = $$(".hero-slide");
   const dots = $$("[data-dot]");
+  const dotsHost = $("[data-dots]");
   const current = $("[data-hero-current]");
   const total = $("[data-hero-total]");
   const progress = $("[data-hero-progress]");
@@ -1482,7 +1419,12 @@ function startHero() {
   const restart = () => { scheduleNext(); };
   $("[data-prev]")?.addEventListener("click", () => { show(heroIndex - 1, -1); restart(); });
   $("[data-next]")?.addEventListener("click", () => { show(heroIndex + 1, 1); restart(); });
-  dots.forEach((dot) => dot.addEventListener("click", () => { show(Number(dot.dataset.dot), 1); restart(); }));
+  dotsHost?.addEventListener("click", (event) => {
+    const dot = event.target.closest("[data-dot]");
+    if (!dot || !dotsHost.contains(dot)) return;
+    show(Number(dot.dataset.dot), 1);
+    restart();
+  });
   pauseButton?.addEventListener("click", () => {
     userPaused = !userPaused;
     updatePauseButton();
@@ -1510,6 +1452,7 @@ function startAwards() {
   const slides = $$(".award-slide");
   const dots = $$("[data-award-dot]");
   const carousel = $("[data-awards-carousel]");
+  const dotsHost = $(".award-dots", carousel || document);
   let awardInteractionPaused = false;
   if (!slides.length) return;
   const show = (index) => {
@@ -1534,7 +1477,12 @@ function startAwards() {
   };
   $("[data-award-prev]")?.addEventListener("click", () => { show(awardIndex - 1); restart(); });
   $("[data-award-next]")?.addEventListener("click", () => { show(awardIndex + 1); restart(); });
-  dots.forEach((dot) => dot.addEventListener("click", () => { show(Number(dot.dataset.awardDot)); restart(); }));
+  dotsHost?.addEventListener("click", (event) => {
+    const dot = event.target.closest("[data-award-dot]");
+    if (!dot || !dotsHost.contains(dot)) return;
+    show(Number(dot.dataset.awardDot));
+    restart();
+  });
   carousel?.addEventListener("mouseenter", () => { awardInteractionPaused = true; stop(); });
   carousel?.addEventListener("mouseleave", () => { awardInteractionPaused = false; restart(); });
   carousel?.addEventListener("focusin", () => { awardInteractionPaused = true; stop(); });
@@ -1547,72 +1495,33 @@ function startAwards() {
   restart();
 }
 
-class AICursorController {
+class PageTransitionController {
   constructor() {
-    this.finePointer = window.matchMedia("(pointer: fine)");
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    this.interactiveSelector = "a[href], button, [role='button'], .primary-action, .secondary-action, .text-link, .tab, [data-category], [data-news-page], [data-lightbox-src]";
-    this.cursor = this.createCursor();
+    this.linkSelector = "a[href]";
+    this.exitDuration = 2300;
   }
 
   static installOnce() {
-    if (document.documentElement.dataset.aiCursorReady) return;
-    document.documentElement.dataset.aiCursorReady = "true";
-    new AICursorController().install();
-  }
-
-  createCursor() {
-    const cursor = document.createElement("div");
-    cursor.className = "ai-cursor";
-    cursor.setAttribute("aria-hidden", "true");
-    cursor.innerHTML = `
-      <div class="ai-cursor-head">
-        <span class="ai-cursor-antenna"></span>
-        <span class="ai-cursor-ear ai-cursor-ear-left"></span>
-        <span class="ai-cursor-ear ai-cursor-ear-right"></span>
-        <span class="ai-cursor-eye ai-cursor-eye-left"></span>
-        <span class="ai-cursor-eye ai-cursor-eye-right"></span>
-        <span class="ai-cursor-mouth"></span>
-        <span class="ai-cursor-chip">AI</span>
-      </div>
-    `;
-    document.body.append(cursor);
-    return cursor;
+    if (document.documentElement.dataset.pageTransitionReady) return;
+    document.documentElement.dataset.pageTransitionReady = "true";
+    new PageTransitionController().install();
   }
 
   install() {
-    document.addEventListener("pointermove", (event) => this.onPointerMove(event));
-    document.addEventListener("pointerover", (event) => this.onPointerOver(event));
-    document.addEventListener("pointerdown", (event) => this.onPointerDown(event));
-    document.addEventListener("pointerup", () => this.cursor.classList.remove("is-pressing"));
     document.addEventListener("click", (event) => this.onClick(event), true);
-    this.finePointer.addEventListener?.("change", () => this.setEnabled());
-    this.reducedMotion.addEventListener?.("change", () => this.setEnabled());
-    this.setEnabled();
   }
 
-  canUseCursor() {
-    return this.finePointer.matches && !this.reducedMotion.matches;
-  }
-
-  canAnimateClick() {
+  canAnimateTransition() {
     return !this.reducedMotion.matches;
-  }
-
-  canDelayNavigation() {
-    return this.finePointer.matches && !this.reducedMotion.matches;
-  }
-
-  setEnabled() {
-    document.body.classList.toggle("has-ai-cursor", this.canUseCursor());
   }
 
   isDisabledControl(element) {
     return element?.disabled || element?.getAttribute("aria-disabled") === "true";
   }
 
-  sameSiteNavigationUrl(event, target) {
-    const link = target?.closest("a[href]");
+  sameSiteNavigationUrl(event) {
+    const link = event.target.closest(this.linkSelector);
     if (!link || this.isDisabledControl(link)) return "";
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return "";
     if (link.target && link.target !== "_self") return "";
@@ -1627,72 +1536,30 @@ class AICursorController {
     return url.href;
   }
 
-  animateEating(target, shouldRestore = true) {
-    if (!target || target.dataset.aiEating === "true") return;
-    target.dataset.aiEating = "true";
-    target.classList.add("is-ai-eating");
-    if (this.canUseCursor()) this.cursor.classList.add("is-biting");
-    window.setTimeout(() => {
-      this.cursor.classList.remove("is-biting");
-      if (this.canUseCursor()) this.cursor.classList.add("is-thinking");
-    }, 260);
-    if (shouldRestore) {
-      window.setTimeout(() => {
-        target.classList.remove("is-ai-eating");
-        delete target.dataset.aiEating;
-        this.cursor.classList.remove("is-thinking");
-      }, 920);
-    }
-  }
-
-  onPointerMove(event) {
-    if (!this.canUseCursor()) return;
-    this.cursor.style.setProperty("--cursor-x", `${event.clientX}px`);
-    this.cursor.style.setProperty("--cursor-y", `${event.clientY}px`);
-    this.cursor.classList.add("is-visible");
-  }
-
-  onPointerOver(event) {
-    if (!this.canUseCursor()) return;
-    this.cursor.classList.toggle("is-hovering", Boolean(event.target.closest(this.interactiveSelector)));
-  }
-
-  onPointerDown(event) {
-    if (!this.canUseCursor() || event.button !== 0) return;
-    if (event.target.closest(this.interactiveSelector)) this.cursor.classList.add("is-pressing");
-  }
-
   onClick(event) {
     if (document.body.classList.contains("is-exiting-page")) {
       event.preventDefault();
       return;
     }
-    if (!this.canAnimateClick()) return;
-    const target = event.target.closest(this.interactiveSelector);
-    if (!target || this.isDisabledControl(target)) return;
-    const navigationUrl = this.sameSiteNavigationUrl(event, target);
-    if (navigationUrl && !this.canDelayNavigation()) return;
-    this.animateEating(target, !navigationUrl);
+    if (!this.canAnimateTransition()) return;
+    const navigationUrl = this.sameSiteNavigationUrl(event);
     if (!navigationUrl) return;
     event.preventDefault();
-    document.body.classList.add("is-exiting-page");
     PageLoader.skipNextIntro();
     const nextUrl = PageLoader.withSkipIntro(navigationUrl);
+    showPageTransition();
     window.setTimeout(() => {
-      showPageTransition();
-      window.setTimeout(() => {
-        location.assign(nextUrl);
-      }, 760);
-    }, 520);
+      location.assign(nextUrl);
+    }, this.exitDuration);
   }
 }
 
-function setupAICursor() {
-  AICursorController.installOnce();
+function setupPageTransitions() {
+  PageTransitionController.installOnce();
 }
 
 function setupInteractions() {
-  setupAICursor();
+  setupPageTransitions();
   const header = $("[data-header]");
   const menu = $(".menu-toggle");
   const nav = $(".site-nav");
@@ -1718,33 +1585,6 @@ function setupInteractions() {
     `);
   }
   let duelFinalTimer;
-  const updateProgress = () => {
-    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    const ratio = Math.min(1, Math.max(0, window.scrollY / max));
-    const isAtBottom = ratio > 0.985;
-    const pastHero = window.scrollY > window.innerHeight * 0.72;
-    const collision = isAtBottom ? 1 : Math.abs(Math.sin(ratio * Math.PI * 8));
-    const settle = Math.min(1, Math.max(0, (ratio - 0.82) / 0.18));
-    const spread = (1 - collision) * (1 - settle);
-    const finalPulse = ratio > 0.88 ? Math.sin(Math.min(1, (ratio - 0.88) / 0.12) * Math.PI) : 0;
-    if (isAtBottom && !document.body.classList.contains("is-duel-final")) {
-      document.body.classList.add("is-duel-final");
-      window.clearTimeout(duelFinalTimer);
-      duelFinalTimer = window.setTimeout(() => {
-        document.body.classList.remove("is-duel-final");
-      }, 1350);
-    } else if (ratio < 0.94) {
-      document.body.classList.remove("is-duel-final");
-      window.clearTimeout(duelFinalTimer);
-    }
-    progress.style.transform = `scaleX(${ratio})`;
-    document.documentElement.style.setProperty("--scroll-ratio", ratio.toFixed(4));
-    document.documentElement.style.setProperty("--scroll-px", `${window.scrollY.toFixed(0)}px`);
-    document.documentElement.style.setProperty("--duel-collision", collision.toFixed(4));
-    document.documentElement.style.setProperty("--duel-spread", spread.toFixed(4));
-    document.documentElement.style.setProperty("--duel-final", finalPulse.toFixed(4));
-    document.body.classList.toggle("is-past-hero", pastHero);
-  };
   let revealElements = [];
   const revealVisible = () => {
     const threshold = window.innerHeight * 0.92;
@@ -1754,37 +1594,69 @@ function setupInteractions() {
       }
     });
   };
-  window.addEventListener("scroll", () => {
-    header?.classList.toggle("is-scrolled", window.scrollY > 20);
-    $("[data-top]")?.classList.toggle("is-visible", window.scrollY > 300);
-    updateProgress();
-    revealVisible();
-  });
-  updateProgress();
-  let lastScrollY = -1;
-  window.setInterval(() => {
-    if (window.scrollY === lastScrollY) return;
-    lastScrollY = window.scrollY;
-    header?.classList.toggle("is-scrolled", window.scrollY > 20);
-    $("[data-top]")?.classList.toggle("is-visible", window.scrollY > 300);
-    updateProgress();
-    revealVisible();
-  }, 120);
   if (menu) menu.setAttribute("aria-label", "開啟主選單");
   if (topButton && !topButton.hasAttribute("aria-label")) topButton.setAttribute("aria-label", "返回頁面頂端");
+  let lastScrollY = -1;
+  let scrollTicking = false;
+  let lastScrollRatio = -1;
+  let lastPastHero = false;
   const setMenuOpen = (open) => {
     header?.classList.toggle("is-open", open);
     menu?.setAttribute("aria-expanded", String(open));
     menu?.setAttribute("aria-label", open ? "關閉主選單" : "開啟主選單");
     document.body.classList.toggle("nav-open", open);
   };
+  const updateScrollState = (force = false) => {
+    const currentScrollY = window.scrollY;
+    if (!force && currentScrollY === lastScrollY) return;
+    lastScrollY = currentScrollY;
+    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const ratio = Math.min(1, Math.max(0, currentScrollY / max));
+    const pastHero = currentScrollY > window.innerHeight * 0.72;
+    header?.classList.toggle("is-scrolled", currentScrollY > 20);
+    topButton?.classList.toggle("is-visible", currentScrollY > 300);
+    progress.style.transform = `scaleX(${ratio})`;
+    if (Math.abs(ratio - lastScrollRatio) > 0.002) {
+      lastScrollRatio = ratio;
+      const isAtBottom = ratio > 0.985;
+      const collision = isAtBottom ? 1 : Math.abs(Math.sin(ratio * Math.PI * 8));
+      const settle = Math.min(1, Math.max(0, (ratio - 0.82) / 0.18));
+      const spread = (1 - collision) * (1 - settle);
+      const finalPulse = ratio > 0.88 ? Math.sin(Math.min(1, (ratio - 0.88) / 0.12) * Math.PI) : 0;
+      if (isAtBottom && !document.body.classList.contains("is-duel-final")) {
+        document.body.classList.add("is-duel-final");
+        window.clearTimeout(duelFinalTimer);
+        duelFinalTimer = window.setTimeout(() => {
+          document.body.classList.remove("is-duel-final");
+        }, 1350);
+      } else if (ratio < 0.94) {
+        document.body.classList.remove("is-duel-final");
+        window.clearTimeout(duelFinalTimer);
+      }
+      document.documentElement.style.setProperty("--scroll-ratio", ratio.toFixed(4));
+      document.documentElement.style.setProperty("--scroll-px", `${currentScrollY.toFixed(0)}px`);
+      document.documentElement.style.setProperty("--duel-collision", collision.toFixed(4));
+      document.documentElement.style.setProperty("--duel-spread", spread.toFixed(4));
+      document.documentElement.style.setProperty("--duel-final", finalPulse.toFixed(4));
+    }
+    if (pastHero !== lastPastHero) {
+      lastPastHero = pastHero;
+      document.body.classList.toggle("is-past-hero", pastHero);
+    }
+  };
+  const requestScrollUpdate = (force = false) => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => {
+      scrollTicking = false;
+      updateScrollState(force);
+    });
+  };
   menu?.addEventListener("click", () => {
     setMenuOpen(!header?.classList.contains("is-open"));
   });
-  $$(".site-nav a").forEach((link) => {
-    link.addEventListener("click", () => {
-      setMenuOpen(false);
-    });
+  nav?.addEventListener("click", (event) => {
+    if (event.target.closest("a[href]")) setMenuOpen(false);
   });
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
@@ -1799,16 +1671,15 @@ function setupInteractions() {
   });
   topButton?.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
   document.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-category]");
-    if (!button) return;
-    activeCategory = button.dataset.category;
-    activeNewsPage = 1;
-    renderNewsWidgets();
-  });
-  document.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-news-page]");
-    if (!button) return;
-    activeNewsPage = Number(button.dataset.newsPage);
+    const categoryButton = event.target.closest("[data-category]");
+    const pageButton = event.target.closest("[data-news-page]");
+    if (!categoryButton && !pageButton) return;
+    if (categoryButton) {
+      activeCategory = categoryButton.dataset.category;
+      activeNewsPage = 1;
+    } else {
+      activeNewsPage = Number(pageButton.dataset.newsPage);
+    }
     renderNewsWidgets();
   });
   const revealTargets = [
@@ -1840,19 +1711,28 @@ function setupInteractions() {
     ".faculty-profile-hero",
     ".faculty-profile-grid article"
   ].join(",");
-  const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("reveal");
-      observer.unobserve(entry.target);
-    }
-  }), { threshold: 0.12 });
   revealElements = $$(revealTargets);
   revealElements.forEach((el, index) => {
     el.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 70}ms`);
-    observer.observe(el);
   });
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("reveal");
+        observer.unobserve(entry.target);
+      }
+    }), { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    revealElements.forEach((el) => observer.observe(el));
+  } else {
+    revealElements.forEach((el) => el.classList.add("reveal"));
+  }
   enhanceRenderedMediaAndLinks();
-  requestAnimationFrame(revealVisible);
+  window.addEventListener("scroll", () => requestScrollUpdate(), { passive: true });
+  window.addEventListener("resize", () => requestScrollUpdate(true));
+  requestAnimationFrame(() => {
+    updateScrollState(true);
+    revealVisible();
+  });
 }
 
 function enhanceRenderedMediaAndLinks(root = document) {
@@ -1924,13 +1804,6 @@ function enhanceRenderedMediaAndLinks(root = document) {
         image.setAttribute("alt", "圖片暫時無法載入");
       }
       image.src = siteData?.identity?.logo || "./assets/ai-official-icon.png";
-    });
-  });
-  $$("[data-lightbox-src]", root).forEach((trigger) => {
-    if (trigger.dataset.lightboxReady) return;
-    trigger.dataset.lightboxReady = "true";
-    trigger.addEventListener("click", () => {
-      openImageLightbox(trigger.dataset.lightboxSrc, trigger.dataset.lightboxAlt || trigger.querySelector("img")?.alt || "圖片資料");
     });
   });
   updateBreadcrumbSchema();
