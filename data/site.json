@@ -6,7 +6,7 @@
     "footerLogo": "./assets/ai-official-icon.png",
     "defaultImage": "./assets/optimized/S__18858244_0.webp",
     "copyright": "系網測試版 - 僅供測試預覽使用",
-    "searchIndexing": false
+    "searchIndexing": true
   },
   "contact": {
     "phone": "04-23924505 分機 8501（教師事務）、8502（產攜、海青）、8503（學生事務）",

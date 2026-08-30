@@ -200,7 +200,8 @@ function updateDocumentMeta(title = document.title, description = "") {
   const siteTitle = siteData?.identity?.title || "人工智慧應用工程系";
   const subtitle = siteData?.identity?.subtitle || "Department of Artificial Intelligence and Computer Engineering";
   const allowSearchIndexing = siteData?.identity?.searchIndexing !== false;
-  const organizationName = allowSearchIndexing ? `國立勤益科技大學${siteTitle}` : siteTitle;
+  const isOfficialSite = siteData?.identity?.isOfficialSite !== false && !/測試|Preview/i.test(siteTitle);
+  const organizationName = isOfficialSite ? `國立勤益科技大學${siteTitle}` : siteTitle;
   const desc = description || document.querySelector('meta[name="description"]')?.content ||
     "國立勤益科技大學人工智慧應用工程系網站，整合系所介紹、師資陣容、招生資訊、學生資源、校內連結與獲獎成果。";
   const siteRoot = new URL("./", location.href).href;
@@ -257,8 +258,8 @@ function updateDocumentMeta(title = document.title, description = "") {
       {
         "@type": "WebSite",
         "@id": `${siteRoot}#website`,
-        name: allowSearchIndexing ? `${siteTitle}｜國立勤益科技大學` : siteTitle,
-        alternateName: allowSearchIndexing ? "NCUT AI" : "Website Preview",
+        name: isOfficialSite ? `${siteTitle}｜國立勤益科技大學` : siteTitle,
+        alternateName: isOfficialSite ? "NCUT AI" : "Website Preview",
         url: siteRoot,
         inLanguage: "zh-Hant-TW",
         potentialAction: {
@@ -278,7 +279,7 @@ function updateDocumentMeta(title = document.title, description = "") {
         primaryImageOfPage: image
       }
   ];
-  if (allowSearchIndexing) {
+  if (isOfficialSite) {
     graph.unshift({
       "@type": "CollegeOrUniversity",
       "@id": `${siteRoot}#organization`,
