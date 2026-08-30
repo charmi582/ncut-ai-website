@@ -18,13 +18,8 @@ const isLegacyImportEntry = (item = {}) => /原系網|匯入資料/.test(`${item
 const isBlockedSiteImage = (src = "") => /linkdet_1436_2272241_19992\.png/i.test(String(src));
 const pageLoader = createPageLoader();
 
-function createPageLoader() {
-  const forceFullIntroAnimation = true;
-  const startedAt = Date.now();
-  const loader = document.createElement("div");
-  loader.className = `site-loader${forceFullIntroAnimation ? " is-full-motion" : ""}`;
-  loader.setAttribute("aria-hidden", "true");
-  loader.innerHTML = `
+function pageLoaderMarkup() {
+  return `
     <div class="loader-stage">
       <div class="loader-word">Artificial Intelligence</div>
       <div class="loader-mark">
@@ -34,6 +29,15 @@ function createPageLoader() {
     </div>
     <small>Department of Artificial Intelligence and Computer Engineering</small>
   `;
+}
+
+function createPageLoader() {
+  const forceFullIntroAnimation = true;
+  const startedAt = Date.now();
+  const loader = document.createElement("div");
+  loader.className = `site-loader${forceFullIntroAnimation ? " is-full-motion" : ""}`;
+  loader.setAttribute("aria-hidden", "true");
+  loader.innerHTML = pageLoaderMarkup();
   document.body.classList.add("is-loading");
   document.body.prepend(loader);
   return {
@@ -49,6 +53,17 @@ function createPageLoader() {
       }, wait);
     }
   };
+}
+
+function showPageTransition() {
+  document.querySelector(".site-loader.is-exit-loader")?.remove();
+  const loader = document.createElement("div");
+  loader.className = "site-loader is-full-motion is-exit-loader";
+  loader.setAttribute("aria-hidden", "true");
+  loader.innerHTML = pageLoaderMarkup();
+  document.body.classList.add("is-loading", "is-exiting-page");
+  document.body.prepend(loader);
+  requestAnimationFrame(() => loader.classList.add("is-active"));
 }
 
 function archiveLink(link, archive) {
@@ -1364,7 +1379,111 @@ function startAwards() {
   restart();
 }
 
+function setupAICursor() {
+  if (document.documentElement.dataset.aiCursorReady) return;
+  document.documentElement.dataset.aiCursorReady = "true";
+
+  const finePointer = window.matchMedia("(pointer: fine)");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const cursor = document.createElement("div");
+  cursor.className = "ai-cursor";
+  cursor.setAttribute("aria-hidden", "true");
+  cursor.innerHTML = `
+    <div class="ai-cursor-head">
+      <span class="ai-cursor-antenna"></span>
+      <span class="ai-cursor-ear ai-cursor-ear-left"></span>
+      <span class="ai-cursor-ear ai-cursor-ear-right"></span>
+      <span class="ai-cursor-eye ai-cursor-eye-left"></span>
+      <span class="ai-cursor-eye ai-cursor-eye-right"></span>
+      <span class="ai-cursor-mouth"></span>
+      <span class="ai-cursor-chip">AI</span>
+    </div>
+  `;
+  document.body.append(cursor);
+
+  const canUseCursor = () => finePointer.matches && !reducedMotion.matches;
+  const canAnimateClick = () => !reducedMotion.matches;
+  const setEnabled = () => document.body.classList.toggle("has-ai-cursor", canUseCursor());
+  const interactiveSelector = "a[href], button, [role='button'], .primary-action, .secondary-action, .text-link, .tab, [data-category], [data-news-page], [data-lightbox-src]";
+  const isDisabledControl = (element) => element?.disabled || element?.getAttribute("aria-disabled") === "true";
+
+  const getSameSiteNavigationUrl = (event, target) => {
+    const link = target?.closest("a[href]");
+    if (!link || isDisabledControl(link)) return "";
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return "";
+    if (link.target && link.target !== "_self") return "";
+    if (link.hasAttribute("download")) return "";
+    const href = link.getAttribute("href") || "";
+    if (!href || href.startsWith("#") || /^(mailto|tel|javascript):/i.test(href)) return "";
+    const url = new URL(href, location.href);
+    if (url.origin !== location.origin) return "";
+    if (url.pathname === location.pathname && url.search === location.search && url.hash) return "";
+    if (url.href === location.href) return "";
+    return url.href;
+  };
+
+  const animateEating = (target, shouldRestore = true) => {
+    if (!target || target.dataset.aiEating === "true") return;
+    target.dataset.aiEating = "true";
+    target.classList.add("is-ai-eating");
+    if (canUseCursor()) cursor.classList.add("is-biting");
+    window.setTimeout(() => {
+      cursor.classList.remove("is-biting");
+      if (canUseCursor()) cursor.classList.add("is-thinking");
+    }, 260);
+    if (shouldRestore) {
+      window.setTimeout(() => {
+        target.classList.remove("is-ai-eating");
+        delete target.dataset.aiEating;
+        cursor.classList.remove("is-thinking");
+      }, 920);
+    }
+  };
+
+  document.addEventListener("pointermove", (event) => {
+    if (!canUseCursor()) return;
+    cursor.style.setProperty("--cursor-x", `${event.clientX}px`);
+    cursor.style.setProperty("--cursor-y", `${event.clientY}px`);
+    cursor.classList.add("is-visible");
+  });
+
+  document.addEventListener("pointerover", (event) => {
+    if (!canUseCursor()) return;
+    cursor.classList.toggle("is-hovering", Boolean(event.target.closest(interactiveSelector)));
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!canUseCursor() || event.button !== 0) return;
+    if (event.target.closest(interactiveSelector)) cursor.classList.add("is-pressing");
+  });
+
+  document.addEventListener("pointerup", () => {
+    cursor.classList.remove("is-pressing");
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!canAnimateClick()) return;
+    const target = event.target.closest(interactiveSelector);
+    if (!target || isDisabledControl(target)) return;
+    const navigationUrl = getSameSiteNavigationUrl(event, target);
+    animateEating(target, !navigationUrl);
+    if (!navigationUrl) return;
+    event.preventDefault();
+    window.setTimeout(() => {
+      showPageTransition();
+      window.setTimeout(() => {
+        location.assign(navigationUrl);
+      }, 760);
+    }, 520);
+  }, true);
+
+  finePointer.addEventListener?.("change", setEnabled);
+  reducedMotion.addEventListener?.("change", setEnabled);
+  setEnabled();
+}
+
 function setupInteractions() {
+  setupAICursor();
   const header = $("[data-header]");
   const menu = $(".menu-toggle");
   const nav = $(".site-nav");
