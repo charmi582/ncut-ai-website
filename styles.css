@@ -1395,6 +1395,24 @@ button:active,
   pointer-events:none;
   transition:none;
 }
+.site-loader.is-continuing .loader-word {
+  display:none;
+}
+.site-loader.is-continuing .loader-mark,
+.site-loader.is-continuing small {
+  opacity:1;
+  transform:none;
+  animation:none;
+}
+.site-loader.is-continuing .loader-stage {
+  height:170px;
+}
+.site-loader.is-continuing .loader-mark span {
+  animation:loaderFrame 1.15s ease-in-out infinite;
+}
+.site-loader.is-continuing small:after {
+  animation:loaderLine 1.15s ease-in-out infinite;
+}
 @media(prefers-reduced-motion:reduce) {
   html {
     scroll-behavior:auto;

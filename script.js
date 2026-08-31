@@ -75,11 +75,11 @@ class PageLoader {
   static skipIntroUrlKey = "_ncut_skip_intro";
   static continueTransitionStorageKey = "ncut-ai-continue-transition";
 
-  constructor({ fullMotion = true, exit = false, skipMinimum = false, hidden = false } = {}) {
+  constructor({ fullMotion = true, exit = false, skipMinimum = false, hidden = false, continuing = false } = {}) {
     this.startedAt = Date.now();
     this.skipMinimum = skipMinimum;
     this.element = document.createElement("div");
-    this.element.className = `site-loader${fullMotion ? " is-full-motion" : ""}${exit ? " is-exit-loader" : ""}${hidden ? " is-skip-intro" : ""}`;
+    this.element.className = `site-loader${fullMotion ? " is-full-motion" : ""}${exit ? " is-exit-loader" : ""}${hidden ? " is-skip-intro" : ""}${continuing ? " is-continuing" : ""}`;
     this.element.setAttribute("aria-hidden", "true");
     this.element.innerHTML = PageLoader.markup();
   }
@@ -100,7 +100,7 @@ class PageLoader {
   static startIntro() {
     const continueTransition = PageLoader.consumeContinueTransition();
     if (continueTransition) {
-      const loader = new PageLoader({ fullMotion: true, skipMinimum: true });
+      const loader = new PageLoader({ fullMotion: false, skipMinimum: true, continuing: true });
       loader.mount();
       return loader;
     }
