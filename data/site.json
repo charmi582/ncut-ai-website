@@ -114,20 +114,6 @@
     },
     {
       "kicker": "教學特色",
-      "title": "產學合作專題",
-      "text": "以產業需求與實作專題連接課程，培養學生整合 AI、軟體與應用場域的工程能力。",
-      "image": "./assets/optimized/S__18858244_0.webp",
-      "primary": {
-        "label": "招生資訊",
-        "href": "./page.html?slug=history"
-      },
-      "secondary": {
-        "label": "最新消息",
-        "href": "./page.html?slug=labs"
-      }
-    },
-    {
-      "kicker": "教學特色",
       "title": "游泳者追蹤偵測",
       "text": "建置跨平台學習環境，支援程式設計、資料處理、影像辨識與專題開發。",
       "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1437_4661788_17062.png",
@@ -167,6 +153,12 @@
         "label": "最新消息",
         "href": "./page.html?slug=labs"
       }
+    },
+    {
+      "title": "專題成果發表",
+      "subtitle": "學生以實作成果展示 AI 應用能力",
+      "image": "./assets/optimized/home-hero-project-presentation.jpg",
+      "href": "./awards.html"
     }
   ],
   "metrics": [
