@@ -255,7 +255,7 @@ file:///D:/...
 如果使用 GitHub Pages 預設網址：
 
 ```text
-https://charmi582.github.io/ncut-ai-website/
+https://ncutaiweb.github.io/ncut-ai-website/
 ```
 
 `sitemap.xml` 與 `robots.txt` 應使用該網址。

@@ -135,7 +135,7 @@ GitHub Pages 使用 GitHub Actions 部署。
 目前測試網址：
 
 ```text
-https://charmi582.github.io/ncut-ai-website/
+https://ncutaiweb.github.io/ncut-ai-website/
 ```
 
 ## 什麼會被部署

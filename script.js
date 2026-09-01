@@ -5,6 +5,7 @@ let heroIndex = 0;
 let heroTimer;
 let awardIndex = 0;
 let awardTimer;
+let activeLearningPathId = "";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -203,7 +204,7 @@ function showPageTransition() {
 }
 
 languageService = new LanguageService({
-  publicOrigin: "https://charmi582.github.io",
+  publicOrigin: "https://ncutaiweb.github.io",
   publicBasePath: "/ncut-ai-website"
 });
 pageLoader = PageLoader.startIntro();
@@ -599,6 +600,85 @@ function renderMegaMenu() {
     </div>`;
 }
 
+function itemList(items = []) {
+  return items.map((item) => `<li>${esc(item)}</li>`).join("");
+}
+
+function learningPathFaculty(path = {}) {
+  const keywords = path.keywords || [];
+  if (!keywords.length) return [];
+  return (siteData.faculty || [])
+    .map((person, index) => {
+      const searchable = `${person.name || ""} ${person.role || ""} ${person.expertise || ""} ${person.lab || ""} ${(person.courses || []).join(" ")}`;
+      const score = keywords.reduce((total, keyword) => total + (searchable.includes(keyword) ? 1 : 0), 0);
+      return { person, index, score };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+}
+
+function learningPathHighlights(path = {}) {
+  const keywords = path.keywords || [];
+  return [...(siteData.news || []), ...(siteData.awardSlides || [])]
+    .map((item, index) => {
+      const searchable = `${item.title || ""} ${item.summary || ""} ${item.category || ""}`;
+      const score = keywords.reduce((total, keyword) => total + (searchable.includes(keyword) ? 1 : 0), 0);
+      return { item, index, score };
+    })
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+}
+
+function renderLearningPaths(selectedId = activeLearningPathId) {
+  const host = $("[data-learning-paths]");
+  const paths = siteData.learningPaths || [];
+  if (!host || !paths.length) return;
+  const activePath = paths.find((path) => path.id === selectedId) || paths[0];
+  activeLearningPathId = activePath.id;
+  const faculty = learningPathFaculty(activePath);
+  const facultyNames = faculty.length ? faculty.map(({ person }) => `${person.name}：${person.expertise || person.role || "相關師資"}`) : ["查看完整師資陣容"];
+  const highlights = learningPathHighlights(activePath);
+  host.innerHTML = `
+    <div class="learning-path-picker" role="tablist" aria-label="選擇 AI 學習方向">
+      ${paths.map((path) => `<button type="button" role="tab" class="${path.id === activePath.id ? "is-active" : ""}" data-learning-path="${esc(path.id)}" aria-selected="${path.id === activePath.id ? "true" : "false"}">${esc(path.label)}</button>`).join("")}
+    </div>
+    <article class="learning-path-panel">
+      <div class="learning-path-summary">
+        <span>Learning Path</span>
+        <h3>${esc(activePath.title)}</h3>
+        <p>${esc(activePath.summary)}</p>
+        <div class="learning-path-actions">
+          <a class="primary-action" href="./page.html?slug=curriculum-careers">查看課程與就業</a>
+          <a class="secondary-action" href="./page.html?slug=labs">查看專業實驗室</a>
+        </div>
+      </div>
+      <div class="learning-path-roadmap">
+        <section><strong>01 先修課程</strong><ul>${itemList(activePath.prerequisites)}</ul></section>
+        <section><strong>02 核心課程</strong><ul>${itemList(activePath.coreCourses)}</ul></section>
+        <section><strong>03 相關師資</strong><ul>${itemList(facultyNames)}</ul></section>
+        <section><strong>04 相關實驗室</strong><ul>${itemList(activePath.labs)}</ul></section>
+        <section><strong>05 學生成果</strong><ul>${itemList(activePath.outcomes)}</ul></section>
+        <section><strong>06 未來出路</strong><ul>${itemList(activePath.careers)}</ul></section>
+      </div>
+      <div class="learning-path-related">
+        <section>
+          <h4>相關師資</h4>
+          <div class="learning-related-grid">
+            ${faculty.length ? faculty.map(({ person, index }) => `<a href="${esc(person.detailHref || `./faculty-detail.html?id=${index}`)}"><strong>${esc(person.name)}</strong><span>${esc(person.role || "教師")}</span><small>${esc(person.expertise || "查看完整師資資料")}</small></a>`).join("") : `<a href="./faculty.html"><strong>師資陣容</strong><span>查看完整師資</span><small>依研究方向探索本系專任教師。</small></a>`}
+          </div>
+        </section>
+        <section>
+          <h4>相關成果</h4>
+          <div class="learning-related-grid">
+            ${highlights.length ? highlights.map(({ item }) => `<a href="${esc(item.href || "./awards.html")}"><strong>${esc(item.title || "學生與教師成果")}</strong><span>${esc(item.category || item.summary || "成果資訊")}</span><small>${esc(item.summary || "查看完整內容")}</small></a>`).join("") : `<a href="./awards.html"><strong>獲獎資訊</strong><span>成果展示</span><small>查看本系學生專題、競賽與研究成果。</small></a>`}
+          </div>
+        </section>
+      </div>
+    </article>`;
+}
+
 function renderHome() {
   const mobileHeroQuery = window.matchMedia("(max-width: 700px)");
   const firstMobileHeroIndex = siteData.hero.findIndex((slide) => slide.mobileImage);
@@ -623,6 +703,7 @@ function renderHome() {
   $("[data-quick-links]").innerHTML = siteData.quickLinks
     .filter((link) => !isRetiredOfficialHref(link.href) && !/官方(?:資訊|資料)庫/.test(link.label || ""))
     .map((link) => `<a href="${esc(link.href)}"><span>${esc(link.kicker)}</span><strong>${esc(link.label)}</strong></a>`).join("");
+  renderLearningPaths();
   $("[data-feature-cards]").innerHTML = siteData.homeFeatures.map((item, index) => `<article><span class="card-index">${String(index + 1).padStart(2, "0")}</span><h3>${esc(item.title)}</h3><p>${esc(item.text)}</p></article>`).join("");
   $("[data-page-modules]").innerHTML = siteData.pages.slice(0, 6).map((page, index) => `<article class="module-card"><span class="module-index">${String(index + 1).padStart(2, "0")}</span><h3>${esc(page.title)}</h3><p>${esc(page.summary)}</p><a href="./page.html?slug=${esc(page.slug)}">閱讀內容</a></article>`).join("");
   $("[data-faculty-preview]").innerHTML = siteData.faculty.slice(0, 6).map(renderFacultyCard).join("");
@@ -1713,6 +1794,11 @@ function setupInteractions() {
     }
     renderNewsWidgets();
   });
+  document.addEventListener("click", (event) => {
+    const pathButton = event.target.closest("[data-learning-path]");
+    if (!pathButton) return;
+    renderLearningPaths(pathButton.dataset.learningPath);
+  });
   const revealTargets = [
     ".section",
     ".feature-band",
@@ -1739,6 +1825,7 @@ function setupInteractions() {
     ".curriculum-card",
     ".lab-profile-card",
     ".program-link-card",
+    ".learning-path-panel",
     ".faculty-profile-hero",
     ".faculty-profile-grid article"
   ].join(",");
@@ -1882,4 +1969,3 @@ document.addEventListener("click", (event) => {
 });
 
 loadSite().catch(renderSiteError);
-

@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /data/backups/
 
-Sitemap: https://charmi582.github.io/ncut-ai-website/sitemap.xml
+Sitemap: https://ncutaiweb.github.io/ncut-ai-website/sitemap.xml
