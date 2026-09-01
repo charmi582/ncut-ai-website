@@ -114,34 +114,6 @@
     },
     {
       "kicker": "教學特色",
-      "title": "游泳者追蹤偵測",
-      "text": "建置跨平台學習環境，支援程式設計、資料處理、影像辨識與專題開發。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1437_4661788_17062.png",
-      "primary": {
-        "label": "招生資訊",
-        "href": "./page.html?slug=history"
-      },
-      "secondary": {
-        "label": "最新消息",
-        "href": "./page.html?slug=labs"
-      }
-    },
-    {
-      "kicker": "教學特色",
-      "title": "AI 影像辨識",
-      "text": "以影像辨識與電腦視覺訓練真實情境中的目標偵測、追蹤與智慧分析。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1438_1904637_19978.png",
-      "primary": {
-        "label": "招生資訊",
-        "href": "./page.html?slug=history"
-      },
-      "secondary": {
-        "label": "最新消息",
-        "href": "./page.html?slug=labs"
-      }
-    },
-    {
-      "kicker": "教學特色",
       "title": "Windows & Mac 雙系統環境",
       "text": "聚焦人工智慧影像應用，涵蓋機器視覺、深度學習、智慧醫療與產業檢測。",
       "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1439_7243206_18517.png",
