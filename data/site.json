@@ -113,20 +113,6 @@
       }
     },
     {
-      "kicker": "教學特色",
-      "title": "Windows & Mac 雙系統環境",
-      "text": "聚焦人工智慧影像應用，涵蓋機器視覺、深度學習、智慧醫療與產業檢測。",
-      "image": "https://n063.ncut.edu.tw/var/file/63/1063/plugin/mobile/pictures/linkdet_1439_7243206_18517.png",
-      "primary": {
-        "label": "招生資訊",
-        "href": "./page.html?slug=history"
-      },
-      "secondary": {
-        "label": "最新消息",
-        "href": "./page.html?slug=labs"
-      }
-    },
-    {
       "kicker": "學生成果",
       "title": "專題成果發表",
       "text": "學生以實作成果展示 AI 應用能力，連結課程學習、專題實作與產業場域。",
