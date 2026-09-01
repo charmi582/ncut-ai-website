@@ -120,6 +120,14 @@ class PageLoader {
     return loader;
   }
 
+  static clearExitState() {
+    document.querySelectorAll(".site-loader.is-exit-loader").forEach((loader) => loader.remove());
+    document.body.classList.remove("is-exiting-page");
+    if (!document.querySelector(".site-loader:not(.is-exit-loader)")) {
+      document.body.classList.remove("is-loading");
+    }
+  }
+
   static consumeSkipIntro() {
     const url = new URL(location.href);
     const urlRequestsSkip = url.searchParams.get(PageLoader.skipIntroUrlKey) === "1";
@@ -1542,6 +1550,12 @@ class PageTransitionController {
 
   install() {
     document.addEventListener("click", (event) => this.onClick(event), true);
+    window.addEventListener("pageshow", (event) => {
+      if (event.persisted) PageLoader.clearExitState();
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") PageLoader.clearExitState();
+    });
   }
 
   canAnimateTransition() {
