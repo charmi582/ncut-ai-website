@@ -155,10 +155,18 @@
       }
     },
     {
+      "kicker": "學生成果",
       "title": "專題成果發表",
-      "subtitle": "學生以實作成果展示 AI 應用能力",
+      "text": "學生以實作成果展示 AI 應用能力，連結課程學習、專題實作與產業場域。",
       "image": "./assets/optimized/home-hero-project-presentation.jpg",
-      "href": "./awards.html"
+      "primary": {
+        "label": "獲獎資訊",
+        "href": "./awards.html"
+      },
+      "secondary": {
+        "label": "課程就業",
+        "href": "./page.html?slug=curriculum-careers"
+      }
     }
   ],
   "metrics": [
