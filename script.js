@@ -74,6 +74,7 @@ class PageLoader {
   static skipIntroStorageKey = "ncut-ai-skip-intro";
   static skipIntroUrlKey = "_ncut_skip_intro";
   static continueTransitionStorageKey = "ncut-ai-continue-transition";
+  static returnTransitionStoragePrefix = "ncut-ai-return-transition:";
 
   constructor({ fullMotion = true, exit = false, skipMinimum = false, hidden = false, continuing = false } = {}) {
     this.startedAt = Date.now();
@@ -104,6 +105,16 @@ class PageLoader {
       loader.mount();
       return loader;
     }
+    if (PageLoader.isBackForwardNavigation()) {
+      const loader = new PageLoader({ fullMotion: false, continuing: true });
+      loader.mount();
+      return loader;
+    }
+    if (PageLoader.consumeReturnTransition()) {
+      const loader = new PageLoader({ fullMotion: false, continuing: true });
+      loader.mount();
+      return loader;
+    }
     const skipIntro = PageLoader.consumeSkipIntro();
     if (skipIntro) return PageLoader.noop();
     const loader = new PageLoader({ fullMotion: !skipIntro, skipMinimum: skipIntro });
@@ -126,6 +137,13 @@ class PageLoader {
     if (!document.querySelector(".site-loader:not(.is-exit-loader)")) {
       document.body.classList.remove("is-loading");
     }
+  }
+
+  static showReturn() {
+    PageLoader.clearExitState();
+    const loader = new PageLoader({ fullMotion: false, continuing: true });
+    loader.mount();
+    return loader;
   }
 
   static consumeSkipIntro() {
@@ -160,6 +178,14 @@ class PageLoader {
     }
   }
 
+  static rememberReturnTransition(href = location.href) {
+    try {
+      sessionStorage.setItem(PageLoader.returnTransitionStoragePrefix + PageLoader.locationKey(href), "1");
+    } catch {
+      // sessionStorage can be unavailable in strict privacy modes.
+    }
+  }
+
   static consumeContinueTransition() {
     try {
       const shouldContinue = sessionStorage.getItem(PageLoader.continueTransitionStorageKey) === "1";
@@ -168,6 +194,28 @@ class PageLoader {
     } catch {
       return false;
     }
+  }
+
+  static isBackForwardNavigation() {
+    const navigation = performance.getEntriesByType?.("navigation")?.[0];
+    return navigation?.type === "back_forward";
+  }
+
+  static consumeReturnTransition(href = location.href) {
+    try {
+      const key = PageLoader.returnTransitionStoragePrefix + PageLoader.locationKey(href);
+      const shouldShow = sessionStorage.getItem(key) === "1";
+      if (shouldShow) sessionStorage.removeItem(key);
+      return shouldShow;
+    } catch {
+      return false;
+    }
+  }
+
+  static locationKey(href) {
+    const url = new URL(href, location.href);
+    url.hash = "";
+    return `${url.origin}${url.pathname}${url.search}`;
   }
 
   static withSkipIntro(href) {
@@ -1540,6 +1588,7 @@ class PageTransitionController {
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     this.linkSelector = "a[href]";
     this.exitDuration = 2300;
+    this.exitTimer = 0;
   }
 
   static installOnce() {
@@ -1550,12 +1599,22 @@ class PageTransitionController {
 
   install() {
     document.addEventListener("click", (event) => this.onClick(event), true);
-    window.addEventListener("pageshow", (event) => {
-      if (event.persisted) PageLoader.clearExitState();
-    });
+    window.addEventListener("pageshow", (event) => this.onPageReveal(event.persisted));
+    window.addEventListener("focus", () => this.onPageReveal(false));
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") PageLoader.clearExitState();
+      if (document.visibilityState === "visible") this.onPageReveal(false);
     });
+  }
+
+  onPageReveal(restoredFromCache = false) {
+    window.clearTimeout(this.exitTimer);
+    if (!restoredFromCache && document.body.classList.contains("is-exiting-page")) return;
+    const shouldShowReturnTransition = restoredFromCache || PageLoader.consumeReturnTransition();
+    if (!shouldShowReturnTransition || !this.canAnimateTransition()) {
+      PageLoader.clearExitState();
+      return;
+    }
+    PageLoader.showReturn().hide();
   }
 
   canAnimateTransition() {
@@ -1591,9 +1650,10 @@ class PageTransitionController {
     const navigationUrl = this.sameSiteNavigationUrl(event);
     if (!navigationUrl) return;
     event.preventDefault();
+    PageLoader.rememberReturnTransition();
     PageLoader.continueNextTransition();
     showPageTransition();
-    window.setTimeout(() => {
+    this.exitTimer = window.setTimeout(() => {
       location.assign(navigationUrl);
     }, this.exitDuration);
   }
